@@ -1,0 +1,10 @@
+# Dependencies
+node_modules/
+
+# Skills installed locally for authoring — tracked in skills-lock.json,
+# restore with: npx skills experimental_install
+.agents/skills/
+.claude/skills/
+
+# OS
+.DS_Store
