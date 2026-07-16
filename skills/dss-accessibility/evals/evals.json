@@ -1,0 +1,84 @@
+{
+  "skill_name": "dss-accessibility",
+  "evals": [
+    {
+      "id": 0,
+      "name": "feedback-form-build",
+      "prompt": "We're building a citizen feedback form for our agency's licensing portal (React + plain CSS, no component library). Fields: full name, email, feedback category (dropdown: General, Application issue, Payment issue), and message, plus a submit button. Do client-side validation with inline error messages. Write the component (FeedbackForm.jsx and feedback-form.css). This is for a Singapore government agency site.",
+      "expected_output": "An accessible form: programmatic labels (no placeholder-as-label), autocomplete tokens, mandatory-field indication, errors identified with text + icon and associated via aria-describedby/aria-invalid, error summary or live region announcement, no color-only signals, adequate contrast and target sizes, explicit submit (no auto-submit). Ideally references DSS control IDs (WU-10/11, WP-10/11, WR-2, BD-7).",
+      "files": [],
+      "assertions": [
+        "Every input has a programmatic label (label htmlFor / aria-labelledby); placeholders are not used as the only label",
+        "Validation errors are associated to their fields via aria-describedby and aria-invalid",
+        "Errors are announced to assistive tech: an aria-live region, role=alert, or focus moved to an error summary on submit",
+        "Error signalling does not rely on colour alone (icon and/or text accompanies the red styling)",
+        "Mandatory vs optional fields are indicated accessibly (BD-7): asterisk with sr-visible explanation, or optional-labelling",
+        "Name and email inputs carry appropriate autocomplete tokens (autocomplete=\"name\", autocomplete=\"email\")",
+        "The category dropdown does not auto-submit or change context on selection; submission only via explicit button",
+        "Interactive targets are at least 24x24 CSS px and focus styles are visible (no outline:none without replacement)",
+        "The code or accompanying notes reference DSS control IDs (e.g. WU-10, WU-11, WP-10, WP-11, WR-2, BD-7)",
+        "Fields validate on blur (or re-validate on change once errored), not only after the first submit attempt"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "audit-seeded-page",
+      "prompt": "Our team inherited this application-status lookup page for a Singapore government service (it gets about 2 million visits a year). Audit it for accessibility compliance and give us a findings report telling us what to fix and how serious each issue is. Don't rewrite the page - we just need the report (report.md).",
+      "expected_output": "A findings report that identifies the seeded violations, cites DSS control IDs (WP/WO/WU/WR) rather than only WCAG SC numbers, recognises the 2M visits/year means the DSS High Impact profile applies (all 53 controls at Level 1), and gives concrete fixes.",
+      "files": [
+        "files/status.html"
+      ],
+      "assertions": [
+        "Report identifies at least 18 of the 21 seeded violations listed in seeded_violations",
+        "Findings cite DSS control IDs (WP-x / WO-x / WU-x / WR-x), not only WCAG success-criterion numbers",
+        "Report recognises that ~2M visits/year puts the service in the DSS High Impact profile (>=1M WOGAA visits) and states the level consequence (all 53 controls at Level 1)",
+        "Catches the four highest-signal seeds: missing html lang, user-scalable=no, global outline:none, and clickable-div-as-button",
+        "Catches the pointer/gesture seeds that only matter at High Impact leveling: mousedown delete (WO-15)",
+        "Every finding comes with a concrete, correct fix",
+        "Findings are prioritised or severity-rated as the prompt asked",
+        "Report does not invent violations that are not present in the file"
+      ],
+      "seeded_violations": [
+        "html element missing lang attribute (WU-1)",
+        "generic page title 'Page' (WO-8)",
+        "viewport meta user-scalable=no blocks zoom (WP-14)",
+        "global * { outline: none } kills focus visibility (WO-13)",
+        "agency logo img without alt (WP-1)",
+        "reference input uses placeholder as its only label (WP-10 / labels)",
+        "select onchange auto-submits the form - context change on input (WU-6)",
+        "error message 'Invalid' is vague, colour-only red, not associated with the field, no fix guidance (WU-10, WU-11, WP-11)",
+        "error/status shown-hidden without live region announcement; result injected without aria-live (WR-2)",
+        "clickable div used as the Check status button - not keyboard operable, no role (WO-1, WR-1)",
+        "positive tabindex=3 disrupts focus order (WO-9)",
+        "status conveyed by green dot colour alone (WP-11)",
+        "16x16px icon-only delete button below 24px minimum (WO-18)",
+        "delete fires on mousedown - no pointer cancellation (WO-15; Level 1 at High Impact)",
+        "trash icon img without alt / button without accessible name (WP-1, WR-1)",
+        "'click here' link text (WO-10)",
+        "hint text #999999 on white fails 4.5:1 contrast, 12px (WP-13)",
+        "fixed height + overflow:hidden on status-note text clips under text-spacing/zoom (WP-18, WP-14)",
+        "heading structure starts at h3 with no h1 (WP-6)",
+        "data table has no header cells/th scope (WP-6)",
+        "the service-type select element has no programmatic label (WP-10 / labels)"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "timeout-modal",
+      "prompt": "Our Singpass-authenticated e-service needs a session timeout warning modal: it should appear 2 minutes before the session expires, show a countdown, and let the user extend the session or log out. Vanilla JS + HTML + CSS please, no framework. It's for a Singapore government digital service.",
+      "expected_output": "A modal that lets users extend the time limit (WO-4), traps focus while open and returns focus to a sensible element on close (WO-2/WO-9), closes on Esc, uses dialog semantics (native <dialog> or role=dialog + aria-modal), announces the warning via a live region (WR-2), has visible focus indicators and adequate target sizes, and doesn't silently log the user out.",
+      "files": [],
+      "assertions": [
+        "The modal lets the user extend the session (WO-4 adjustable timings) - extending actually resets/extends the timer",
+        "Focus moves into the modal when it opens, is trapped inside while open, and returns to a sensible element when it closes",
+        "The modal can be dismissed with the Escape key",
+        "Dialog semantics are correct: native <dialog> with showModal(), or role=\"dialog\" + aria-modal=\"true\" with an accessible name (aria-labelledby/aria-label)",
+        "The timeout warning is announced to assistive tech via a live region (aria-live / role=status or role=alert), not only visually",
+        "Countdown updates do not spam screen readers (polite live region and/or throttled announcements, e.g. at 60s/30s/10s rather than every second)",
+        "Modal buttons have visible focus styles and at least 24x24 CSS px targets",
+        "The code or notes reference DSS control IDs (e.g. WO-4, WO-2, WO-9, WR-2)",
+        "Session expiry does not strand the user: after timeout there is a plain-language logged-out state with a clear re-authentication path (WU-11), not just a dead page or silent redirect"
+      ]
+    }
+  ]
+}

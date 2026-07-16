@@ -128,6 +128,11 @@ audio description (WP-5).
 
   Write messages in plain, non-technical language and say how to fix the
   problem — including 404/500 pages (WU-11).
+- **Validate early, not only on submit** (WU-10, WU-11): run field
+  validation on blur, and once a field has an error re-validate on change so
+  the message clears the moment it's fixed. Keep the full check on submit
+  with a focused error summary — but don't make users fill the whole form
+  before hearing about a mistake they made in the first field.
 - **Announce dynamic errors and status** (WR-2): render inline errors and
   "Saving… / Saved" indicators into an `aria-live="polite"` region (or
   `role="alert"` for blocking errors) so screen readers hear what sighted

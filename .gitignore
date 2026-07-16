@@ -6,5 +6,8 @@ node_modules/
 .agents/skills/
 .claude/skills/
 
+# Skill eval workspaces (test-run outputs; evals.json lives in each skill's evals/)
+skills/*-workspace/
+
 # OS
 .DS_Store

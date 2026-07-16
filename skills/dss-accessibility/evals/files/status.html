@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>Page</title>
+  <style>
+    * { outline: none; }
+    body { font-family: Arial, sans-serif; font-size: 14px; margin: 0; }
+    .header { background: #1c3d5a; color: #fff; padding: 12px 24px; }
+    .hint { color: #999999; font-size: 12px; }
+    .error { color: red; }
+    .btn-icon { width: 16px; height: 16px; border: none; background: transparent; cursor: pointer; }
+    .status-note { height: 40px; overflow: hidden; font-size: 13px; }
+    .lookup { max-width: 640px; margin: 24px auto; padding: 0 16px; }
+    .actions div { display: inline-block; background: #2a6fb8; color: #fff; padding: 6px 10px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="/assets/agency-logo.png" width="140">
+    <span>Licensing Services</span>
+  </div>
+
+  <div class="lookup">
+    <h3>Check your application status</h3>
+    <p class="hint">Enter your application reference to check its status.</p>
+
+    <form id="lookup-form">
+      <input type="text" id="ref" placeholder="Application reference e.g. LS-2026-000123">
+      <select id="type" onchange="this.form.submit()">
+        <option>Licence application</option>
+        <option>Renewal</option>
+        <option>Appeal</option>
+      </select>
+      <span class="error" id="ref-error" style="display:none">Invalid</span>
+      <div class="actions">
+        <div onclick="lookupStatus()" tabindex="3">Check status</div>
+      </div>
+    </form>
+
+    <table>
+      <tr>
+        <td>LS-2026-000123</td>
+        <td><span style="color:green">●</span></td>
+        <td>
+          <button class="btn-icon" onmousedown="removeEntry(this)">
+            <img src="/assets/trash.png">
+          </button>
+        </td>
+      </tr>
+    </table>
+
+    <p class="status-note">Applications submitted after 5pm are processed the next working day. For urgent applications, <a href="/contact">click here</a>.</p>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function lookupStatus() {
+      var ref = document.getElementById('ref').value;
+      var el = document.getElementById('ref-error');
+      if (!/^LS-\d{4}-\d{6}$/.test(ref)) { el.style.display = 'inline'; return; }
+      el.style.display = 'none';
+      document.getElementById('result').innerHTML = '<p>Status: Processing</p>';
+    }
+    function removeEntry(btn) { btn.closest('tr').remove(); }
+  </script>
+</body>
+</html>
