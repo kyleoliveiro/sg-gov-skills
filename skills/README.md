@@ -41,7 +41,7 @@ link to authoritative sources, and be prescriptive about what to do.>
 Use the locally installed **skill-creator** skill to scaffold, evaluate, and iterate on skills (restore it with `npx skills experimental_install` if `.agents/skills/` is empty). Validate before committing:
 
 ```sh
-python .agents/skills/skill-creator/scripts/quick_validate.py skills/<skill-name>
+uv run --with pyyaml python .agents/skills/skill-creator/scripts/quick_validate.py skills/<skill-name>
 ```
 
 After adding a skill, list it in the table in the root [README](../README.md).

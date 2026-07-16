@@ -24,7 +24,11 @@ The CLI installs into `.agents/skills/` and symlinks them into the agent directo
 
 | Skill | Description |
 | ----- | ----------- |
-| _None published yet — first skills are in progress._ | |
+| [ssp-navigator](skills/ssp-navigator/) | Determine which System Security Plan(s) apply under the ICT&SS Policy Reform (IM8's successor) — including the Gen-AI overlay and DSS profiles — and emit the Level 0/1/2 control baseline and lifecycle steps. |
+| [secure-coding-as](skills/secure-coding-as/) | Write and review application code against the Application Security (AS-1..15) and Cryptography/Key Management (CK-1..4) controls: input validation, parameterised queries, password hashing, secrets, CSP/HSTS, uploads, error hygiene. |
+| [secure-pipeline](skills/secure-pipeline/) | Set up or audit repos and CI/CD against the Secure Development (SD-1..10) and Software Supply Chain (SC-1..9) controls, with GitHub/GitLab recipes and open-source fallbacks. |
+| [dss-accessibility](skills/dss-accessibility/) | Build and review frontend code against the 53 WCAG-2.2-derived DSS accessibility controls (WP/WO/WU/WR), with SG-specific Others vs High-Impact leveling and testing workflow. |
+| [sg-service-shell](skills/sg-service-shell/) | The mandatory "shell" every SG government public digital service needs before feature work — Official Government Banner (SGDS Masthead), WOGAA, official footer, .gov.sg domain, and the rest of the DSS TL/BD/PR controls. |
 
 Each skill lives in [`skills/`](skills/) as a folder with a `SKILL.md` entry point.
 
