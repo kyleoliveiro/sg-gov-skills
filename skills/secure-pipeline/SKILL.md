@@ -110,6 +110,13 @@ transitive versions still float. Also pin container base images by digest and CI
 by commit SHA. Why: unpinned dependencies mean every build can silently pull different —
 possibly compromised — code (version drift, dependency-confusion, hijacked releases).
 
+If you cannot resolve an action's commit SHA or an image's digest right now (e.g. no
+network access), pin what you can, mark each unresolved pin as an explicit blocking TODO
+in the file, and report the control as **open — not satisfied**. Never let a runbook or
+audit response claim SC-4 compliance while `uses:` lines still carry mutable tags: the
+claim will fail its audit, and worse, it tells the team the job is finished when it
+isn't.
+
 **2b. Install only pinned versions at deploy (SC-6).** Every install step in CI and
 Dockerfiles uses the lockfile-strict command: `npm ci` not `npm install`,
 `pipenv sync` not `pipenv install`, `yarn install --immutable`,
