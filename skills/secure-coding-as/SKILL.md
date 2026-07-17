@@ -105,8 +105,11 @@ mechanisms. Why: without it, weak credentials fall to brute force.
 
 - Site recommendation: max 3 consecutive failed attempts within 15 minutes (or other
   reasonable limit); add time delays between attempts; consider CAPTCHA/bot mitigation.
-- "All mechanisms" means login, password reset, OTP/MFA verification, API token
-  endpoints — not just the main login form. Key limits on account and source IP.
+- "All mechanisms" means login, registration, password reset, OTP/MFA verification, API
+  token endpoints — not just the main login form. Registration is the one teams forget:
+  an unthrottled signup endpoint enables mass account creation and email/SMS flooding,
+  and it exercises the same password and notification paths as the rest of auth. Key
+  limits on account and source IP.
 
 **AS-5 — Password Requirements.** Where SSO or passwordless is not supported, enforce
 the SSP-defined minimum length (`as-5_prm_1`), policy (`as-5_prm_2`), and password type
@@ -265,7 +268,7 @@ codebase per row. Cite findings as `[AS-n]`/`[CK-n]` with file:line.
 | AS-1 | All inputs schema-validated at trust boundary | new/changed endpoints, parsers, queue consumers without validation |
 | AS-2 | Queries/commands parameterised | string-built SQL/shell/NoSQL, `shell=True`, template interpolation into queries |
 | AS-3 | HTML-bound output escaped/sanitised | `dangerouslySetInnerHTML`, `innerHTML`, `\| safe`, disabled autoescape |
-| AS-4 | Auth endpoints rate-limited | login/reset/OTP/token routes without limiter or lockout/delay |
+| AS-4 | Auth endpoints rate-limited | signup/login/reset/OTP/token routes without limiter or lockout/delay |
 | AS-5 | Password rules = SSP params (`as-5_prm_1/2/3`) | hard-coded lengths that don't match SSP; missing common-password screen |
 | AS-6 | Salted hash, memory-hard KDF, CSPRNG, ≥32-bit unique salt | MD5/SHA-x passwords, `Math.random`/`java.util.Random`, shared or absent salt |
 | AS-7 | AuthZ check on every authenticated request | new routes outside guard middleware; missing object-ownership checks (IDOR) |
