@@ -268,6 +268,12 @@ requirements. For anything custom:
 - **Session timeouts** (WO-4): warn before expiry and allow extension —
   balance against the security team's AS-11 session-timeout parameter rather
   than silently logging users out mid-form.
+- **Expiry must land somewhere humane** (WU-11): when the session does
+  expire, deliver a plain-language logged-out state — what happened, why,
+  and a clear re-authentication path (e.g. a Singpass login link). A bare
+  redirect to an unexplained URL or a dead page strands the user; if you
+  emit the redirect, you own the page it lands on. Say what happens to
+  unsaved work.
 
 ## Testing and review
 
