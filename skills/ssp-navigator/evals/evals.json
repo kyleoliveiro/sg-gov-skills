@@ -1,0 +1,41 @@
+{
+  "skill_name": "ssp-navigator",
+  "evals": [
+    {
+      "id": 0,
+      "name": "stacked-genai-service",
+      "prompt": "Our agency is building a public-facing chatbot service that answers licensing questions using a commercial LLM API. It will run on GCC 2.0, handle citizen queries containing data classified up to Restricted / Sensitive Normal, and we expect around 200,000 visits a year. Which System Security Plan(s) under the ICT&SS Policy Reform apply to this system, and what is mandatory before we launch? Write your answer as ssp-report.md.",
+      "expected_output": "A report selecting Low-Risk Cloud as the base SSP, stacking the Generative AI overlay and DSS (Others), naming the Level 0 controls (universal spine + GA + DSS), explaining level semantics and the lifecycle (PM-2 risk assessment, PM-4 residual risk approval, PM-5 central submission), and flagging agency-defined parameters without inventing values.",
+      "files": [],
+      "assertions": [
+        "Selects Low-Risk Cloud as the base cybersecurity SSP (cloud-hosted, data up to Restricted / Sensitive Normal, not CII)",
+        "Stacks the Generative AI SSP as an overlay on the base SSP - not as a standalone or replacement plan",
+        "Stacks DSS (Others), citing that ~200k visits/year is below the 1M-WOGAA-visits High Impact threshold",
+        "Addresses the GenAI Level 0 hosting constraints: GA-1 (overseas-hosted GenAI APIs limited to Restricted/Sensitive Normal) and/or GA-3 (legally-binding no-training/no-retention commitment), noting GCC 2.0 GenAI API services satisfy GA-3",
+        "Names the universal Level 0 spine: at least five of PM-3, PM-4, PM-5, DP-1 (SG data residency), LM-12 (central log management), IS-11 (.gov.sg via GovTech as sole registrar), IS-14 (SMS Sender ID Registry)",
+        "Names the DSS Level 0 controls: PR-2 (WOGAA registration + tracking) and TL-3 (Official Government Banner)",
+        "States level semantics correctly: Level 0 mandatory with no deviation; Level 1 default with deviations requiring documented approval by the agency's designated authority (IDSC/CIO/CISO); Level 2 risk-based best practice",
+        "Covers the SSP lifecycle: risk assessment approved before use (PM-2), residual-risk approval (PM-4), and submission to the central whole-of-government repository (PM-5)",
+        "Flags agency-defined control parameters (e.g. session timeout, log retention, review cadences) as tailoring decisions the agency must set, without inventing specific values as requirements",
+        "Does not invent a numeric risk-scoring methodology - SSP selection is presented as criteria-based on the system's classification inputs"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "cii-migration-gaps",
+      "prompt": "We operate an on-premises system that is designated Critical Information Infrastructure and processes data classified up to Confidential. Management wants to migrate it to a commercial cloud provider next year. Under the ICT&SS Policy Reform, what SSP applies to the system today, what applies after the migration, and what does the migration path look like from a compliance standpoint? Write your answer as migration-plan.md.",
+      "expected_output": "A plan that identifies High-Risk Cloud CII as the post-migration SSP, states the CSA-notification sequencing constraint, recognises that no published template covers on-prem CII / on-prem Confidential today (escalate for a custom SSP rather than misapplying Low-Risk On-Premises), and walks the Level 0 obligations and lifecycle.",
+      "files": [],
+      "assertions": [
+        "Identifies High-Risk Cloud CII as the applicable SSP after the migration",
+        "States that the CII Owner must inform CSA (Cyber Security Agency of Singapore) before migrating to cloud / before creating the High-Risk Cloud CII SSP - presented as a sequencing constraint, not optional paperwork",
+        "Recognises that no published SSP template covers the current state (on-premises CII / on-premises Confidential) and recommends escalating to the agency CISO for a custom SSP",
+        "Does not claim the Low-Risk On-Premises SSP covers this system (its ceiling is Restricted / Sensitive Normal and it excludes CII)",
+        "Names Level 0 obligations that will bind the cloud system, including DP-1 (Singapore data residency), LM-12 (central log management), and PM-3/PM-4/PM-5",
+        "States deviation semantics correctly: Level 0 permits no deviation; Level 1 deviations need documented approval from the agency's designated authority",
+        "Recommends verifying against the live info.standards.tech.gov.sg pages for compliance-critical decisions, since the standards iterate actively",
+        "Does not fabricate requirements, control IDs, or numeric thresholds that are not part of the published standards"
+      ]
+    }
+  ]
+}

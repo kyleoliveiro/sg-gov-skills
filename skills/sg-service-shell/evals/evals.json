@@ -1,0 +1,58 @@
+{
+  "skill_name": "sg-service-shell",
+  "evals": [
+    {
+      "id": 0,
+      "name": "scaffold-portal-shell",
+      "prompt": "Create the base page template for our new agency service portal - it will be served at portal.example.gov.sg. Static HTML/CSS is fine (header, footer, page skeleton we can build on). It's a public-facing Singapore government service. Include any setup notes we need to take care of before launch.",
+      "expected_output": "A page template using the SGDS Masthead as the topmost element, agency logo top-left linked home, the official footer with all seven links in the exact order plus the Government of Singapore copyright line, responsive layout, and launch notes covering WOGAA (Level 0), .gov.sg domain registration via GovTech, and SSP parameters flagged as agency decisions - all traced to TL/BD/PR control IDs.",
+      "files": [],
+      "assertions": [
+        "Uses the SGDS Masthead component (sgds-masthead via @govtechsg/sgds-web-component) for the Official Government Banner rather than hand-rolling the banner markup",
+        "The masthead is the topmost element on the page - above the agency logo and navigation (TL-3)",
+        "Footer contains all seven official links in the exact order: Contact Us, Feedback, FAQ, Sitemap, Report Vulnerability, Privacy Statement, Terms of Use (TL-4)",
+        "Copyright line reads '(c) [year], Government of Singapore' - not an agency-branded all-rights-reserved line (TL-4)",
+        "Agency logo is at the top-left and hyperlinked to the service homepage (TL-2)",
+        "Setup notes cover WOGAA as Level 0: register the service before launch, install the tracking code on every page, and enable Sentiments (PR-2)",
+        "Template is responsive: proper viewport meta and no fixed-width layout (BD-1)",
+        "Notes that the .gov.sg domain is registered via GovTech as sole registrar through the WOG DNS portal (TL-1)",
+        "References DSS control IDs (TL-n / BD-n / PR-n) so the shell traces to the SSP",
+        "Where controls carry agency-defined parameters (page-load seconds PR-7, downtime-notice days PR-4, browser count PR-6), values are flagged as SSP tailoring decisions rather than invented"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "review-agency-homepage",
+      "prompt": "Here's the homepage of our agency's licence renewal service as it stands. Before launch, check it against the Singapore government requirements for public-facing services and give us a findings report (findings.md) - what fails, how serious each issue is, and how to fix it. Don't rewrite the page.",
+      "expected_output": "A findings report keyed to TL/BD/PR control IDs that catches the seeded shell violations, distinguishes Level 0 (no deviation) findings from Level 1, and prescribes the SGDS components and official processes as fixes.",
+      "files": [
+        "files/index.html"
+      ],
+      "assertions": [
+        "Report identifies at least 9 of the 12 seeded violations listed in seeded_violations",
+        "Findings cite DSS control IDs (TL-n / BD-n / PR-n)",
+        "Catches the banner problem in full: hand-rolled banner with the wrong text ('A Singapore Government Website', missing 'Agency'), positioned below the navigation instead of topmost - and prescribes the SGDS Masthead component as the fix (TL-3, Level 0)",
+        "Flags the direct APK download link as a TL-5 Level 0 violation - mobile apps may only be distributed via Apple App Store, Google Play, or Huawei AppGallery",
+        "Flags the non-.gov.sg domain (TL-1) and the footer failures (missing/mis-ordered official links, agency-branded copyright instead of 'Government of Singapore') citing TL-4 and the exact required link order",
+        "Flags the absence of WOGAA tracking as a Level 0 failure (PR-2)",
+        "Severity ratings distinguish Level 0 (mandatory, no deviation) findings from Level 1 findings",
+        "Every finding comes with a concrete, correct fix",
+        "Report does not invent violations that are not present in the file"
+      ],
+      "seeded_violations": [
+        "hand-rolled government banner with wrong text ('A Singapore Government Website' instead of 'A Singapore Government Agency Website'), not the SGDS Masthead (TL-3)",
+        "banner positioned below the navigation instead of as the topmost element (TL-3)",
+        "canonical URL is sg-licence-renewals.com, not a .gov.sg domain (TL-1)",
+        "agency logo floated to the top-right and not hyperlinked to the homepage (TL-2)",
+        "footer has only Privacy and Terms - missing Contact Us, Feedback, FAQ, Sitemap, Report Vulnerability, and out of the required order (TL-4)",
+        "copyright line '(c) 2026 LicenceCorp Solutions Pte. Ltd. All rights reserved.' instead of '(c) 2026, Government of Singapore' (TL-4)",
+        "direct APK download link - distribution outside the official app stores (TL-5, Level 0)",
+        "no WOGAA tracking code or Sentiments widget anywhere (PR-2, Level 0)",
+        "viewport meta fixed at width=1200 and fixed-width body - not responsive (BD-1)",
+        "multi-page site (5 nav sections) with no site search (BD-2)",
+        "form fields carry no mandatory/optional indication (BD-7)",
+        "maintenance notice is vague ('at some point next week') - no date, time, or duration (PR-4); and no contact channel anywhere on the page (BD-9)"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "skill_name": "secure-pipeline",
+  "evals": [
+    {
+      "id": 0,
+      "name": "audit-seeded-pipeline",
+      "prompt": "Audit our repo and CI/CD setup against the Singapore government secure development requirements. I've included our GitHub Actions deploy workflow, the Dockerfile, and a doc describing our repo settings and process. Give us an audit report (audit.md) with pass/fail per requirement and how to fix the failures.",
+      "expected_output": "An audit report keyed to SD/SC control IDs that catches the seeded violations, asks for SSP parameter values instead of inventing scan frequencies and SLAs, and pairs every failure with the concrete platform fix.",
+      "files": [
+        "files/deploy.yml",
+        "files/Dockerfile",
+        "files/REPO-SETTINGS.md"
+      ],
+      "assertions": [
+        "Report catches at least 15 of the 19 seeded violations listed in seeded_violations",
+        "Findings cite ICT&SS control IDs (SD-n / SC-n)",
+        "Catches the highest-signal seeds: direct/force pushes to main (SD-2), no required reviews (SC-3), laptop 'golden' release builds (SC-5), secret scanning and push protection disabled (SD-1/SD-6), and staging/prod sharing one AWS account and database (SD-8)",
+        "Flags npm install (instead of a lockfile-strict npm ci) in BOTH the workflow and the Dockerfile (SC-6), and the deleted package-lock.json (SC-4)",
+        "Flags the hard-coded AWS credentials and the token echoed into CI logs (SD-7), with revoke/rotate as part of the fix - not just deleting the lines",
+        "Where pass criteria depend on SSP parameters (dependency-scan frequency sd-5_prm_1, secret-remediation SLA sd-6_prm_2, scan locations), the report asks for the SSP values rather than inventing numbers",
+        "Every failure comes with a concrete fix (correct GitHub mechanism or open-source fallback)",
+        "Report is structured as pass/fail (or fail/not-configured) per requirement, as the prompt asked",
+        "Report does not invent violations that are not present in the provided files"
+      ],
+      "seeded_violations": [
+        "workflow triggers deploy on push to any branch, with production deploy in the same job (SD-7/SD-8 - no protected environment gating)",
+        "AWS access key and secret hard-coded in the workflow env block (SD-7/AS-8)",
+        "actions pinned by mutable tag (actions/checkout@v4, actions/setup-node@v4) instead of full commit SHA (SC-4)",
+        "npm install instead of npm ci in the workflow (SC-6)",
+        "npm test || true - tests cannot fail the pipeline (SD-3)",
+        "echo of secrets.DEPLOY_TOKEN into the job log (SD-7)",
+        "image pushed unsigned, nothing verifies signatures before deploy (SC-7/SC-8)",
+        "FROM node:latest - floating tag, not digest-pinned (SC-4)",
+        "curl | bash of a remote install script in the Dockerfile (SC-4/supply chain)",
+        "npm install --production instead of npm ci in the Dockerfile (SC-6)",
+        "repo hosted on a personal GitHub account, not the sanctioned org platform (SC-1)",
+        "direct pushes and force pushes allowed on main (SD-2)",
+        "no required PR reviews (SC-3)",
+        "commit signing not set up / not enforced (SC-2)",
+        "package-lock.json deleted - no lockfile, floating dependency ranges (SC-4)",
+        "GitHub secret scanning and push protection switched off (SD-1/SD-6)",
+        "official releases built on the lead dev's laptop and pushed manually (SC-5)",
+        "staging and production share one AWS account and one RDS database; shared admin IAM user credentials on developer machines (SD-8)",
+        "no SAST and no dependency/SCA scanning configured (SD-4/SD-5)"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "setup-github-repo",
+      "prompt": "We're starting a new Node.js API repo on GitHub for a Singapore government agency project. Set up the CI/CD and repo hardening: give us the GitHub Actions workflow files and tell us exactly which repo settings to enable. Container images deploy to AWS ECS.",
+      "expected_output": "Workflow files plus a settings runbook covering push protection, branch protection, signed commits, lockfile-strict installs, SHA-pinned actions, SAST + SCA + SBOM, cosign signing with a verification gate, OIDC to AWS, environment segregation - all traced to SD/SC control IDs with SSP parameters flagged as agency-defined.",
+      "files": [],
+      "assertions": [
+        "Enables secret push protection and ongoing secret scanning (SD-1, SD-6)",
+        "Branch protection/ruleset: no direct pushes, no force pushes, required approving review with stale-approval dismissal (SD-2, SC-3)",
+        "Requires signed commits, with a note to onboard developer signing keys before enforcing (SC-2)",
+        "CI install steps are lockfile-strict (npm ci, never npm install) and the lockfile is committed and enforced (SC-4, SC-6)",
+        "GitHub Actions are pinned by full commit SHA and container base images by digest in the YAML - or, where a pin could not be resolved, every affected file marks its unresolved pins (or a single tracked open-items list enumerates them all) as blocking open steps AND no document claims the pinning requirement as satisfied (SC-4)",
+        "Includes SAST (CodeQL or semgrep) and IaC scanning in CI (SD-4)",
+        "Includes scheduled dependency/SCA scanning and SBOM generation (SD-5)",
+        "Images are signed at build (cosign or equivalent, by digest) AND a verification step gates deployment (SC-7, SC-8)",
+        "Uses OIDC federation to AWS instead of long-lived access keys; secrets scoped to protected environments and masked in logs (SD-7)",
+        "Addresses prod/non-prod segregation: separate GitHub environments with per-environment credentials, separate AWS accounts recommended (SD-8)",
+        "Output references SD/SC control IDs so each setting traces to the SSP",
+        "SSP-defined parameters (sd-4_prm_1, sd-5_prm_1/2, sd-6_prm_1/2, sd-9_prm_1) are flagged as agency decisions to fetch from the SSP, not invented"
+      ]
+    }
+  ]
+}

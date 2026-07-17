@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1200">
+  <title>Licence Renewal</title>
+  <link rel="canonical" href="https://sg-licence-renewals.com/">
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; width: 1200px; }
+    nav { background: #1a1a2e; color: #fff; padding: 12px 24px; }
+    nav a { color: #fff; margin-right: 18px; text-decoration: none; }
+    .gov-banner { background: #f0f0f0; font-size: 12px; padding: 4px 24px; color: #555; }
+    header { padding: 16px 24px; overflow: hidden; }
+    header img { float: right; height: 48px; }
+    main { padding: 24px; }
+    footer { background: #1a1a2e; color: #ccc; padding: 20px 24px; margin-top: 48px; }
+    footer a { color: #ccc; }
+    .notice { background: #fff3cd; padding: 12px; border: 1px solid #ffe69c; }
+    input, select { display: block; margin-bottom: 12px; padding: 6px; width: 320px; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/renew">Renew a licence</a>
+    <a href="/status">Check status</a>
+    <a href="/guides">Guides</a>
+    <a href="/news">News</a>
+  </nav>
+
+  <div class="gov-banner">A Singapore Government Website</div>
+
+  <header>
+    <img src="/assets/agency-logo.png" alt="Agency logo">
+    <h1>Licence Renewal Service</h1>
+  </header>
+
+  <main>
+    <p class="notice">Scheduled maintenance: the site will be unavailable at
+    some point next week while we upgrade our systems.</p>
+
+    <p>Renew your business licence online. Most renewals are processed within
+    5 working days.</p>
+
+    <p><a href="/downloads/renewal-app.apk">Download our Android app (APK,
+    48&nbsp;MB)</a> to renew on the go.</p>
+
+    <h2>Start a renewal</h2>
+    <form action="/renew" method="post">
+      <label for="name">Full name</label>
+      <input id="name" name="name" type="text">
+
+      <label for="email">Email address</label>
+      <input id="email" name="email" type="email">
+
+      <label for="licence">Licence number</label>
+      <input id="licence" name="licence" type="text">
+
+      <label for="type">Licence type</label>
+      <select id="type" name="type">
+        <option>Food establishment</option>
+        <option>Retail</option>
+        <option>Events</option>
+      </select>
+
+      <button type="submit">Continue</button>
+    </form>
+  </main>
+
+  <footer>
+    <a href="/privacy">Privacy</a> &middot;
+    <a href="/terms">Terms</a>
+    <p>&copy; 2026 LicenceCorp Solutions Pte. Ltd. All rights reserved.</p>
+  </footer>
+</body>
+</html>

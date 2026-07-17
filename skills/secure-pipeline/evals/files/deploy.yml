@@ -1,0 +1,39 @@
+name: Build and deploy
+
+on:
+  push:
+    branches: ['**']
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE
+      AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      AWS_REGION: ap-southeast-1
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test || true
+
+      - name: Deploy notice
+        run: echo "Deploying with token ${{ secrets.DEPLOY_TOKEN }} to production"
+
+      - name: Build image
+        run: docker build -t portal-api:latest .
+
+      - name: Push image
+        run: |
+          docker tag portal-api:latest 111122223333.dkr.ecr.ap-southeast-1.amazonaws.com/portal-api:latest
+          docker push 111122223333.dkr.ecr.ap-southeast-1.amazonaws.com/portal-api:latest
+
+      - name: Deploy to production
+        run: ./scripts/deploy.sh production

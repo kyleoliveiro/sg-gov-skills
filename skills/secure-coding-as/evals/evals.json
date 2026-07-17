@@ -1,0 +1,63 @@
+{
+  "skill_name": "secure-coding-as",
+  "evals": [
+    {
+      "id": 0,
+      "name": "audit-seeded-service",
+      "prompt": "Please do a security review of this Express server for our agency's licence renewal portal (it's a Singapore government project). We need a findings report (report.md) with severity ratings and how to fix each issue - don't rewrite the code.",
+      "expected_output": "A findings report that identifies the seeded violations, cites ICT&SS AS/CK control IDs, treats password length and session lifetime as SSP-defined parameters rather than inventing values, and gives concrete correct fixes with severity ratings.",
+      "files": [
+        "files/server.js"
+      ],
+      "assertions": [
+        "Report identifies at least 13 of the 17 seeded violations listed in seeded_violations",
+        "Findings cite ICT&SS control IDs (AS-n / CK-n), not only generic OWASP or CWE labels",
+        "Catches the four highest-impact seeds: string-concatenated SQL (AS-2), unsalted MD5 password hashing (AS-6), missing object-ownership check on /api/applications/:id (AS-7 / IDOR), and hard-coded secrets (AS-8)",
+        "Flags the hard-coded 6-character password minimum and the 30-day session lifetime as SSP-defined parameters (as-5_prm_1, as-11_prm_1) that the agency must supply - rather than presenting invented values as the requirement",
+        "Flags Math.random() token generation and recommends a CSPRNG (crypto.randomBytes)",
+        "Every finding comes with a concrete, correct fix (parameterised queries, Argon2/scrypt/bcrypt, secrets manager, execFile with argument array, quarantine-then-scan uploads, etc.)",
+        "Findings are severity-rated as the prompt asked",
+        "Report does not invent violations that are not present in the file"
+      ],
+      "seeded_violations": [
+        "hard-coded DB password, notification API key, and session secret in source (AS-8)",
+        "session expiry is cookie-only 30-day maxAge with no server-side absolute lifetime (AS-11; parameter as-11_prm_1)",
+        "HSTS max-age=86400, far below the required 31536000 minimum (AS-10)",
+        "CSP is wildcard with 'unsafe-inline' and 'unsafe-eval' (AS-9)",
+        "no rate limiting on /login or /register authentication endpoints (AS-4)",
+        "string-concatenated SQL in /login query (AS-2)",
+        "string-concatenated SQL in /register INSERT (AS-2)",
+        "passwords hashed with unsalted MD5 (AS-6)",
+        "no input validation on any endpoint - body fields used raw (AS-1)",
+        "login error response returns err.message and err.stack to the client (AS-13)",
+        "session/CSRF token generated with Math.random() instead of a CSPRNG (AS-6 CSPRNG guidance)",
+        "hard-coded password minimum of 6 chars instead of SSP parameter as-5_prm_1 (AS-5)",
+        "IDOR: /api/applications/:id returns any application to any logged-in user with no ownership check (AS-7)",
+        "uploaded file is thumbnailed and processed before any malware scan (AS-12)",
+        "exec('file ' + req.file.originalname) - user-controlled string interpolated into a shell command (AS-2)",
+        "reflected XSS: /welcome concatenates req.query.name into the HTML response unescaped (AS-3)",
+        "global error handler renders err.stack into the HTML response (AS-13)"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "build-auth-endpoints",
+      "prompt": "Build the authentication module for our agency e-service: registration, login, and password reset endpoints in Node.js/Express with Postgres. Include the password storage and session handling. This is for a Singapore government agency project.",
+      "expected_output": "Auth code with Argon2/bcrypt password hashing, parameterised queries, schema validation on all inputs, rate limiting on every auth endpoint, enumeration-safe generic errors, server-side absolute session lifetime tied to SSP parameter as-11_prm_1, no hard-coded secrets, AS control ID traceability, and a nod to SSO/Singpass-first per AS-5.",
+      "files": [],
+      "assertions": [
+        "Passwords are hashed with Argon2, scrypt, or bcrypt via a maintained library - no MD5/SHA-x, no hand-rolled salting",
+        "All database queries are parameterised - no string-concatenated or template-interpolated SQL",
+        "Inputs are schema-validated at the trust boundary (e.g. Zod/Joi/celebrate) on every endpoint, not ad-hoc if-checks",
+        "Rate limiting covers all three authentication mechanisms - registration, login, AND password reset (AS-4 says all mechanisms, not just login)",
+        "Error responses are enumeration-safe and leak no internals: same response whether or not an account exists; no stack traces or driver errors to the client",
+        "Session handling enforces a server-side absolute session lifetime, with the timeout tied to SSP parameter as-11_prm_1 (named constant / TODO(SSP)) rather than silently invented",
+        "Password minimum length is referenced to SSP parameter as-5_prm_1 rather than presented as a fixed requirement; screening against common/breached passwords is preferred over composition rules",
+        "No hard-coded secrets: DB credentials, session secret, and any keys come from environment/secrets-manager injection",
+        "The code or accompanying notes reference AS control IDs (e.g. AS-1, AS-2, AS-4, AS-5, AS-6, AS-11, AS-13)",
+        "Mentions preferring SSO (Singpass/Corppass for public users) or passwordless before building password auth, per AS-5",
+        "Provides or plans a forced-password-change / session-revocation path for suspected account compromise (AS-15)"
+      ]
+    }
+  ]
+}
