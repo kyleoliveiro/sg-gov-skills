@@ -1,12 +1,29 @@
-# sg-gov-skills
+<h1 align="center">Singapore Government Agent Skills for Secure Digital Services</h1>
 
-Agent skills for developers building tech projects for **Singapore government agencies**.
+![sg-gov-skills — composable agent skills for Singapore government technology delivery](assets/readme-banner.png)
+
+---
+
+Reusable Agent Skills for Codex, Claude Code, Cursor, and other AI coding agents building secure, accessible digital services for **Singapore government agencies**. Apply ICT&SS Policy Reform requirements, System Security Plans (SSPs), secure coding and CI/CD controls, container security, the Singapore Government Design System (SGDS), and WCAG 2.2 accessibility under the Digital Service Standards (DSS).
 
 Delivering software inside government is its own discipline. The ICT&SS Policy Reform (IM8's successor) and its System Security Plans, Singpass and MyInfo integrations, FormSG pipelines, the Singapore Government Design System (SGDS), WCAG 2.2 accessibility under the Digital Service Standards, PDPA obligations, VAPT, and GeBIZ procurement all shape how you build.
 
 These skills are small, composable, and adaptable so delivery teams can plug them into their agent and get moving. They work with any model. Fork them, adapt them, make them your own.
 
 **Six skills, each with its own eval suite:** figure out which System Security Plan applies, write and audit code against the security controls, harden your CI/CD pipeline, lock down your containers, meet the WCAG 2.2 accessibility bar, and stand up the mandatory service shell. Loading the relevant skill lifts assertion pass rates from as low as 22% to 100% on the benchmark tasks below.
+
+## What these skills help you do
+
+- Determine which Singapore government System Security Plan applies.
+- Audit application code against ICT&SS security controls.
+- Build secure GitHub and GitLab CI/CD pipelines.
+- Harden Docker and Kubernetes workloads.
+- Meet WCAG 2.2 and Digital Service Standards accessibility requirements.
+- Build an SGDS-compliant Singapore government service shell.
+
+## Who this is for
+
+These skills are for engineers at GovTech, OGP, and Singapore government agencies, as well as tech leads, security reviewers, accessibility specialists, and vendors working with those agencies. They are also useful to teams preparing for architecture reviews, security assessments, accessibility audits, or production readiness checks.
 
 ## Installation
 
@@ -84,6 +101,28 @@ skills-lock.json  Lockfile for skills installed locally for authoring (skill-cre
 ## Contributing
 
 See [`skills/README.md`](skills/README.md) for authoring conventions. In short: one folder per skill, kebab-case name, a `SKILL.md` with `name` and `description` frontmatter, and supporting files (`references/`, `scripts/`, `assets/`) only when they earn their place.
+
+## Frequently asked questions
+
+### What is an Agent Skill?
+
+An Agent Skill is a folder of instructions, references, scripts, and other resources that an AI coding agent loads for a specific task. Each skill in this repository has a `SKILL.md` entry point and focuses on one Singapore government delivery concern.
+
+### Which AI coding agents can use these skills?
+
+The skills are model-independent. The `skills` CLI can install them for Codex, Claude Code, Cursor, and other supported agents.
+
+### Can I install a single skill?
+
+Yes. Run `npx skills add kyleoliveiro/sg-gov-skills -s <skill-name>` and replace `<skill-name>` with the slug shown in the Skills table.
+
+### Do these skills guarantee compliance?
+
+No. They help agents apply the published controls, but they do not replace your agency's governance process, security review, or System Security Plan. Verify compliance-critical work against the authoritative standards and your project's approved requirements.
+
+### Are these official Singapore government resources?
+
+No. This is an unofficial, community-maintained project. It is not affiliated with, endorsed by, or published by GovTech, the Singapore Government, or any of its agencies.
 
 ## Sources
 
