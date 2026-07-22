@@ -1,0 +1,8 @@
+2026-07-20T09:12:41+08:00 INFO  [auth] login ok user=tan_wei_ling@agency.gov.sg ip=203.0.113.24
+2026-07-20T09:12:44+08:00 INFO  [grants] search q="productivity solutions grant" results=14
+2026-07-20T09:13:02+08:00 INFO  [applicants] profile viewed applicant="Tan Ah Kow" nric=S8412345E company="Kow Logistics Pte Ltd"
+2026-07-20T09:13:05+08:00 DEBUG [api] outbound call GET https://corppass-proxy.internal/v1/entity headers={"Authorization":"Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJncmFudGh1YiJ9.k3JYQ8p"}
+2026-07-20T09:13:17+08:00 WARN  [auth] password reset requested via legacy endpoint /reset?user=lim_boon_keng&password=Summer2026!
+2026-07-20T09:13:29+08:00 INFO  [grants] application GH-2026-08841 submitted amount=SGD 30,000
+2026-07-20T09:14:03+08:00 ERROR [db] connection pool exhausted, retrying (attempt 2)
+2026-07-20T09:14:11+08:00 INFO  [grants] application GH-2026-08842 submitted amount=SGD 12,500

@@ -1,0 +1,62 @@
+{
+  "skill_name": "logging-monitoring",
+  "evals": [
+    {
+      "id": 0,
+      "name": "audit-seeded-lm",
+      "prompt": "Audit the logging and monitoring posture of our service against the Singapore government requirements. I've included our Terraform (main.tf), a doc describing our current logging/monitoring setup (LOGGING-POSTURE.md), and a short excerpt from our application log (app.log). Give us an audit report (audit.md) with pass/fail per requirement and how to fix the failures.",
+      "expected_output": "An audit report keyed to LM control IDs (LM-1..LM-21) that catches the seeded violations: logs kept only on the app server's local disk (LM-1), the developer role with write/delete access to the log bucket (LM-2), no VPC Flow Logs (LM-3), no CloudTrail (LM-4), ALB access logging disabled (LM-6), logrotate purging security logs after 30 days against the SSP's 365-day retention (LM-8), NRIC/bearer-token/password values in app.log (LM-19), no central security log management despite the SSP naming GCSOC and the workload being on GCC (LM-12, Level 0), and the claim that Sentry error tracking covers monitoring when there is no security monitoring or automated alerting (LM-9). It should flag the blank lm-21_prm_1 detection-update parameter and ask for the value rather than inventing one, attribute the unencrypted log bucket to the Data Protection family (DP-2) rather than an LM control, and pair every failure with a concrete fix.",
+      "files": [
+        "files/LOGGING-POSTURE.md",
+        "files/main.tf",
+        "files/app.log"
+      ],
+      "assertions": [
+        "Report catches at least 8 of the 9 seeded LM violations listed in seeded_violations",
+        "Findings cite ICT&SS Logging and Monitoring control IDs (LM-1 through LM-21) and do not fabricate LM controls that do not exist",
+        "Flags that application and system logs are kept only on the app server's local disk (LM-1), with a fix that ships logs off the generating component to separate storage promptly after the event",
+        "Flags the developer IAM role's write/delete access to the security log bucket (LM-2), with a least-privilege fix that grants read-only access as far as possible and removes delete rights",
+        "Flags BOTH missing network flow logging (no VPC Flow Logs - LM-3) AND missing cloud management/audit logging (no CloudTrail - LM-4), with fixes enabling each",
+        "Flags that the 30-day logrotate purge violates the SSP's 365-day security log retention (lm-8_prm_1), with a fix that retains security logs at least 365 days using lifecycle automation (LM-8)",
+        "Flags sensitive data in app.log - the NRIC value, the bearer token, and the password - as a log sanitisation failure (LM-19), with a fix that masks or tokenises before recording rather than after",
+        "Flags the missing central security log management (LM-12) as mandatory / Level 0, noting the SSP names GCSOC and that GCC tenant security logs are already available for forwarding to GCSOC (subscribe rather than build)",
+        "Rejects the 'Sentry gives us monitoring' claim: error tracking is not security monitoring - flags the absence of security monitoring with automated alerts (LM-9) and names a real detection service (e.g. Amazon GuardDuty, Microsoft Defender) as the fix",
+        "Flags that the detection-update parameter (lm-21_prm_1) is blank/TBD in the SSP and asks for the value to be defined rather than inventing an update cadence",
+        "Attributes the unencrypted log bucket to the Data Protection family (DP-2 / data-protection) rather than to an LM control",
+        "Report is structured as pass/fail (or fail/not-configured) per requirement with a concrete fix for every failure, as the prompt asked"
+      ],
+      "seeded_violations": [
+        "Application and host logs are written only to the EC2 instance's local disk under /var/log/granthub - nothing ships them off the box (LM-1)",
+        "The granthub-developers IAM role has s3:PutObject and s3:DeleteObject on the log bucket 'for debugging cleanup' (LM-2)",
+        "No VPC Flow Logs anywhere in the Terraform (LM-3)",
+        "No CloudTrail configured - the doc says cloud audit logging 'comes with AWS by default' (LM-4)",
+        "The ALB has access_logs disabled and WAF logging is not configured (LM-6)",
+        "logrotate is configured to compress and delete logs after 30 days, against the SSP's lm-8_prm_1 = 365 days for security logs (LM-8)",
+        "app.log contains an NRIC (S8412345E), a Bearer token, and a password in a query string in plaintext (LM-19)",
+        "No central security log management: the workload runs on GCC and the SSP sets lm-12_prm_1 = GCSOC, but nothing is forwarded and there is no subscription (LM-12, Level 0)",
+        "No security monitoring or automated security alerts - the doc claims Sentry error tracking 'covers monitoring', but there is no GuardDuty or equivalent (LM-9)",
+        "The SSP leaves lm-21_prm_1 (detection update frequency) as TBD - the report must flag it and ask, not invent a number (parameter trap)",
+        "The log S3 bucket has no encryption configured - a Data Protection (DP-2) issue included as a cross-family distractor that must NOT be attributed to an LM control"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "setup-lm-baseline",
+      "prompt": "We're building GrantHub, an internet-facing grant application portal for a Singapore government agency, on AWS under our GCC tenancy, handling data up to RESTRICTED / Sensitive Normal. Our SSP sets: security log retention = 365 days; central security log management and monitoring service = GCSOC; detection updates at least every 14 days. Design our logging and monitoring setup end to end: what we must log, where the logs go and how they're protected, formats and retention, central management, security monitoring and detection, service health monitoring, and anything that applies specifically because the portal is public-facing.",
+      "expected_output": "A logging-and-monitoring baseline keyed to LM control IDs: all five security log sources enabled (network flow, cloud management/audit, access, database, host - LM-3..LM-7); logs shipped off the generating components to separate tamper-resistant storage with least-privilege read-only access (LM-1/LM-2); security logs retained at least 365 days with lifecycle automation (LM-8); structured formats such as OCSF/ECS for security logs and OpenTelemetry/JSON for operational logs (LM-15); sanitisation that masks NRIC-class PII, credentials and tokens before recording (LM-19); central management via GCSOC using the GCC forwarding path, noted as Level 0 (LM-12); GuardDuty-class security monitoring with automated alerts (LM-9) and detections updated at least every 14 days with rollout automation (LM-21); SLOs/SLIs and the 4 Golden Signals with resource-usage alerts (LM-10/11/16); and, because the portal is public-facing, WOGAA implementation (LM-18) and web defacement monitoring with recovery measures (LM-14).",
+      "files": [],
+      "assertions": [
+        "Enables all five security log sources: network flow logs (VPC Flow Logs), cloud management/audit logs (CloudTrail), access logs (WAF/ALB/web server), database audit logs, and host security events (LM-3 through LM-7)",
+        "Cites ICT&SS Logging and Monitoring control IDs (LM-1 through LM-21) to justify the setup",
+        "Ships logs off the generating component to separate storage promptly (LM-1) and protects them with least-privilege access - read-only as far as possible, no delete rights for the delivery team (LM-2)",
+        "Retains security logs at least 365 days per the SSP parameter using lifecycle automation (e.g. S3 Lifecycle), while scoping non-security logs to as-needed retention (LM-8)",
+        "Specifies structured log formats aligned with industry standards - OCSF or ECS for security logs and/or OpenTelemetry or structured JSON for operational logs (LM-15)",
+        "Sanitises logs before recording: masks or tokenises NRIC-class PII, credentials, API keys and tokens so they are never stored in plaintext (LM-19)",
+        "Centralises security log management and monitoring with GCSOC per the SSP parameter, using the GCC tenant-log forwarding path (subscribe with GCSOC) and treating LM-12 as mandatory/Level 0",
+        "Configures security monitoring with automated alerts via a real detection service (e.g. Amazon GuardDuty or equivalent) that someone responds to (LM-9), and keeps malware/IOC detections updated at least every 14 days with automation to monitor rollout (LM-21)",
+        "Sets up service health monitoring: SLOs/SLIs and the 4 Golden Signals (latency, traffic, errors, saturation) plus resource-usage/abnormal-usage alerts (LM-10, LM-11, LM-16)",
+        "Addresses the public-facing specifics: WOGAA implementation for the portal (LM-18) and web defacement detection and recovery measures (LM-14)"
+      ]
+    }
+  ]
+}
