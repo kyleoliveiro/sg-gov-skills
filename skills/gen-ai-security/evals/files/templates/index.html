@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Case Assist</title>
+</head>
+<body>
+  <h1>Case Assist</h1>
+  <p>Ask a question about a case. Paste the relevant case notes below.</p>
+
+  <form action="/ask" method="post">
+    <label for="question">Your question and case notes</label>
+    <textarea id="question" name="question" rows="10" cols="80"></textarea>
+    <button type="submit">Ask</button>
+  </form>
+
+  <h2>Add supporting documents</h2>
+  <form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="documents" multiple>
+    <button type="submit">Upload</button>
+  </form>
+
+  <div id="answer"></div>
+</body>
+</html>

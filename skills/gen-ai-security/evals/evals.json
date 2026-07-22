@@ -1,0 +1,60 @@
+{
+  "skill_name": "gen-ai-security",
+  "evals": [
+    {
+      "id": 0,
+      "name": "audit-seeded-genai",
+      "prompt": "Audit our Generative AI feature against the Singapore government GenAI security requirements. I've included the Flask app (app.py), its input template (templates/index.html), and a doc describing our provider, hosting, uploads, and SSP status. Give us an audit report (audit.md) with pass/fail per requirement and how to fix the failures.",
+      "expected_output": "An audit report keyed to GA control IDs (and DP-8) that catches the seeded violations across the whole GenAI lifecycle: CONFIDENTIAL data sent to an overseas provider (GA-1/GA-2 boundary), no no-log/no-train agreement plus self-logging of prompts (GA-3), an unauthorized self-hosting environment (GA-4), a pickle/.bin model checkpoint loaded via an unpinned loader (GA-5), bulk/unscanned uploads (GA-6), no input classification disclosure (DP-8), no output evaluation (GA-7), and no hallucination acknowledgement (GA-8). It should ask for the SSP-defined GA-5 approved formats/loaders rather than inventing them, correctly attribute the hardcoded API key to AS-8 (not a GA control), and pair every failure with a concrete fix.",
+      "files": [
+        "files/app.py",
+        "files/templates/index.html",
+        "files/INFRA-SETUP.md"
+      ],
+      "assertions": [
+        "Report catches at least 7 of the 8 seeded GA/DP violations listed in seeded_violations",
+        "Findings cite ICT&SS Gen-AI control IDs (GA-n, and DP-8)",
+        "Flags the data-classification boundary breach: CONFIDENTIAL case data is sent to an overseas-hosted GenAI API (OpenAI public API), which GA-1 caps at RESTRICTED/SENSITIVE NORMAL, and the fix is either to move to a Singapore-hosted/GCC 2.0 service (GA-2) or to stop sending Confidential data - not to invent a classification",
+        "Flags the missing GA-3 legally-binding no-log/no-train agreement (default OpenAI terms are insufficient), notes GCC 2.0 GenAI API services satisfy GA-3, AND flags that the app itself logs full prompts/answers to a file as compounding the retention risk",
+        "Flags the GA-5 model-loading failure: weights loaded from a pickle-based .bin checkpoint (torch.load / pytorch_model.bin) rather than an approved non-executable format such as safetensors, via an outdated/unpinned loader - identifying the arbitrary-code-execution risk",
+        "For GA-5, whose pass criteria depend on the SSP-defined approved formats (ga-5_prm_1) and loaders (ga-5_prm_2), the report asks for the SSP values rather than inventing an approved list",
+        "Flags the self-hosted embedding model running in an unauthorized/shared environment not cleared for the system's CONFIDENTIAL classification (GA-4)",
+        "Flags the file-upload failures (GA-6): bulk/multiple uploads and .zip archives accepted with no DLP scanning, no per-file classification confirmation, and no type/size validation",
+        "Flags the missing DP-8 input classification disclosure (no message at/near the input field stating the maximum permitted classification) and the missing GA-7 output evaluation (no accuracy/safety/quality metrics or tests, nothing re-run on model change) and the missing GA-8 hallucination acknowledgement before access",
+        "Correctly attributes the hardcoded OPENAI_API_KEY to Application Security secrets management (AS-8), NOT to a GA control, and does not fabricate GA controls that do not exist",
+        "Every failure comes with a concrete fix (e.g. route by classification / move to GCC 2.0, sign a no-log/no-train agreement and stop logging prompts, load safetensors via an approved pinned loader, disable bulk uploads and add DLP, add an input classification hint, add an eval harness, add a hallucination acknowledgement gate)",
+        "Report is structured as pass/fail (or fail/not-configured) per requirement, as the prompt asked"
+      ],
+      "seeded_violations": [
+        "CONFIDENTIAL case data sent to OpenAI's overseas public API - exceeds the GA-1 overseas cap of RESTRICTED/SENSITIVE NORMAL; no classification-based routing (GA-1/GA-2)",
+        "No legally-binding no-log/no-train agreement with OpenAI (default terms); not GCC 2.0; and the app logs full prompts+answers to /var/log/caseassist/prompts.log (GA-3)",
+        "Self-hosted embedding model runs on a shared dev GPU box with no environment authorization for the system's CONFIDENTIAL classification (GA-4)",
+        "Embedding weights loaded from a pickle-based pytorch_model.bin + torch.load(extra_head.bin) instead of safetensors, via an ~8-month-old unpinned transformers loader - arbitrary code execution risk (GA-5)",
+        "Upload endpoint accepts multiple files at once including .zip archives, with no DLP, no per-file classification confirmation, and no type/size validation (GA-6)",
+        "No maximum-classification message at or near the input field / in the UI (DP-8)",
+        "No output evaluation: no accuracy/safety/quality metrics, scenarios, or criteria, and nothing re-runs on model change (GA-7)",
+        "No hallucination acknowledgement before access; answers shown as-is with no AI-generated notice (GA-8)",
+        "Hardcoded OPENAI_API_KEY in source - an Application Security secrets issue (AS-8), included as a cross-family distractor that must NOT be attributed to a GA control"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "build-genai-feature",
+      "prompt": "We're building a public-facing Generative AI assistant for a Singapore government agency, deployed on GCC 2.0. It answers citizens' questions about a government scheme using retrieval over public scheme documents, and lets users optionally attach a document. Help us build it so it meets the government's GenAI security requirements. Sketch the key code (provider routing, model loading if we self-host any part, upload handling, the input UI, output evaluation) and a short note on what we need to confirm before launch.",
+      "expected_output": "A design + code sketch that routes by data classification and prefers a Singapore-hosted / GCC 2.0 GenAI API with a no-log/no-train agreement (GA-1/GA-2/GA-3), loads any self-hosted open-weights model from safetensors via an approved pinned loader tied to the SSP parameters (GA-5) in an environment cleared for the data class (GA-4), guards uploads with no-bulk + DLP + per-file classification (GA-6), discloses the maximum classification at the input field (DP-8), includes an output evaluation harness covering accuracy/safety incl. prompt injection/quality that gates on model change (GA-7), and gates access on an explicit hallucination acknowledgement (GA-8) - all cited to GA control IDs, with the API key handled as an AS-8 secret and the SSP-defined GA-5 parameters flagged rather than invented.",
+      "files": [],
+      "assertions": [
+        "Routes by data classification and, because this is a public assistant that should prefer keeping data in Singapore, uses a Singapore-hosted / GCC 2.0 GenAI API - correctly stating the GA-1 (overseas <= RESTRICTED/SENSITIVE NORMAL) vs GA-2 (SG-hosted <= CONFIDENTIAL/SENSITIVE HIGH) boundary rather than inventing limits (GA-1/GA-2)",
+        "Requires a legally-binding no-log/no-train provider agreement (covering all endpoints/models, prompt-cache TTL <= 24h), and notes that GCC 2.0 GenAI API services satisfy GA-3 (GA-3)",
+        "If any open-weights model is self-hosted, loads it from a non-executable format (safetensors) via an approved, pinned, frequently-updated loader - not a pickle .bin via torch.load - and hosts it in an environment authorized for the data classification (GA-4/GA-5)",
+        "Ties the GA-5 approved formats/loaders to the SSP-defined parameters (ga-5_prm_1 / ga-5_prm_2) and asks for those values rather than inventing an approved list",
+        "Upload handling disables bulk uploads, validates type/size, runs DLP / sensitive-data scanning on extracted text, and requires per-file classification confirmation (GA-6)",
+        "The input UI discloses the maximum permitted data classification at or near the input field (DP-8)",
+        "Includes an output evaluation harness with defined metrics, test scenarios, and criteria across accuracy, safety (including prompt-injection / jailbreak resistance), and quality, run as a gate that re-runs when the model or prompt changes (GA-7)",
+        "Gates access on an explicit hallucination acknowledgement (checkbox / I Agree) enforced before use (ideally server-side), with a Terms-of-Use risk clause and a prominent AI-generated indicator (GA-8)",
+        "Handles the provider API key as an application secret from a vault / environment (AS-8, secure-coding-as), never hardcoded, and does not misattribute this to a GA control",
+        "Cites GA control IDs to justify the design choices and does not fabricate GA controls that do not exist (e.g. treats prompt-injection defense as GA-7 safety testing + application security, not a standalone GA control)"
+      ]
+    }
+  ]
+}
