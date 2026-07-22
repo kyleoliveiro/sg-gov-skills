@@ -1,4 +1,4 @@
-<h1 align="center">Singapore Government Agent Skills for Secure Digital Services</h1>
+<h1 align="center">Singapore Government Agent Skills for Secure Digital Services, ICT, and Smart Systems</h1>
 
 ![sg-gov-skills — composable agent skills for Singapore government technology delivery](assets/readme-banner.png)
 
