@@ -1,0 +1,59 @@
+{
+  "skill_name": "security-testing",
+  "evals": [
+    {
+      "id": 0,
+      "name": "audit-seeded-st-posture",
+      "prompt": "Audit our security testing and vulnerability management posture against the Singapore government requirements. I've included a doc describing our current practices and SSP values (SECURITY-POSTURE.md), the security.txt we publish, and our vulnerability register (vulnerability-register.csv). Today's date is 2026-07-22. Give us an audit report (audit.md) with pass/fail per requirement and how to fix the failures.",
+      "expected_output": "An audit report keyed to ST control IDs (ST-1..ST-5) that catches the seeded violations: no host-level vulnerability assessment scanning (the team wrongly counts Dependabot/CodeQL, which are SD-family CI scans) and a stale one-off unauthenticated scan far outside the SSP's 14-day cadence (ST-1), no CSPM despite AWS hosting (ST-2), a security.txt at the wrong path with an expired Expires (ST-3), a ~3-year-old undocumented non-independent pen test against a 365-day requirement (ST-4), and in the register a Critical vulnerability open past the 15-day SLA, a High vulnerability 'risk-accepted' by a dev lead over Slack, and a CISA-KEV actively-exploited finding deprioritised to next quarter (ST-5). It should ask for the SSP's blank st-1_prm_1 scan type rather than inventing it, and pair every failure with a concrete fix.",
+      "files": [
+        "files/SECURITY-POSTURE.md",
+        "files/security.txt",
+        "files/vulnerability-register.csv"
+      ],
+      "assertions": [
+        "Report catches at least 7 of the 8 seeded ST violations listed in seeded_violations",
+        "Findings cite ICT&SS Security Testing control IDs (ST-1 through ST-5)",
+        "Flags the ST-1 failure: no host-level vulnerability assessment scanning in place - the only scan was a one-off unauthenticated network scan roughly 200 days ago against the SSP's 14-day cadence - and the fix names a real mechanism (e.g. Amazon Inspector / authenticated agent-based scans / a VMS)",
+        "Correctly attributes Dependabot and CodeQL to CI dependency/code scanning under the Secure Development family (SD-4/SD-5, secure-pipeline) and does NOT accept them as satisfying ST-1 host vulnerability assessment",
+        "For ST-1, whose scan type parameter (st-1_prm_1) is left blank in the SSP excerpt, the report asks for the SSP value rather than inventing an approved scan type",
+        "Flags the missing cloud security posture management despite AWS hosting (ST-2), with a fix naming AWS Security Hub or an equivalent CSPM performing continuous configuration scans",
+        "Flags the ST-3 disclosure-channel failures: security.txt served at /security.txt instead of /.well-known/security.txt, an expired Expires field (2025-11-01), and no vulnerability reporting link on the pages - with a fix that produces a valid RFC 9116 file (Contact plus a future Expires) at the right path",
+        "Flags the ST-4 failures: last penetration test roughly 3 years ago against the SSP's 365-day frequency, performed informally by the system's own developers with no documentation - failing both the documentation and independence expectations - with a fix referencing a documented VAPT (e.g. per WOG Security Testing Guidelines)",
+        "Flags the ST-5 SLA breach: Critical VULN-003 open since 2026-06-05 (about 47 days) against the 15-day Critical SLA",
+        "Flags the invalid risk acceptance of High VULN-007: a dev lead's Slack sign-off is not approving-authority consent, and a valid acceptance needs documentation, compensating controls, and an expiry/review date",
+        "Flags the prioritisation failure on VULN-012: a CISA KEV-listed / actively-exploited vulnerability must jump the queue rather than sit at low priority for next quarter",
+        "Report is structured as pass/fail (or fail/not-configured) per requirement with a concrete fix for every failure, as the prompt asked"
+      ],
+      "seeded_violations": [
+        "No host-level vulnerability assessment scanning: the team counts Dependabot/CodeQL (CI code/dependency scans, SD-4/SD-5) as coverage, and the only real scan was a one-off unauthenticated Nessus scan on 2025-12-30 (~200 days ago) against the SSP's 14-day cadence (ST-1)",
+        "The SSP's st-1_prm_1 scan type is left blank ('TBD') - the auditor must ask for it rather than invent an approved scan type (ST-1 parameter discipline)",
+        "No cloud security posture management on the AWS estate - no Security Hub or equivalent continuous configuration scanning (ST-2)",
+        "security.txt served at /security.txt instead of /.well-known/security.txt, with Expires lapsed on 2025-11-01, and no reporting link in the page footer (ST-3)",
+        "Last penetration test was August 2023 (~3 years before the audit date) against a 365-day SSP frequency, done informally over a weekend by the system's own developers with no report, scope, or retest - undocumented and not independent (ST-4)",
+        "Critical VULN-003 (RCE in the reverse proxy) open since 2026-06-05, ~47 days, against the 15-day Critical SLA (ST-5)",
+        "High VULN-007 marked 'accepted' on the strength of a dev lead's Slack message - no approving-authority consent, no documented rationale, compensating controls, or expiry (ST-5)",
+        "VULN-012 is listed in CISA's Known Exploited Vulnerabilities catalog yet scheduled at low priority for next quarter - active exploitation must jump the queue (ST-5)"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "setup-st-programme",
+      "prompt": "We're launching a new internet-facing digital service for a Singapore government agency in about two months, hosted on AWS under GCC. Set up our security testing and vulnerability management so it meets the government's requirements before launch. Our System Security Plan sets: vulnerability assessment = authenticated agent-based scans at least every 14 days; public reporting channel = security.txt; security testing = independent penetration test (VAPT) at least every 365 days; remediation timeframes Critical 15 / High 30 / Medium 60 / Low 90 days. Produce the disclosure channel, the scanning and cloud-posture setup, the pen-test plan, and the vulnerability handling SOP.",
+      "expected_output": "A programme keyed to ST control IDs: an RFC 9116 security.txt at /.well-known/security.txt with Contact and a valid future Expires (ST-3); authenticated agent-based host scans every <=14 days via Amazon Inspector or equivalent, distinct from CI dependency scanning (ST-1); CSPM with continuous configuration scans via AWS Security Hub or equivalent (ST-2); a documented independent VAPT plan with a pre-launch test and <=365-day cycle, referencing the WOG Security Testing Guidelines (ST-4); and a vulnerability management SOP with the 15/30/60/90 severity SLAs, KEV-aware prioritisation, approving-authority risk acceptance, and a single register consolidating all finding sources (ST-5).",
+      "files": [],
+      "assertions": [
+        "Delivers a security.txt served at /.well-known/security.txt (not /security.txt) with a Contact field and a valid, unexpired Expires no more than about a year out, per RFC 9116 - and/or a vulnerability reporting link on all pages as the alternative channel (ST-3)",
+        "Cites ICT&SS Security Testing control IDs (ST-1 through ST-5) to justify the setup",
+        "Sets up host vulnerability assessment scanning matching the SSP parameters - authenticated / agent-based scans at least every 14 days - via a real mechanism such as Amazon Inspector or Microsoft Defender for Cloud (ST-1)",
+        "Sets up cloud security posture management performing continuous configuration scans, e.g. AWS Security Hub / Defender for Cloud / Security Command Center (ST-2)",
+        "The security testing programme is a documented plan (scope, rules of engagement, deliverables, remediation retest) by an independent party on a <=365-day cycle, AND schedules a penetration test before the public launch rather than waiting for the first anniversary (ST-4)",
+        "References the WOG Security Testing Guidelines and/or notes that Government Bug Bounty Programme participation requires a passing Agency Readiness Scorecard rating (ST-4)",
+        "The vulnerability handling SOP applies the SSP's severity-based timeframes exactly - Critical 15, High 30, Medium 60, Low 90 days - to remediate or risk-accept findings (ST-5)",
+        "Risk acceptance requires the approving authority's documented consent, with compensating controls and an expiry/review date - not an engineer's informal sign-off (ST-5)",
+        "Prioritisation accounts for known active exploitation, e.g. consulting CISA's Known Exploited Vulnerabilities catalog, ahead of raw severity ordering (ST-5)",
+        "Consolidates findings from all sources (host scans, CSPM, VAPT, public disclosure reports, and CI scanners) into one tracked register with found dates and SLA due dates, while correctly scoping CI SAST/dependency scanning to the Secure Development family (secure-pipeline) rather than counting it as ST-1 coverage - and does not fabricate ST controls that do not exist"
+      ]
+    }
+  ]
+}

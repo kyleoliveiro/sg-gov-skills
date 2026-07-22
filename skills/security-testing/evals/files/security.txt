@@ -1,0 +1,4 @@
+# Served at https://portal.example.gov.sg/security.txt
+Contact: mailto:webmaster@example.gov.sg
+Expires: 2025-11-01T00:00:00.000Z
+Preferred-Languages: en
