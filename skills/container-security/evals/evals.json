@@ -1,0 +1,63 @@
+{
+  "skill_name": "container-security",
+  "evals": [
+    {
+      "id": 0,
+      "name": "audit-seeded-containers",
+      "prompt": "Audit our container setup against the Singapore government container security requirements. I've included our Dockerfile, our Kubernetes Deployment manifest, and a doc describing our registry, cluster, and CI setup. Give us an audit report (audit.md) with pass/fail per requirement and how to fix the failures.",
+      "expected_output": "An audit report keyed to CS control IDs that catches the seeded violations across the whole build->distribute->run lifecycle, asks for the SSP image-scanning location parameter instead of inventing one, treats baked secrets as needing rotation (not just deletion), and pairs every failure with a concrete container fix.",
+      "files": [
+        "files/Dockerfile",
+        "files/deployment.yaml",
+        "files/INFRA-SETUP.md"
+      ],
+      "assertions": [
+        "Report catches at least 9 of the 11 seeded CS violations listed in seeded_violations",
+        "Findings cite ICT&SS Container Security control IDs (CS-n)",
+        "Catches the build-image failures: FROM node:latest is a rolling tag not digest-pinned (CS-1) AND a non-minimal base image (CS-2), and the container runs as root / privileged (CS-4)",
+        "Flags secrets baked into the image and manifest - DB_PASSWORD/JWT key as ENV in the Dockerfile and a literal value in the Deployment (CS-3) - and the fix includes rotating/revoking the exposed credentials, not just deleting the lines",
+        "Flags the public Docker Hub registry (CS-8) and the missing image vulnerability scanning (CS-7)",
+        "Flags the runtime failures: no readOnlyRootFilesystem (CS-6), public EKS API endpoint 0.0.0.0/0 (CS-9), everything in the default namespace with no NetworkPolicy (CS-10), and no runtime threat-detection tooling (CS-11)",
+        "For CS-7, whose pass criteria depend on the SSP scan-location parameter (cs-7_prm_1), the report asks for the SSP value rather than inventing a location or frequency",
+        "Every failure comes with a concrete container fix (e.g. digest-pin the FROM, switch to distroless/slim, add a non-root USER, set securityContext, use a private registry, restrict the API endpoint, add Trivy/Grype scanning, add Falco/runtime protection)",
+        "Report is structured as pass/fail (or fail/not-configured) per requirement, as the prompt asked",
+        "Report does not invent violations that are not present, and does not misattribute image signing/verification to the CS family (that is SC-7/SC-8)"
+      ],
+      "seeded_violations": [
+        "FROM node:latest - rolling/floating tag, not digest-pinned (CS-1)",
+        "node:latest is a full, non-minimal base image - no distroless/alpine/slim/multi-stage (CS-2)",
+        "DB_PASSWORD and JWT_SIGNING_KEY set as ENV in the Dockerfile, plus ARG NPM_TOKEN and a copied .npmrc - secrets baked into image layers (CS-3)",
+        "No USER instruction - the container runs as root by default (CS-4)",
+        "No Dockerfile linting (Hadolint) in CI (CS-5)",
+        "No image vulnerability scanning anywhere - not in CI, not in the registry (CS-7)",
+        "Images hosted in a PUBLIC Docker Hub registry (CS-8)",
+        "Deployment has no readOnlyRootFilesystem - the container root filesystem is writable (CS-6)",
+        "EKS Kubernetes API server endpoint is public (0.0.0.0/0) (CS-9)",
+        "All workloads run in the default namespace with no NetworkPolicies - no segmentation (CS-10)",
+        "No runtime threat-detection tooling installed (no Falco/GuardDuty/Defender) (CS-11)",
+        "securityContext sets privileged: true and allowPrivilegeEscalation: true, plus a hostPath mount of /var/log (CS-4)",
+        "DB_PASSWORD repeated as a literal value in the Deployment manifest env (CS-3)"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "harden-container-build",
+      "prompt": "We're containerising a Node.js/Express public e-service for a Singapore government agency, deployed on Amazon EKS in GCC 2.0. Give us a hardened Dockerfile and a Kubernetes Deployment manifest that meet the government's container security requirements, plus a short note on the registry, image scanning, and runtime setup we should put in place.",
+      "expected_output": "A hardened Dockerfile (minimal, digest-pinned, non-root, no baked secrets, lint-ready) and a Deployment manifest with a locked-down securityContext (runAsNonRoot, readOnlyRootFilesystem, no privilege escalation), plus notes covering image scanning tied to the SSP parameter, a private registry, a private API endpoint, namespace/NetworkPolicy segmentation, and runtime protection - all justified against CS control IDs.",
+      "files": [],
+      "assertions": [
+        "Dockerfile builds on a minimal base image (distroless, alpine, wolfi, scratch, or a -slim variant), ideally via a multi-stage build that keeps build tooling out of the runtime image (CS-2)",
+        "The base image is digest-pinned (FROM ...@sha256:) or the note explicitly requires digest pinning over rolling tags like :latest (CS-1)",
+        "The Dockerfile creates a non-root user and sets USER to a numeric UID (CS-4)",
+        "No secrets are baked into the image; runtime/build-time secret injection is used instead (BuildKit --mount=type=secret and/or a Kubernetes Secret sourced from a vault) (CS-3)",
+        "Dockerfile linting (Hadolint) in CI is recommended or included (CS-5)",
+        "The Deployment securityContext sets runAsNonRoot: true, readOnlyRootFilesystem: true (with writable tmpfs/emptyDir mounts for scratch paths), and allowPrivilegeEscalation: false, dropping capabilities (CS-4 and CS-6)",
+        "Image vulnerability scanning (Trivy, Grype, or Amazon Inspector) is included, blocking deployment on Critical/High findings, and the scan location is tied to the SSP parameter (cs-7_prm_1) rather than an invented value (CS-7)",
+        "A private container registry is specified (e.g. Amazon ECR private), not a public one (CS-8)",
+        "The runtime guidance covers a private/CIDR-restricted EKS API endpoint (CS-9), namespace + NetworkPolicy segmentation (CS-10), and runtime protection such as Falco or GuardDuty EKS monitoring (CS-11)",
+        "The response cites CS control IDs to justify the hardening choices",
+        "Does not misattribute image signing/verification to the CS family - if signing is mentioned, it is correctly placed under SC-7/SC-8 (Software Supply Chain)"
+      ]
+    }
+  ]
+}

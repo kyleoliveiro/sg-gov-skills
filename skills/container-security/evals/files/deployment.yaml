@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: passport-booking
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: passport-booking
+  template:
+    metadata:
+      labels:
+        app: passport-booking
+    spec:
+      containers:
+        - name: passport-booking
+          image: mycompany/passport-booking:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DB_PASSWORD
+              value: "Pa55w0rd!prod"
+          securityContext:
+            privileged: true
+            allowPrivilegeEscalation: true
+          volumeMounts:
+            - name: host-logs
+              mountPath: /var/log/host
+      volumes:
+        - name: host-logs
+          hostPath:
+            path: /var/log
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: passport-booking
+  namespace: default
+spec:
+  type: LoadBalancer
+  selector:
+    app: passport-booking
+  ports:
+    - port: 80
+      targetPort: 3000

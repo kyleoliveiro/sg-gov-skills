@@ -6,7 +6,7 @@ Delivering software inside government is its own discipline — the ICT&SS Polic
 
 These skills are small, composable, and adaptable so delivery teams can plug them into their agent and get moving. They work with any model. Fork them, adapt them, make them your own.
 
-**Five skills, each with its own eval suite:** figure out which System Security Plan applies, write and audit code against the security controls, harden your CI/CD pipeline, meet the WCAG 2.2 accessibility bar, and stand up the mandatory service shell. Loading the relevant skill lifts assertion pass rates from as low as 22% to 100% on the benchmark tasks below.
+**Six skills, each with its own eval suite:** figure out which System Security Plan applies, write and audit code against the security controls, harden your CI/CD pipeline, lock down your containers, meet the WCAG 2.2 accessibility bar, and stand up the mandatory service shell. Loading the relevant skill lifts assertion pass rates from as low as 22% to 100% on the benchmark tasks below.
 
 ## Installation
 
@@ -29,6 +29,7 @@ The CLI installs into `.agents/skills/` and symlinks them into the agent directo
 | [ssp-navigator](skills/ssp-navigator/) | Determine which System Security Plan(s) apply under the ICT&SS Policy Reform (IM8's successor) — including the Gen-AI overlay and DSS profiles — and emit the Level 0/1/2 control baseline and lifecycle steps. |
 | [secure-coding-as](skills/secure-coding-as/) | Write and review application code against the Application Security (AS-1..15) and Cryptography/Key Management (CK-1..4) controls: input validation, parameterised queries, password hashing, secrets, CSP/HSTS, uploads, error hygiene. |
 | [secure-pipeline](skills/secure-pipeline/) | Set up or audit repos and CI/CD against the Secure Development (SD-1..10) and Software Supply Chain (SC-1..9) controls, with GitHub/GitLab recipes and open-source fallbacks. |
+| [container-security](skills/container-security/) | Build, scan, and run containers against the Container Security (CS-1..11) controls — digest-pinned minimal base images, non-root users, runtime secrets, read-only root filesystems, image scanning, private registries, and Kubernetes runtime hardening. |
 | [dss-accessibility](skills/dss-accessibility/) | Build and review frontend code against the 53 WCAG-2.2-derived DSS accessibility controls (WP/WO/WU/WR), with SG-specific Others vs High-Impact leveling and testing workflow. |
 | [sg-service-shell](skills/sg-service-shell/) | The mandatory "shell" every SG government public digital service needs before feature work — Official Government Banner (SGDS Masthead), WOGAA, official footer, .gov.sg domain, and the rest of the DSS TL/BD/PR controls. |
 
@@ -43,7 +44,8 @@ Every skill ships with an eval suite under `skills/<skill>/evals/`. Each eval is
 | [ssp-navigator](skills/ssp-navigator/) | 2 | 18 | **100%** | 22% | +78 pts |
 | [secure-coding-as](skills/secure-coding-as/) | 2 | 19 | **100%** | 70% | +30 pts |
 | [secure-pipeline](skills/secure-pipeline/) | 2 | 21 | **100%** | 68% | +32 pts |
-| [dss-accessibility](skills/dss-accessibility/) | 3 | 27 | **100%** | 85% | +15 pts |
+| [container-security](skills/container-security/) | 2 | 21 | **100%** | 73% | +27 pts |
+| [dss-accessibility](skills/dss-accessibility/) | 3 | 27 | **100%** | 83% | +17 pts |
 | [sg-service-shell](skills/sg-service-shell/) | 2 | 19 | **100%** | 36% | +64 pts |
 
 The lift is largest where the requirement is hard to guess without knowing the policy — which System Security Plan applies, or that a public service needs the Official Government Banner and WOGAA before feature work. Accessibility shows the smallest gap because a capable model already reaches for common WCAG patterns unprompted; the skill's job there is closing the last mile (control IDs, live-region etiquette, a humane session-expiry state).
@@ -59,15 +61,17 @@ The lift is largest where the requirement is hard to guess without knowing the p
 | secure-coding-as | build-auth-endpoints | 11 | 100% | 64% |
 | secure-pipeline | audit-seeded-pipeline | 9 | 100% | 78% |
 | secure-pipeline | setup-github-repo | 12 | 100% | 58% |
+| container-security | audit-seeded-containers | 10 | 100% | 77% |
+| container-security | harden-container-build | 11 | 100% | 70% |
 | dss-accessibility | feedback-form-build | 10 | 100% | 90% |
 | dss-accessibility | audit-seeded-page | 8 | 100% | 75% |
-| dss-accessibility | timeout-modal | 9 | 100% | 89% |
+| dss-accessibility | timeout-modal | 9 | 100% | 85% |
 | sg-service-shell | scaffold-portal-shell | 10 | 100% | 40% |
 | sg-service-shell | review-agency-homepage | 9 | 100% | 33% |
 
 </details>
 
-*Methodology: scores are the mean pass rate over 3 runs per configuration (dss-accessibility's `timeout-modal` at 1). Each scenario reflects its most recent benchmark — three skills had a follow-up iteration that re-ran a single eval after a fix, and those latest results are the ones shown. "Without skill" is the same model on the same prompt with no skill loaded. Numbers will vary by model; treat them as directional, not a leaderboard.*
+*Methodology: scores are the mean pass rate over 3 runs per configuration. Each scenario reflects its most recent benchmark — three skills had a follow-up iteration that re-ran a single eval after a fix, and those latest results are the ones shown. "Without skill" is the same model on the same prompt with no skill loaded. Numbers will vary by model; treat them as directional, not a leaderboard.*
 
 ## Repository layout
 
