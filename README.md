@@ -6,6 +6,8 @@ Delivering software inside government is its own discipline — the ICT&SS Polic
 
 These skills are small, composable, and adaptable so delivery teams can plug them into their agent and get moving. They work with any model. Fork them, adapt them, make them your own.
 
+**Five skills, each with its own eval suite:** figure out which System Security Plan applies, write and audit code against the security controls, harden your CI/CD pipeline, meet the WCAG 2.2 accessibility bar, and stand up the mandatory service shell. Loading the relevant skill lifts assertion pass rates from as low as 22% to 100% on the benchmark tasks below.
+
 ## Installation
 
 Install with the [`skills` CLI](https://github.com/vercel-labs/skills):
@@ -31,6 +33,41 @@ The CLI installs into `.agents/skills/` and symlinks them into the agent directo
 | [sg-service-shell](skills/sg-service-shell/) | The mandatory "shell" every SG government public digital service needs before feature work — Official Government Banner (SGDS Masthead), WOGAA, official footer, .gov.sg domain, and the rest of the DSS TL/BD/PR controls. |
 
 Each skill lives in [`skills/`](skills/) as a folder with a `SKILL.md` entry point.
+
+## Benchmarks
+
+Every skill ships with an eval suite under `skills/<skill>/evals/`. Each eval is a realistic delivery task — scaffold a portal shell, audit a seeded service, build authenticated endpoints — graded against objective assertions ("every input has a programmatic label", "secrets are read from the environment, never hardcoded", "the Gen-AI overlay controls are emitted"). We run each task on the same model twice — once with the skill loaded, once without — and score the fraction of assertions met.
+
+| Skill | Scenarios | Assertions | With skill | Without skill | Lift |
+| ----- | :-------: | :--------: | :--------: | :-----------: | :--: |
+| [ssp-navigator](skills/ssp-navigator/) | 2 | 18 | **100%** | 22% | +78 pts |
+| [secure-coding-as](skills/secure-coding-as/) | 2 | 19 | **100%** | 70% | +30 pts |
+| [secure-pipeline](skills/secure-pipeline/) | 2 | 21 | **100%** | 68% | +32 pts |
+| [dss-accessibility](skills/dss-accessibility/) | 3 | 27 | **100%** | 85% | +15 pts |
+| [sg-service-shell](skills/sg-service-shell/) | 2 | 19 | **100%** | 36% | +64 pts |
+
+The lift is largest where the requirement is hard to guess without knowing the policy — which System Security Plan applies, or that a public service needs the Official Government Banner and WOGAA before feature work. Accessibility shows the smallest gap because a capable model already reaches for common WCAG patterns unprompted; the skill's job there is closing the last mile (control IDs, live-region etiquette, a humane session-expiry state).
+
+<details>
+<summary>Per-scenario breakdown</summary>
+
+| Skill | Scenario | Assertions | With skill | Without skill |
+| ----- | -------- | :--------: | :--------: | :-----------: |
+| ssp-navigator | stacked-genai-service | 10 | 100% | 20% |
+| ssp-navigator | cii-migration-gaps | 8 | 100% | 25% |
+| secure-coding-as | audit-seeded-service | 8 | 100% | 75% |
+| secure-coding-as | build-auth-endpoints | 11 | 100% | 64% |
+| secure-pipeline | audit-seeded-pipeline | 9 | 100% | 78% |
+| secure-pipeline | setup-github-repo | 12 | 100% | 58% |
+| dss-accessibility | feedback-form-build | 10 | 100% | 90% |
+| dss-accessibility | audit-seeded-page | 8 | 100% | 75% |
+| dss-accessibility | timeout-modal | 9 | 100% | 89% |
+| sg-service-shell | scaffold-portal-shell | 10 | 100% | 40% |
+| sg-service-shell | review-agency-homepage | 9 | 100% | 33% |
+
+</details>
+
+*Methodology: scores are the mean pass rate over 3 runs per configuration (dss-accessibility's `timeout-modal` at 1). Each scenario reflects its most recent benchmark — three skills had a follow-up iteration that re-ran a single eval after a fix, and those latest results are the ones shown. "Without skill" is the same model on the same prompt with no skill loaded. Numbers will vary by model; treat them as directional, not a leaderboard.*
 
 ## Repository layout
 
