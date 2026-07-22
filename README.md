@@ -10,7 +10,7 @@ Delivering software inside government is its own discipline. The ICT&SS Policy R
 
 These skills are small, composable, and adaptable so delivery teams can plug them into their agent and get moving. They work with any model. Fork them, adapt them, make them your own.
 
-**Eight skills, each with its own eval suite:** figure out which System Security Plan applies, write and audit code against the security controls, harden your CI/CD pipeline, lock down your containers, secure your Generative AI features, run your VAPT and vulnerability management programme, meet the WCAG 2.2 accessibility bar, and stand up the mandatory service shell. Loading the relevant skill lifts assertion pass rates from as low as 22% to 100% on the benchmark tasks below.
+**Nine skills, each with its own eval suite:** figure out which System Security Plan applies, write and audit code against the security controls, harden your CI/CD pipeline, lock down your containers, secure your Generative AI features, run your VAPT and vulnerability management programme, keep government data resident, encrypted, and properly destroyed, meet the WCAG 2.2 accessibility bar, and stand up the mandatory service shell. Loading the relevant skill lifts assertion pass rates from as low as 22% to 100% on the benchmark tasks below.
 
 ## What these skills help you do
 
@@ -20,6 +20,7 @@ These skills are small, composable, and adaptable so delivery teams can plug the
 - Harden Docker and Kubernetes workloads.
 - Secure Generative AI features against the Gen-AI SSP overlay.
 - Set up vulnerability scanning, VAPT, and disclosure programmes.
+- Enforce data residency, encryption, DLP, and secure disposal for government data.
 - Meet WCAG 2.2 and Digital Service Standards accessibility requirements.
 - Build an SGDS-compliant Singapore government service shell.
 
@@ -51,6 +52,7 @@ The CLI installs into `.agents/skills/` and symlinks them into the agent directo
 | **Container Security**<br>[container-security](skills/container-security/) | Build, scan, and run containers against the Container Security (CS-1..11) controls: digest-pinned minimal base images, non-root users, runtime secrets, read-only root filesystems, image scanning, private registries, and Kubernetes runtime hardening. |
 | **Gen-AI Security**<br>[gen-ai-security](skills/gen-ai-security/) | Build or audit GenAI features against the Gen-AI SSP overlay (GA-1..8 + DP-8): data-classification routing between overseas and Singapore-hosted models, no-log/no-train provider agreements, safetensors and approved loaders, file-upload safeguards, output evaluation, and hallucination acknowledgement. |
 | **VAPT & Security Testing**<br>[security-testing](skills/security-testing/) | Set up or audit the security testing programme against the Security Testing (ST-1..5) controls: host vulnerability assessment scans, cloud security posture management, an RFC 9116 security.txt disclosure channel, the penetration testing / VAPT programme, and severity-based remediation SLAs with approving-authority risk acceptance. |
+| **Data Protection**<br>[data-protection](skills/data-protection/) | Build or audit data handling against the Data Protection (DP-1..8) controls: Singapore data residency with enforced guardrails, encryption at rest and in transit on every store and hop, central cloud tenancy, witnessed storage sanitisation and destruction, DLP, and classification disclosure at input fields — with the PDPA/PSGA boundary handled correctly. |
 | **Digital Service Standards Accessibility**<br>[dss-accessibility](skills/dss-accessibility/) | Build and review frontend code against the 53 WCAG-2.2-derived DSS accessibility controls (WP/WO/WU/WR), with SG-specific Others vs High-Impact leveling and testing workflow. |
 | **Singapore Government Service Shell**<br>[sg-service-shell](skills/sg-service-shell/) | The mandatory "shell" every SG government public digital service needs before feature work: Official Government Banner (SGDS Masthead), WOGAA, official footer, .gov.sg domain, and the rest of the DSS TL/BD/PR controls. |
 
@@ -68,6 +70,7 @@ Every skill ships with an eval suite under `skills/<skill>/evals/`. Each eval is
 | [container-security](skills/container-security/) | 2 | 21 | **100%** | 73% | +27 pts |
 | [gen-ai-security](skills/gen-ai-security/) | 2 | 22 | **100%** | 47% | +53 pts |
 | [security-testing](skills/security-testing/) | 2 | 22 | **100%** | 78% | +22 pts |
+| [data-protection](skills/data-protection/) | 2 | 22 | **100%** | 61% | +39 pts |
 | [dss-accessibility](skills/dss-accessibility/) | 3 | 27 | **100%** | 83% | +17 pts |
 | [sg-service-shell](skills/sg-service-shell/) | 2 | 19 | **100%** | 36% | +64 pts |
 
@@ -90,6 +93,8 @@ The lift is largest where the requirement is hard to guess without knowing the p
 | gen-ai-security | build-genai-feature | 10 | 100% | 27% |
 | security-testing | audit-seeded-st-posture | 12 | 100% | 86% |
 | security-testing | setup-st-programme | 10 | 100% | 70% |
+| data-protection | audit-seeded-dp | 12 | 100% | 61% |
+| data-protection | setup-dp-baseline | 10 | 100% | 60% |
 | dss-accessibility | feedback-form-build | 10 | 100% | 90% |
 | dss-accessibility | audit-seeded-page | 8 | 100% | 75% |
 | dss-accessibility | timeout-modal | 9 | 100% | 85% |

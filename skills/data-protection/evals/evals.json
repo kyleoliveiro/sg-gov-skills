@@ -1,0 +1,60 @@
+{
+  "skill_name": "data-protection",
+  "evals": [
+    {
+      "id": 0,
+      "name": "audit-seeded-dp",
+      "prompt": "Audit how our system handles data against the Singapore government data protection requirements. I've included our Terraform (main.tf), a doc describing our data handling practices (DATA-HANDLING.md), and the case entry form template (templates/case_form.html). Give us an audit report (audit.md) with pass/fail per requirement and how to fix the failures.",
+      "expected_output": "An audit report keyed to DP control IDs (DP-1..DP-8) that catches the seeded violations: CONFIDENTIAL data replicated to us-east-1 via S3 CRR and overseas backup copies (DP-1), an unencrypted RDS instance and unencrypted EBS (DP-2), plaintext internal HTTP and a Postgres connection with TLS disabled excused as 'private VPC' (DP-3), a standalone AWS account outside the agency's GCC organisation (DP-4), an office NAS quick-formatted and sold without sanitisation standard or witnessed destruction (DP-5/DP-6), no DLP (DP-7), and no classification disclosure on the officer-facing input form (DP-8). It should correct the 'PDPA doesn't apply to us so obligations are lighter' claim (public agencies are excluded from PDPA but the PSGA and ICT&SS/IM8 regime still binds), attribute the MD5 password hashing to the AS/CK families rather than DP, and pair every failure with a concrete fix.",
+      "files": [
+        "files/main.tf",
+        "files/DATA-HANDLING.md",
+        "files/templates/case_form.html"
+      ],
+      "assertions": [
+        "Report catches at least 7 of the 8 seeded DP violations listed in seeded_violations",
+        "Findings cite ICT&SS Data Protection control IDs (DP-1 through DP-8)",
+        "Flags the DP-1 residency breaches: S3 cross-region replication of CONFIDENTIAL case data to us-east-1 AND backup copies sent to an overseas region for DR - with a fix that pins data to Singapore (ap-southeast-1) and enforces it with a guardrail (e.g. an SCP/policy denying non-SG regions), not just convention",
+        "Flags the DP-2 at-rest encryption failures: the RDS instance with storage_encrypted = false (and the unencrypted EBS volume), with a fix that validates encryption per service rather than assuming CSP defaults",
+        "Flags the DP-3 in-transit failures: plaintext HTTP between internal services and the Postgres connection with TLS not enforced, and explicitly rejects the 'it's inside a private VPC so it doesn't need TLS' justification",
+        "Flags the DP-4 failure: the workload runs in a standalone AWS account outside the agency's central GCC / AWS Organizations structure, with a fix that brings it under the central tenancy with landing-zone guardrails",
+        "Flags the DP-5/DP-6 disposal failure: the office NAS was quick-formatted and sold - a quick format is not a recognised sanitisation standard (e.g. Gutmann / Schneier / DoD 5220.22-M), retirement-bound storage should be shredded or incinerated, and no agency staff witnessed the process under a documented SOP",
+        "Flags the missing DLP (DP-7) with a fix naming a real mechanism (e.g. Microsoft Purview, Google Workspace DLP, or Amazon Macie-based blocking) that monitors flows, detects sensitive transfers, and blocks unauthorised sharing",
+        "Flags the missing DP-8 disclosure: the internal officer-facing case form has no message at or near the input fields stating the highest permitted security/sensitivity classification, and the fix adds it in the UI and the user guide",
+        "Corrects the PDPA claim: public agencies are excluded from the PDPA, but that does NOT lighten obligations - the Public Sector (Governance) Act and the ICT&SS/IM8 controls still bind (and vendors carry obligations contractually); the report does not accept the exclusion as a reason to skip any DP control",
+        "Attributes the MD5 password hashing to the Application Security / Cryptography families (AS/CK, secure-coding-as) rather than to a DP control, and does not fabricate DP controls that do not exist",
+        "Report is structured as pass/fail (or fail/not-configured) per requirement with a concrete fix for every failure, as the prompt asked"
+      ],
+      "seeded_violations": [
+        "S3 cross-region replication rule copies the CONFIDENTIAL case-documents bucket to us-east-1, and AWS Backup copy jobs send backups to us-east-1 'for geographic resilience' - government data leaving Singapore (DP-1)",
+        "RDS Postgres instance has storage_encrypted = false and the worker EBS volume has encrypted = false (DP-2)",
+        "Internal service-to-service traffic is plain HTTP and the Postgres parameter group sets rds.force_ssl = 0, justified in the doc as fine because the VPC is private (DP-3)",
+        "The workload runs in a standalone AWS account opened by the team outside the agency's GCC / AWS Organizations structure, with no landing-zone guardrails (DP-4)",
+        "A decommissioned office NAS that held case exports was quick-formatted and sold second-hand - no recognised sanitisation standard, no shred/incinerate, no witnessed destruction or SOP (DP-5 and DP-6, counted as one seeded violation)",
+        "No data loss prevention anywhere - nothing monitors flows, detects sensitive transfers, or blocks unauthorised sharing (DP-7)",
+        "The internal officer-facing case entry form has no classification message at or near its inputs and the user guide says nothing about a ceiling (DP-8)",
+        "The doc claims that because the agency is government, the PDPA does not apply and data protection obligations are therefore lighter - the PSGA + ICT&SS/IM8 regime still binds (PDPA-exclusion trap)",
+        "Passwords hashed with MD5 - an Application Security / Cryptography (AS/CK) issue included as a cross-family distractor that must NOT be attributed to a DP control"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "setup-dp-baseline",
+      "prompt": "We're building an internal case management system for public officers at a Singapore government agency, on AWS under our GCC tenancy, handling data up to CONFIDENTIAL / Sensitive Normal. There's also one on-prem scanning appliance with local storage that we'll eventually retire. Our SSP sets: data residency = Singapore for all government data on the system; central tenancy = all agency systems under the agency's AWS Organizations structure in GCC. Set up our data protection so it meets the government's requirements: the residency guardrails, encryption, tenancy placement, the storage disposal SOP, data loss prevention, and what the input screens must tell officers.",
+      "expected_output": "A data-protection baseline keyed to DP control IDs: Singapore residency enforced by guardrail (SCP/region pinning) with replication/backup/DR kept in-region (DP-1); at-rest encryption validated per service across volumes, snapshots, objects, DB, queues, caches (DP-2); TLS on external and internal hops including the database connection (DP-3); the workload inside the GCC AWS Organizations structure with landing-zone guardrails (DP-4); a sanitisation-and-witnessed-destruction SOP for the on-prem appliance using recognised standards with agency-staff witness records (DP-5/DP-6); DLP that monitors, detects, and blocks via a real mechanism (DP-7); and a classification disclosure at or near every input field and in the user guide matching the CONFIDENTIAL / Sensitive Normal ceiling (DP-8) - with algorithm/key choices scoped to the CK family rather than invented here.",
+      "files": [],
+      "assertions": [
+        "Enforces Singapore residency with a technical guardrail - e.g. an SCP or policy denying non-SG regions / pinning to ap-southeast-1 - and keeps replication, backups, and DR in-region rather than relying on convention (DP-1)",
+        "Cites ICT&SS Data Protection control IDs (DP-1 through DP-8) to justify the setup",
+        "Configures at-rest encryption validated per service - covering block volumes and snapshots, object storage, the database, and queues/caches - rather than assuming CSP defaults (DP-2)",
+        "Requires TLS on every hop including internal service-to-service traffic and the database connection (e.g. rds.force_ssl / require_secure_transport), explicitly not exempting traffic inside the VPC (DP-3)",
+        "Places the workload inside the agency's GCC / AWS Organizations structure with landing-zone guardrails and centralised logging, and warns against standalone accounts outside it (DP-4)",
+        "Provides a sanitisation SOP for the on-prem scanning appliance using a recognised standard (e.g. Gutmann, Schneier, DoD 5220.22-M) with shredding/incineration for retirement-bound storage (DP-5)",
+        "Requires an agency staff member to witness the sanitisation/destruction under a documented SOP with per-device records - noting a vendor certificate alone is insufficient (DP-6)",
+        "Sets up data loss prevention that monitors data flows, detects sensitive transfers, and blocks unauthorised sharing, via a real mechanism (e.g. Microsoft Purview, Google Workspace DLP, Amazon Macie-based blocking) tuned to the classifications in play (DP-7)",
+        "Specifies the highest permitted classification (CONFIDENTIAL / Sensitive Normal) at or near every input field in the officer-facing UI and in the user guide (DP-8)",
+        "Scopes encryption algorithm and key management choices to the Cryptography/Key Management (CK) family (secure-coding-as) rather than inventing them here, and does not fabricate DP controls that do not exist"
+      ]
+    }
+  ]
+}

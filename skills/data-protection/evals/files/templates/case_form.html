@@ -1,0 +1,25 @@
+<!-- CaseDesk — new case entry (internal, officers only) -->
+<main class="container">
+  <h1>New case</h1>
+
+  <form action="/cases" method="post" enctype="multipart/form-data">
+    <div class="field">
+      <label for="applicant-details">Applicant details</label>
+      <textarea id="applicant-details" name="applicant_details" rows="6"
+                placeholder="Paste applicant particulars and case background"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="case-notes">Case notes</label>
+      <textarea id="case-notes" name="case_notes" rows="10"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="documents">Supporting documents</label>
+      <input type="file" id="documents" name="documents" multiple>
+      <p class="hint">PDF, JPG or PNG. Max 25 MB per file.</p>
+    </div>
+
+    <button type="submit">Create case</button>
+  </form>
+</main>
