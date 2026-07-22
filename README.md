@@ -26,12 +26,12 @@ The CLI installs into `.agents/skills/` and symlinks them into the agent directo
 
 | Skill | Description |
 | ----- | ----------- |
-| [ssp-navigator](skills/ssp-navigator/) | Determine which System Security Plan(s) apply under the ICT&SS Policy Reform (IM8's successor), including the Gen-AI overlay and DSS profiles, and emit the Level 0/1/2 control baseline and lifecycle steps. |
-| [secure-coding-as](skills/secure-coding-as/) | Write and review application code against the Application Security (AS-1..15) and Cryptography/Key Management (CK-1..4) controls: input validation, parameterised queries, password hashing, secrets, CSP/HSTS, uploads, error hygiene. |
-| [secure-pipeline](skills/secure-pipeline/) | Set up or audit repos and CI/CD against the Secure Development (SD-1..10) and Software Supply Chain (SC-1..9) controls, with GitHub/GitLab recipes and open-source fallbacks. |
-| [container-security](skills/container-security/) | Build, scan, and run containers against the Container Security (CS-1..11) controls: digest-pinned minimal base images, non-root users, runtime secrets, read-only root filesystems, image scanning, private registries, and Kubernetes runtime hardening. |
-| [dss-accessibility](skills/dss-accessibility/) | Build and review frontend code against the 53 WCAG-2.2-derived DSS accessibility controls (WP/WO/WU/WR), with SG-specific Others vs High-Impact leveling and testing workflow. |
-| [sg-service-shell](skills/sg-service-shell/) | The mandatory "shell" every SG government public digital service needs before feature work: Official Government Banner (SGDS Masthead), WOGAA, official footer, .gov.sg domain, and the rest of the DSS TL/BD/PR controls. |
+| **System Security Plan Navigator**<br>[ssp-navigator](skills/ssp-navigator/) | Determine which System Security Plan(s) apply under the ICT&SS Policy Reform (IM8's successor), including the Gen-AI overlay and DSS profiles, and emit the Level 0/1/2 control baseline and lifecycle steps. |
+| **Secure Application Coding**<br>[secure-coding-as](skills/secure-coding-as/) | Write and review application code against the Application Security (AS-1..15) and Cryptography/Key Management (CK-1..4) controls: input validation, parameterised queries, password hashing, secrets, CSP/HSTS, uploads, error hygiene. |
+| **Secure CI/CD Pipeline**<br>[secure-pipeline](skills/secure-pipeline/) | Set up or audit repos and CI/CD against the Secure Development (SD-1..10) and Software Supply Chain (SC-1..9) controls, with GitHub/GitLab recipes and open-source fallbacks. |
+| **Container security**<br>[container-security](skills/container-security/) | Build, scan, and run containers against the Container Security (CS-1..11) controls: digest-pinned minimal base images, non-root users, runtime secrets, read-only root filesystems, image scanning, private registries, and Kubernetes runtime hardening. |
+| **Digital Service Standards Accessibility**<br>[dss-accessibility](skills/dss-accessibility/) | Build and review frontend code against the 53 WCAG-2.2-derived DSS accessibility controls (WP/WO/WU/WR), with SG-specific Others vs High-Impact leveling and testing workflow. |
+| **Singapore Government Service Shell**<br>[sg-service-shell](skills/sg-service-shell/) | The mandatory "shell" every SG government public digital service needs before feature work: Official Government Banner (SGDS Masthead), WOGAA, official footer, .gov.sg domain, and the rest of the DSS TL/BD/PR controls. |
 
 Each skill lives in [`skills/`](skills/) as a folder with a `SKILL.md` entry point.
 
