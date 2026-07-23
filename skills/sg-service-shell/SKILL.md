@@ -231,6 +231,8 @@ The shell is necessary, not sufficient. Compose with the sibling skills:
   CSP, HSTS, secrets.
 - **secure-pipeline** — Secure Development (SD) and Software Supply Chain (SC) controls
   for the CI/CD side.
+- **singpass** / **corppass** — Transactions & Payments (TX): the Singpass/Myinfo
+  (individuals) and Corppass/Myinfo Business (entities) login and pre-fill that plug into
+  this shell. Use **singpass-legacy** / **corppass-legacy** for pre-FAPI 2.0 integrations.
 
-Transactions & Payments (TX — Singpass/MyInfo pre-fill, receipts, PayNow) and the
-cybersecurity catalog are also out of scope here.
+Receipts, PayNow, and the cybersecurity catalog are also out of scope here.

@@ -296,7 +296,10 @@ codebase per row. Cite findings as `[AS-n]`/`[CK-n]` with file:line.
   services.
 - **sg-service-shell** — SG-specific service scaffolding (official banner, footer,
   WOGAA) that pairs with these headers and error pages.
-- Adjacent catalog controls to keep in mind while coding: AC-7 (Singpass/Corppass MFA
-  for public services needing high identity assurance), LM-19 (sanitise logs of
-  classified/sensitive data — pairs with AS-13), ST-5 (severity-based vulnerability
-  remediation timeframes for the findings you raise).
+- **access-control** — the AC family for auth/account governance around your code;
+  **singpass** / **corppass** implement the AC-7 public-user login itself.
+- **logging-monitoring** — LM-19 log sanitisation (pairs with AS-13) and the wider LM
+  detection controls your app's logs feed.
+- **data-protection** — DP encryption-at-rest/in-transit and residency alongside the CK
+  crypto mechanics here.
+- **security-testing** — ST-5 remediation SLAs and the VAPT that will test this code.

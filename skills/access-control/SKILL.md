@@ -213,8 +213,10 @@ as the multi-control failure it is (AC-1, AC-2 accountability, AC-14).
   governance.
 - **logging-monitoring** — LM-4/LM-7 capture the account and access-rights changes AC
   governs; LM-20 UEBA watches account behaviour.
-- **sg-service-shell** — Singpass/MyInfo integration mechanics (TX-6) for the AC-7
-  mandate.
+- **singpass** — the AC-7 public-user login itself: Singpass FAPI 2.0 flow, Myinfo,
+  the UUID-first identity model (**corppass** for business users acting for an entity).
+- **sg-service-shell** — where the Singpass/Corppass button and TX-6 service scaffolding
+  sit in the DSS shell.
 - **secure-pipeline** — SD/SC pipeline controls; CI credentials fall under AC-13.
 - **data-protection** — DP classification decides when Medium-Risk promotion (and the
   AC-2/3/5/6 Level-0 set) applies at all.

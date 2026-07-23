@@ -255,3 +255,8 @@ evidence found, and — for failures — the fix from `references/platform-recip
   whose repo this skill then hardens.
 - **dss-accessibility** — Digital Service Standards / WCAG 2.2 controls; its automated
   checks belong in the SD-3 CI gate.
+- **container-security** — CS controls for a containerised build: base-image hardening
+  and runtime policy. SC secures the image's provenance and signing (SC-7/SC-8); CS
+  secures what's inside it. Use both for a containerised delivery.
+- **security-testing** — ST controls: the DAST gate here feeds the VAPT programme, and
+  ST-5 sets the remediation SLAs for what SAST/DAST and dependency scanning surface.

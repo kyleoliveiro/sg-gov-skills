@@ -233,18 +233,37 @@ Selection is the start, not the end. Walk the team through:
 
 ## After the baseline is known
 
-Hand off to the sibling skills that implement the controls:
+Hand off to the sibling skills that implement each control family the
+selected baseline pulls in:
 
 - **secure-coding-as** — when writing application code (Application
   Security family: AS-1 input validation, AS-2 parameterised queries, AS-6
-  salted hashing, AS-9 CSP, AS-10 HSTS, and the rest of AS).
+  salted hashing, AS-9 CSP, AS-10 HSTS, and the allied Cryptography/Key
+  Management CK controls).
 - **secure-pipeline** — when setting up repos, CI/CD and releases (Secure
   Development SD and Software Supply Chain SC families: push protection,
   SAST/DAST, pinned dependencies, artifact signing).
+- **access-control** — the Access Control family (AC): least-privilege IAM,
+  MFA for privileged accounts, account lifecycle, the AC-7 public-user login.
+- **data-protection** — the Data Protection family (DP): the DP-1 residency
+  Level 0 control above, encryption at rest/in transit, storage sanitisation,
+  DLP, classification disclosure.
+- **logging-monitoring** — the Logging & Monitoring family (LM): the LM-12
+  central-logging Level 0 control above, the five log sources, retention,
+  GCSOC integration, security detection.
+- **security-testing** — the Security Testing family (ST): VAPT, vulnerability
+  scanning, security.txt disclosure, remediation SLAs — the pre-launch gate.
+- **container-security** — when the workload is containerised (Container
+  Security family CS: base-image hardening, image scanning, runtime policy).
+- **gen-ai-security** — when the **Generative AI overlay** (§2b) is in scope,
+  for the GA-1–GA-8 + DP-8 controls it selects.
 - **dss-accessibility** — when a DSS profile is in scope, for the WCAG 2.2
   controls (WP/WO/WU/WR families).
 - **sg-service-shell** — for DSS trust and legitimacy (TL-3 banner, TL-4
   footer, .gov.sg domain) and WOGAA integration (PR-2, LM-18).
+- **singpass** / **corppass** — when the service authenticates the public
+  (individuals) or businesses acting for an entity (with **singpass-legacy** /
+  **corppass-legacy** for pre-FAPI 2.0 integrations facing migration deadlines).
 
 ## References
 

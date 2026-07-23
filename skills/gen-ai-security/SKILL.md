@@ -186,3 +186,8 @@ the SSP (GA-5 formats/loaders), ask for the SSP value rather than inventing one.
   cluster**; pair with GA-4 when you host open-weights models in containers.
 - **secure-pipeline** — SD + SC: the GA-5 loader is a pinned dependency (SC-4) and the eval
   harness is a required CI check (SD-3); wire GA-7 into the pipeline gate there.
+- **data-protection** — the DP family this overlay leans on: **DP-8** classification
+  disclosure (Stage 3), and the residency/encryption controls that decide which data may
+  reach GA-1 overseas vs GA-2 Singapore-hosted models.
+- **security-testing** — ST controls for the GenAI VAPT: GA-7 output evaluation and
+  prompt-injection testing feed the vulnerability programme and remediation SLAs (ST-5).

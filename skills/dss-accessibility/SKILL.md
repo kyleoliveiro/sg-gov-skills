@@ -387,3 +387,7 @@ the statement); WU-7 adds SG-specific nav-placement requirements beyond WCAG.
   responsive design (BD-1), search (BD-2).
 - **secure-coding-as** — AS-family application-security controls that
   interact with UI work (session timeout AS-11, error-message content AS-13).
+- **singpass** / **corppass** — the login the "authentication flows" section
+  builds around: Singpass QR login satisfies the WU-14 non-cognitive option,
+  and Myinfo pre-fill is how you avoid re-asking (WU-13). **corppass** for
+  business users.
