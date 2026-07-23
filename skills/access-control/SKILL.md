@@ -53,9 +53,10 @@ Three facts anchor everything:
 - **Network position is NS.** Firewalls, segmentation, and subnet ACLs are Network
   Security; AC-10 is precisely about *not* trusting network position — identity and
   device posture replace VPN reachability.
-- **Singpass/MyInfo form mechanics are the service shell.** TX-6 pre-fill via
-  MyInfo/Corppass and integration plumbing live in **sg-service-shell**; AC-7 is the
-  cybersecurity-side mandate to use Singpass/Corppass MFA at all.
+- **Singpass/Corppass integration is its own skill.** The login plumbing and TX-6
+  Myinfo pre-fill live in **singpass** / **corppass**; **sg-service-shell** only owns the
+  surrounding DSS page shell (where the button sits). AC-7 is the cybersecurity-side
+  mandate to use Singpass/Corppass MFA at all.
 - **Pipeline hardening is SD/SC** (secure-pipeline). CI deploy keys fall under AC-13
   rotation, but protected branches and CI gates are Secure Development.
 
@@ -215,8 +216,9 @@ as the multi-control failure it is (AC-1, AC-2 accountability, AC-14).
   governs; LM-20 UEBA watches account behaviour.
 - **singpass** — the AC-7 public-user login itself: Singpass FAPI 2.0 flow, Myinfo,
   the UUID-first identity model (**corppass** for business users acting for an entity).
-- **sg-service-shell** — where the Singpass/Corppass button and TX-6 service scaffolding
-  sit in the DSS shell.
+  These own the public-user login and TX-6 pre-fill integration.
+- **sg-service-shell** — the surrounding DSS page shell (where the Singpass/Corppass
+  button sits), not the integration itself.
 - **secure-pipeline** — SD/SC pipeline controls; CI credentials fall under AC-13.
 - **data-protection** — DP classification decides when Medium-Risk promotion (and the
   AC-2/3/5/6 Level-0 set) applies at all.

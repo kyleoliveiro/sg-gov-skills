@@ -231,6 +231,10 @@ The shell is necessary, not sufficient. Compose with the sibling skills:
   CSP, HSTS, secrets.
 - **secure-pipeline** — Secure Development (SD) and Software Supply Chain (SC) controls
   for the CI/CD side.
+- **logging-monitoring** — the cyber-catalog twin LM-18 that imposes the same WOGAA
+  requirement as PR-2, plus the wider LM detection controls.
+- **security-testing** — the ST-3 vulnerability-disclosure programme the footer's
+  "Report Vulnerability" link must point to.
 - **singpass** / **corppass** — Transactions & Payments (TX): the Singpass/Myinfo
   (individuals) and Corppass/Myinfo Business (entities) login and pre-fill that plug into
   this shell. Use **singpass-legacy** / **corppass-legacy** for pre-FAPI 2.0 integrations.

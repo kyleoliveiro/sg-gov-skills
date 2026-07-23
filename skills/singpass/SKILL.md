@@ -199,6 +199,7 @@ DPoP, PKCE). Demo app: https://github.com/singpass/demo-app.
   products with separate docs (docs.sign.singpass.gov.sg); this skill only routes
   you there.
 - **PDPA, NRIC retention, data classification policy** — **data-protection**.
-- **The catalog controls mandating Singpass** — AC-7 and friends in
-  **access-control**; TX-6 pre-fill and service-shell duties in
-  **sg-service-shell**.
+- **The catalog controls mandating Singpass** — AC-7 and friends live in
+  **access-control**. This skill implements the login and TX-6 pre-fill;
+  **sg-service-shell** owns the surrounding DSS page shell. Session hardening,
+  secrets, and error handling around the flow are **secure-coding-as**.

@@ -260,3 +260,5 @@ evidence found, and — for failures — the fix from `references/platform-recip
   secures what's inside it. Use both for a containerised delivery.
 - **security-testing** — ST controls: the DAST gate here feeds the VAPT programme, and
   ST-5 sets the remediation SLAs for what SAST/DAST and dependency scanning surface.
+- **logging-monitoring** — LM-17 owns the DORA metrics that measure this delivery
+  pipeline: deployment frequency, lead time, change failure rate, and time to restore.

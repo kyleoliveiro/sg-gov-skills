@@ -187,3 +187,5 @@ so this doesn't matter" reasoning.
   use it for GenAI features, this skill for the general estate.
 - **secure-pipeline / container-security** — where encrypted artifacts and images are
   built and stored; registries and caches are stores too and fall under DP-1/DP-2.
+- **logging-monitoring** — the LM family owns access-log capture, retention, and
+  lifecycle; DP-1 still constrains *where* those logs reside, but LM governs them.

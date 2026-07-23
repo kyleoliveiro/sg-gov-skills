@@ -189,7 +189,9 @@ one.
   scope.
 - **sg-service-shell** — scaffolding an agency service whose container image this skill
   then hardens.
-- **security-testing** — ST controls: CS-2 image scanning feeds the vulnerability
+- **security-testing** — ST controls: CS-7 image scanning feeds the vulnerability
   programme, and ST-5 sets the remediation SLAs for the CVEs your scans surface.
 - **data-protection** — DP encryption-at-rest for mounted volumes and the registry, and
   the residency (DP-1) that constrains which region the registry and cluster run in.
+- **logging-monitoring** — CS-11 runtime detections (Falco/GuardDuty) are a log source;
+  route them to the LM central alerting and GCSOC pipeline rather than a local sink.

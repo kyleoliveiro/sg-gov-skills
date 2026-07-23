@@ -391,3 +391,5 @@ the statement); WU-7 adds SG-specific nav-placement requirements beyond WCAG.
   builds around: Singpass QR login satisfies the WU-14 non-cognitive option,
   and Myinfo pre-fill is how you avoid re-asking (WU-13). **corppass** for
   business users.
+- **secure-pipeline** — where the Oobee/axe automated checks belong: wire them
+  into the SD-3 CI gate so accessibility regressions fail the build.

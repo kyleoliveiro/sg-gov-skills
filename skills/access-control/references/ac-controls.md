@@ -365,9 +365,10 @@ potentially compromising the integrity and security of critical operations."
 - **HR (Human Resource, High-Risk CII only):** personnel vetting and exit process are
   HR; the account provisioning/deprovisioning that must fire on those events is AC-8,
   validated by AC-15.
-- **DSS TX-6 / sg-service-shell:** MyInfo/Corppass pre-fill and the Singpass
-  integration mechanics of a citizen-facing form are the service shell; AC-7 is the
-  cybersecurity-side mandate to use Singpass/Corppass MFA for high-assurance public
-  services in the first place.
+- **DSS TX-6 / singpass and corppass:** Myinfo/Corppass pre-fill and the
+  Singpass/Corppass integration mechanics of a public-facing form live in the
+  **singpass** and **corppass** skills; **sg-service-shell** owns the surrounding DSS
+  page shell. AC-7 is the cybersecurity-side mandate to use Singpass/Corppass MFA for
+  high-assurance public services in the first place.
 - **SD/SC (secure-pipeline):** pipeline deploy keys and CI tokens are covered by AC-13
   rotation policy, but pipeline hardening (protected branches, signed commits) is SD/SC.
