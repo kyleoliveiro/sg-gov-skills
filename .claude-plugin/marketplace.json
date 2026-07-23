@@ -1,0 +1,52 @@
+{
+  "name": "sg-gov-skills",
+  "owner": {
+    "name": "Kyle Oliveiro"
+  },
+  "description": "Agent skills for developers building Singapore government digital services.",
+  "plugins": [
+    {
+      "name": "cybersecurity",
+      "source": "./",
+      "description": "Implement controls from the Singapore Government Cybersecurity Control Catalog.",
+      "skills": [
+        "./skills/secure-coding-as",
+        "./skills/secure-pipeline",
+        "./skills/container-security",
+        "./skills/gen-ai-security",
+        "./skills/security-testing",
+        "./skills/data-protection",
+        "./skills/logging-monitoring",
+        "./skills/access-control"
+      ]
+    },
+    {
+      "name": "digital-service-standards",
+      "source": "./",
+      "description": "Implement controls from the Singapore Government Digital Service Standards Control Catalog.",
+      "skills": [
+        "./skills/dss-accessibility",
+        "./skills/sg-service-shell"
+      ]
+    },
+    {
+      "name": "national-digital-identity",
+      "source": "./",
+      "description": "Integrate and migrate Singapore's Singpass, Myinfo, and Corppass national digital identity services.",
+      "skills": [
+        "./skills/singpass",
+        "./skills/corppass",
+        "./skills/singpass-legacy",
+        "./skills/corppass-legacy"
+      ]
+    },
+    {
+      "name": "security-system-plan",
+      "source": "./",
+      "description": "Navigate the System Security Plan profiles that compose controls from the Cybersecurity and Digital Service Standards catalogs.",
+      "skills": [
+        "./skills/ssp-navigator"
+      ]
+    }
+  ]
+}

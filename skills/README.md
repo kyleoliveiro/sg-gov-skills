@@ -44,4 +44,8 @@ Use the locally installed **skill-creator** skill to scaffold, evaluate, and ite
 uv run --with pyyaml python .agents/skills/skill-creator/scripts/quick_validate.py skills/<skill-name>
 ```
 
-After adding a skill, list it in the table in the root [README](../README.md).
+After adding a skill:
+
+1. List it in the appropriate catalog table in the root [README](../README.md).
+2. Add its directory to exactly one installer group in [`.claude-plugin/marketplace.json`](../.claude-plugin/marketplace.json).
+3. Run `npx skills add . --list` from the repository root and confirm that it appears under the intended group.

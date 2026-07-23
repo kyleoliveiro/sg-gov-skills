@@ -5,6 +5,7 @@ Delivering software inside government is its own discipline — the ICT&SS Polic
 ## Repository layout
 
 - `skills/<skill-name>/SKILL.md` — the published skills. This is the layout the `skills` CLI discovers, so consumers install with `npx skills add kyleoliveiro/sg-gov-skills`. Authoring conventions live in `skills/README.md`.
+- `.claude-plugin/marketplace.json` — groups published skills in the interactive `skills` CLI installer. Every skill must appear in exactly one group.
 - `.agents/skills/` and `.claude/skills/` — third-party skills installed locally for authoring (skill-creator, humanizer). Gitignored; tracked in `skills-lock.json` and restored with `npx skills experimental_install` (or `npm run skills:restore`).
 
 ## Working on skills
@@ -12,4 +13,4 @@ Delivering software inside government is its own discipline — the ICT&SS Polic
 - One skill per delivery concern; kebab-case folder names.
 - Use the skill-creator skill to scaffold and iterate; validate with `npm run skills:validate -- skills/<skill-name>`.
 - Run trigger evals with `npm run skills:eval -- <skill-name>` (extra `run_eval` flags pass through, e.g. `--runs-per-query 3`); run with no args to list skills that have eval sets. Evals shell out to `claude -p`, so they consume real usage.
-- When adding a skill, also add it to the table in `README.md`.
+- When adding a skill, also add it to the appropriate catalog table in `README.md` and installer group in `.claude-plugin/marketplace.json`.

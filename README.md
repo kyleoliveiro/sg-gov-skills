@@ -45,17 +45,19 @@ npx skills add kyleoliveiro/sg-gov-skills -s <skill-name>
 
 The CLI installs into `.agents/skills/` and symlinks them into the agent directories you choose (Claude Code, Cursor, Codex, and others).
 
+Running the first command interactively presents the skills under the same four groupings documented below. Individual skill names and `-s <skill-name>` installs are unchanged.
+
 ## Skills
 
-The official [Control Catalog](https://info.standards.tech.gov.sg/control-catalog/) has two catalogs: [Cybersecurity](https://info.standards.tech.gov.sg/control-catalog/cybersecurity/) and [Digital Service Standards](https://info.standards.tech.gov.sg/control-catalog/dss/). The skills below are grouped by the catalog and control domains they directly implement. Cross-catalog navigation and related delivery guidance are listed separately so product-specific guidance is not mistaken for control text.
+The official [Control Catalog](https://info.standards.tech.gov.sg/control-catalog/) has two catalogs: [Cybersecurity](https://info.standards.tech.gov.sg/control-catalog/cybersecurity/) and [Digital Service Standards](https://info.standards.tech.gov.sg/control-catalog/dss/). The skills below are grouped by the catalog and control domains they directly implement, with National Digital Identity integrations and cross-catalog System Security Plan navigation in their own groups.
 
-### Across both catalogs
+### Security System Plan
 
 | Skill | Catalog scope | Description |
 | ----- | ------------- | ----------- |
 | **System Security Plan Navigator**<br>[ssp-navigator](skills/ssp-navigator/) | [Cybersecurity](https://info.standards.tech.gov.sg/control-catalog/cybersecurity/) and [DSS](https://info.standards.tech.gov.sg/control-catalog/dss/) profiles | Determine which System Security Plan(s) apply under the ICT&SS Policy Reform (IM8's successor), including the Gen-AI overlay and DSS profiles, and emit the Level 0/1/2 control baseline and lifecycle steps. |
 
-### Cybersecurity Control Catalog
+### Cybersecurity
 
 | Skill | Control domain(s) | Description |
 | ----- | ----------------- | ----------- |
@@ -68,16 +70,16 @@ The official [Control Catalog](https://info.standards.tech.gov.sg/control-catalo
 | **Logging & Monitoring**<br>[logging-monitoring](skills/logging-monitoring/) | [Logging and Monitoring (LM)](https://info.standards.tech.gov.sg/control-catalog/cybersecurity/lm/) | Set up or audit logging and monitoring against LM-1..21: security log coverage, tamper-resistant storage, retention and sanitisation, central security log management with GCSOC, detection, and operational monitoring. |
 | **Access Control**<br>[access-control](skills/access-control/) | [Access Control (AC)](https://info.standards.tech.gov.sg/control-catalog/cybersecurity/ac/) | Set up or audit identity and access management against AC-1..16: least privilege, MFA, Singpass/Corppass vs government SSO, account lifecycle and reviews, credential rotation, endpoint hardening, and device-based access. |
 
-### Digital Service Standards Control Catalog
+### Digital Service Standards
 
 | Skill | Control domain(s) | Description |
 | ----- | ----------------- | ----------- |
 | **Digital Service Standards Accessibility**<br>[dss-accessibility](skills/dss-accessibility/) | WCAG: [Perceivable (WP)](https://info.standards.tech.gov.sg/control-catalog/dss/wp/), [Operable (WO)](https://info.standards.tech.gov.sg/control-catalog/dss/wo/), [Understandable (WU)](https://info.standards.tech.gov.sg/control-catalog/dss/wu/), [Robust (WR)](https://info.standards.tech.gov.sg/control-catalog/dss/wr/) | Build and review frontend code against the 53 WCAG-2.2-derived DSS accessibility controls, with Digital Services (Others) vs Digital Services (High Impact) levels and a testing workflow. |
 | **Singapore Government Service Shell**<br>[sg-service-shell](skills/sg-service-shell/) | [Trust and Legitimacy (TL)](https://info.standards.tech.gov.sg/control-catalog/dss/tl/); [Baseline Design Practices (BD)](https://info.standards.tech.gov.sg/control-catalog/dss/bd/); [Performance and Reliability (PR)](https://info.standards.tech.gov.sg/control-catalog/dss/pr/) | Build the common shell for a government digital service: Official Government Banner, WOGAA, official footer, .gov.sg domain, SGDS setup, and the rest of the TL, BD, and PR controls. |
 
-### Outside the control catalogs: related government delivery guidance
+### National Digital Identity
 
-These skills do not implement a catalog control family. The Singpass and Corppass skills are implementation companions to Cybersecurity control AC-7, but their primary scope is product APIs, onboarding, data use, and migration.
+These skills cover Singpass, Myinfo, and Corppass integration and migration. They are implementation companions to Cybersecurity control AC-7, but their primary scope is product APIs, onboarding, data use, and migration rather than a control family.
 
 | Skill | Area | Description |
 | ----- | ---- | ----------- |
@@ -157,13 +159,14 @@ The lift is largest where the requirement is hard to guess without knowing the p
 
 ```
 skills/           Published skills — one folder per skill, each with a SKILL.md
+.claude-plugin/   Installer grouping metadata for the skills CLI
 skills-lock.json  Lockfile for skills installed locally for authoring (skill-creator, humanizer)
 .agents/skills/   Locally installed authoring skills (gitignored; restore with `npx skills experimental_install`)
 ```
 
 ## Contributing
 
-See [`skills/README.md`](skills/README.md) for authoring conventions. In short: one folder per skill, kebab-case name, a `SKILL.md` with `name` and `description` frontmatter, and supporting files (`references/`, `scripts/`, `assets/`) only when they earn their place.
+See [`skills/README.md`](skills/README.md) for authoring conventions. In short: one folder per skill, kebab-case name, a `SKILL.md` with `name` and `description` frontmatter, and supporting files (`references/`, `scripts/`, `assets/`) only when they earn their place. Add every new skill to the appropriate catalog table above and installer group in [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json).
 
 ## Frequently asked questions
 
