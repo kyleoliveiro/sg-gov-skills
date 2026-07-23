@@ -7,9 +7,12 @@ description: >-
   reviewing UI for a Singapore government digital service — components, pages,
   forms, modals, navigation — or when the user says "accessibility", "a11y",
   "WCAG", "DSS compliance", "accessibility audit", "screen reader", "contrast",
-  or "keyboard navigation" in an SG government context. Apply DURING
-  implementation, not as a post-hoc audit: retrofitting focus order, semantic
-  structure, and reflow is far more expensive than building them in.
+  or "keyboard navigation" in an SG government context. Also covers wiring
+  accessibility scanners (axe, Oobee) into CI and determining whether the DSS
+  High Impact profile applies; for full SSP and baseline selection see
+  ssp-navigator. Apply DURING implementation, not as a post-hoc audit:
+  retrofitting focus order, semantic structure, and reflow is far more
+  expensive than building them in.
 ---
 
 # DSS Accessibility (WP / WO / WU / WR)
@@ -391,5 +394,7 @@ the statement); WU-7 adds SG-specific nav-placement requirements beyond WCAG.
   builds around: Singpass QR login satisfies the WU-14 non-cognitive option,
   and Myinfo pre-fill is how you avoid re-asking (WU-13). **corppass** for
   business users.
-- **secure-pipeline** — where the Oobee/axe automated checks belong: wire them
-  into the SD-3 CI gate so accessibility regressions fail the build.
+- **secure-pipeline** — the SD-3 CI gate the Oobee/axe checks plug into. This
+  skill owns the accessibility tooling and thresholds; secure-pipeline owns the
+  gating pattern and pipeline hardening around it. Load both when wiring
+  accessibility scanners into CI.

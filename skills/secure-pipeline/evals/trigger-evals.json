@@ -72,7 +72,7 @@
     "should_trigger": false
   },
   {
-    "query": "Integrate Corppass FAPI 2.0 for company users, entity roles, third-party authorisation, and Myinfo Business.",
+    "query": "Our CI artifact store and SBOM bucket replicate to us-east-1. Enforce Singapore data residency and encryption at rest for the stored build artifacts.",
     "should_trigger": false
   },
   {

@@ -1,9 +1,5 @@
 [
   {
-    "query": "Audit our Terraform and data-handling SOP against Singapore Government DP-1 through DP-8: residency, encryption, GCC tenancy, sanitisation, witnessed destruction, DLP, and classification disclosure.",
-    "should_trigger": true
-  },
-  {
     "query": "Design data protection for an agency case-management system that stores CONFIDENTIAL data in AWS and has an on-prem scanning appliance. Use the SSP parameters rather than inventing requirements.",
     "should_trigger": true
   },
@@ -41,7 +37,7 @@
   },
   {
     "query": "Choose approved cryptographic algorithms, design envelope encryption, set key rotation periods, and configure HSM-backed key storage under CK-1 through CK-4.",
-    "should_trigger": false
+    "should_trigger": true
   },
   {
     "query": "Fix unsalted password hashing, hardcoded secrets, unsafe SQL, CSP, HSTS, and file uploads in this application.",
@@ -77,6 +73,10 @@
   },
   {
     "query": "Route public and confidential prompts between overseas and Singapore-hosted GenAI APIs, add no-log/no-train terms, and evaluate model outputs.",
+    "should_trigger": false
+  },
+  {
+    "query": "Inject database credentials into our containers at runtime instead of baking them into image layers, and move the images to a private registry.",
     "should_trigger": false
   }
 ]

@@ -6,12 +6,14 @@ description: >-
   encryption at rest and in transit, central cloud tenant management, storage sanitisation
   and witnessed destruction, data loss prevention, and classification disclosure in the
   UI. Use whenever handling government data classifications, pinning cloud regions or
-  checking cross-region replication, configuring encryption, decommissioning storage,
-  setting up DLP, or when PDPA questions come up on an agency project. Triggers: "data
-  residency", IM8 data protection requirements, DP controls, ap-southeast-1 pinning,
-  encryption at rest / in transit for government data, AWS Organizations / landing zone /
-  GCC tenancy, media sanitisation or disposal, DLP, PDPA or PSGA obligations, maximum
-  classification for input fields.
+  checking cross-region replication, configuring encryption — including the CK
+  key-management work behind it (algorithms, rotation, HSM; load secure-coding-as
+  alongside) — decommissioning storage, setting up DLP, or when PDPA questions come up
+  on an agency project. Triggers: "data residency", IM8 data protection requirements,
+  DP controls, ap-southeast-1 pinning, encryption at rest / in transit or key
+  management for government data, AWS Organizations / landing zone / GCC tenancy, media
+  sanitisation or disposal, DLP, PDPA or PSGA obligations, maximum classification for
+  input fields.
 ---
 
 # data-protection: DP controls for SG government systems

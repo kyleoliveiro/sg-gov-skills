@@ -44,7 +44,7 @@
     "should_trigger": false
   },
   {
-    "query": "Fix a single SQL injection bug in my personal Express project. I do not need a testing programme or government control mapping.",
+    "query": "Fix the SQL injection bug in the login route of my personal Express side project.",
     "should_trigger": false
   },
   {

@@ -6,8 +6,9 @@ description: >-
   comma-separated sub format, /authorization-info, Bearer access tokens,
   esrvcID) or Myinfo Business v1/v2 (/entity-person, PKI_SIGN, client_secret).
   Use this whenever an existing Corppass integration predates March 2026, when
-  code references CPEntID, CPAccType, ISSPHOLDER, TPAuthInfo, or authmode, or
-  when planning the mandatory migration: legacy API by 31 March 2027, Myinfo
+  code or API responses reference CPEntID, CPAccType, ISSPHOLDER, TPAuthInfo,
+  ESrvc_Row_Count, or authmode — even inside an otherwise-new FAPI 2.0
+  integration — or when planning the mandatory migration: legacy API by 31 March 2027, Myinfo
   Business v1/v2 to v3 by 31 May 2027. Covers the legacy wire formats, the
   legacy-to-FAPI 2.0 claim mapping, and the migration checklist. For new
   integrations use the corppass skill instead — new services cannot onboard to

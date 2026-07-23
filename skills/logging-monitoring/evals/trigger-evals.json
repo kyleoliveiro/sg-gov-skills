@@ -68,7 +68,7 @@
     "should_trigger": false
   },
   {
-    "query": "Write a privacy notice and cookie banner for a private-sector Singapore website under the PDPA.",
+    "query": "Improve error handling in our agency's Express app so stack traces are never shown to users and errors return safe, generic messages.",
     "should_trigger": false
   },
   {

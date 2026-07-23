@@ -15,8 +15,8 @@
   { "query": "Set up SSO and MFA for internal agency staff accounts and a quarterly access review.", "should_trigger": false },
   { "query": "What does the PDPC advisory require for NRIC storage and retention in a government system?", "should_trigger": false },
   { "query": "Review the crypto in our Node service — how we do AES encryption and manage keys for stored data.", "should_trigger": false },
-  { "query": "Add the government masthead banner and the official footer to our agency site.", "should_trigger": false },
+  { "query": "Add SAST, secret scanning, and dependency pinning to the CI pipeline of our agency's authentication service.", "should_trigger": false },
   { "query": "Migrate my personal app's auth from OAuth 1.0 to OAuth 2.0 using Auth0. It's not a government system.", "should_trigger": false },
   { "query": "Set up business-user login for companies on the current Corppass FAPI 2.0 API with auth_info roles.", "should_trigger": false },
-  { "query": "Which SSP applies to our system and what control baseline do we need before we start coding?", "should_trigger": false }
+  { "query": "Set up login-attempt audit logging with off-box tamper-resistant storage and GCSOC forwarding for our agency's authentication events.", "should_trigger": false }
 ]

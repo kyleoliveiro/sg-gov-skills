@@ -1,9 +1,5 @@
 [
   {
-    "query": "Audit this Dockerfile, Kubernetes Deployment, and registry setup against the Singapore Government Container Security controls CS-1 through CS-11. Produce pass/fail findings and concrete fixes.",
-    "should_trigger": true
-  },
-  {
     "query": "Containerise our agency Node service for EKS in GCC. Give us a digest-pinned minimal image, non-root runtime, safe secret injection, read-only filesystem, private registry, scanning, segmentation, and runtime protection.",
     "should_trigger": true
   },
@@ -53,7 +49,7 @@
   },
   {
     "query": "Scan our Kubernetes cluster as part of an independent VAPT and create a vulnerability register with remediation deadlines.",
-    "should_trigger": false
+    "should_trigger": true
   },
   {
     "query": "Write an ordinary Dockerfile for my personal static website. I just want a small nginx image and there is no government or regulated context.",
@@ -64,7 +60,11 @@
     "should_trigger": false
   },
   {
-    "query": "Set up immutable backups, recovery tests, RTO/RPO, a disaster recovery plan, and business continuity exercises.",
+    "query": "Sanitise and dispose of the retired NAS appliances that held our registry backups, with recognised destruction methods and witnessed evidence records.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up authenticated host vulnerability scans and cloud security posture management for our agency's EC2 virtual machines, and track the findings in the vulnerability register.",
     "should_trigger": false
   },
   {
