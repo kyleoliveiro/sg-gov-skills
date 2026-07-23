@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Apply for household support</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; }
+    header, main { padding: 16px; }
+    nav { display: none; }
+    .ticker { white-space: nowrap; animation: slide 8s linear infinite; }
+    .tip .tip-text { display: none; position: absolute; }
+    .tip:hover .tip-text { display: block; }
+    .document { border: 1px solid #777; margin: 8px 0; padding: 8px; }
+    @keyframes slide { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+  </style>
+</head>
+<body>
+  <header>
+    <button aria-label="Menu" onclick="toggleMenu()">☰</button>
+    <nav id="main-nav">
+      <a href="/">Home</a>
+      <a href="/eligibility">Eligibility</a>
+      <a href="/apply">Apply</a>
+    </nav>
+    <div class="ticker">Applications close soon — submit today</div>
+  </header>
+
+  <main>
+    <h1>Apply for household support</h1>
+    <p>PCI must not exceed the prevailing HHI quantum.</p>
+
+    <p class="tip">
+      <button type="button">What is assessable income?</button>
+      <span class="tip-text">Income counted when assessing eligibility.</span>
+    </p>
+
+    <section aria-labelledby="login-heading">
+      <h2 id="login-heading">Sign in</h2>
+      <label for="password">Password</label>
+      <input id="password" type="password" onpaste="return false">
+      <label for="captcha">What is 17 + 26?</label>
+      <input id="captcha" inputmode="numeric">
+      <button type="button">Sign in</button>
+    </section>
+
+    <form action="/submit" method="post">
+      <h2>Your details</h2>
+      <p>Your signed-in profile already contains your name and residential address.</p>
+      <label for="name">Enter your name again</label>
+      <input id="name" name="name">
+      <label for="address">Enter your residential address again</label>
+      <textarea id="address" name="address"></textarea>
+
+      <h2>Order supporting documents</h2>
+      <p>Drag the documents into the required order.</p>
+      <div id="documents">
+        <div class="document" draggable="true">Income statement</div>
+        <div class="document" draggable="true">Tenancy agreement</div>
+      </div>
+
+      <button type="submit">Submit legally binding declaration</button>
+    </form>
+  </main>
+
+  <script>
+    document.addEventListener('keydown', function (event) {
+      if (event.key.toLowerCase() === 's') {
+        document.querySelector('form').submit();
+      }
+    });
+
+    window.addEventListener('devicemotion', function (event) {
+      if (Math.abs(event.accelerationIncludingGravity.x) > 15) {
+        document.querySelector('form').submit();
+      }
+    });
+
+    document.querySelectorAll('[draggable=true]').forEach(function (item) {
+      item.addEventListener('dragstart', function (event) {
+        event.dataTransfer.setData('text/plain', item.textContent);
+      });
+    });
+
+    function toggleMenu() {
+      var nav = document.getElementById('main-nav');
+      nav.style.display = nav.style.display === 'block' ? 'none' : 'block';
+    }
+  </script>
+</body>
+</html>

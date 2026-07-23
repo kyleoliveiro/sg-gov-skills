@@ -79,6 +79,84 @@
         "The code or notes reference DSS control IDs (e.g. WO-4, WO-2, WO-9, WR-2)",
         "Session expiry does not strand the user: after timeout there is a plain-language logged-out state with a clear re-authentication path (WU-11), not just a dead page or silent redirect"
       ]
+    },
+    {
+      "id": 3,
+      "name": "audit-complex-application-flow",
+      "prompt": "This household-support application belongs to a Singapore government service with about 1.3 million WOGAA visits per year. Audit the attached page for DSS accessibility compliance and write report.md with prioritised findings and concrete fixes. Focus on interaction patterns and cognitive accessibility, not just automated-checker issues. Do not rewrite the page.",
+      "expected_output": "A High Impact DSS findings report that catches the seeded navigation, motion, hover, shortcut, authentication, redundant-entry, dragging, device-motion, and error-prevention problems; cites DSS IDs; and explains that the High Impact profile promotes the relevant Level 2 controls to Level 1.",
+      "files": [
+        "files/application-flow.html"
+      ],
+      "assertions": [
+        "Report identifies at least 9 of the 10 seeded violations listed in seeded_violations",
+        "Recognises that 1.3M annual WOGAA visits selects DSS High Impact and that all 53 accessibility controls, including WO-3, WO-14, and WU-3, are Level 1",
+        "Flags the desktop navigation being hidden behind a hamburger control under WU-7 and recommends visible near-top desktop navigation with consistent ordering",
+        "Flags the continuously moving ticker with no pause, stop, or hide control under WO-5",
+        "Flags both the unexplained jargon/abbreviations under WU-3/WU-4 and the hover-only tooltip under WP-19, including fixes that work for keyboard and pointer users",
+        "Flags the single-character S shortcut under WO-3 and requires a way to disable or remap it, or activation only while a relevant control has focus",
+        "Flags the password-plus-arithmetic challenge as the only login path and blocked paste under WU-14, recommending a non-cognitive method such as Singpass QR/OTP and support for password managers and paste",
+        "Flags repeat entry of profile-known name and address under WU-13 and recommends pre-fill or a selectable reuse mechanism",
+        "Flags drag-only document ordering under WO-14 and recommends simple pointer and keyboard alternatives such as Move up and Move down buttons",
+        "Flags shake-to-submit under WO-17 and requires both a conventional UI equivalent and a way to disable motion actuation",
+        "Flags direct submission of a legally binding declaration without review, correction, confirmation, or reversal safeguards under WU-12",
+        "Every finding cites a DSS WP/WO/WU/WR control ID, provides a concrete fix, and does not invent violations absent from the page"
+      ],
+      "seeded_violations": [
+        "main desktop navigation is always hidden behind a hamburger control (WU-7)",
+        "continuously moving ticker has no pause, stop, or hide control (WO-5)",
+        "PCI, HHI, and quantum are used without definitions or expanded abbreviations (WU-3 / WU-4)",
+        "income tooltip appears only on pointer hover and is not keyboard-triggerable, dismissible, or hoverable (WP-19)",
+        "single-character S shortcut submits the form globally with no disable, remap, or focus restriction (WO-3; Level 1 at High Impact)",
+        "password and arithmetic CAPTCHA are the only authentication route, and password paste is blocked (WU-14)",
+        "name and address already known from the signed-in profile must be entered again (WU-13)",
+        "supporting documents can be reordered only by dragging, with no simple pointer or keyboard alternative (WO-14; Level 1 at High Impact)",
+        "device shake submits the form with no conventional UI equivalent or disable setting (WO-17)",
+        "legally binding declaration submits directly without a review/correction step, confirmation, or reversal safeguard (WU-12)"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "build-high-impact-media-page",
+      "prompt": "Build a responsive HTML/CSS/JavaScript page for our agency's public emergency-information service, which receives roughly 1.5 million WOGAA visits a year. The page needs a prerecorded briefing video containing speech and important charts, an audio-only podcast, a live town-hall stream, and a continuously updating breaking-news ticker. Product has asked for autoplaying audio and a rapidly flashing red LIVE badge to attract attention; make the implementation comply with Singapore DSS accessibility requirements and include short production notes for media assets that cannot be embedded in sample code.",
+      "expected_output": "A High Impact media page that provides captions, transcripts and audio description, plans live captions, rejects harmful autoplay and flashing, makes moving/updating content controllable and sensibly announced, supports keyboard access and responsive reflow, and traces decisions to the applicable WP/WO/WR controls.",
+      "files": [],
+      "assertions": [
+        "Recognises the service as DSS High Impact from 1.5M annual WOGAA visits and treats WP-4, WP-5, and WP-9 as Level 1",
+        "Provides a captions track or a concrete caption-file integration plan for the prerecorded video under WP-2",
+        "Provides a transcript for the audio-only podcast and a text alternative for essential prerecorded visual information under WP-3",
+        "Provides or explicitly requires a user-selectable audio-described track for the video's important charts under WP-5",
+        "Provides or explicitly requires synchronised live captions for the town-hall stream under WP-4",
+        "Does not autoplay audio lasting more than three seconds; if any audio can start automatically, supplies nearby pause/stop and independent volume controls under WP-12",
+        "Rejects the rapidly flashing LIVE treatment or limits flashing to a safe rate under WO-6 instead of implementing the request uncritically",
+        "Gives users a pause, stop, or hide control for the moving or auto-updating ticker under WO-5",
+        "Makes ticker updates available to assistive technology without announcing every animation frame or overwhelming users, using an appropriate live-region strategy under WR-2",
+        "Media and ticker controls use semantic buttons, work by keyboard, have visible focus, and meet the 24x24 CSS-pixel target minimum",
+        "The layout reflows at narrow widths, does not lock display orientation, and remains usable at 200% zoom",
+        "Code or production notes cite the relevant DSS control IDs rather than relying only on generic WCAG language"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "build-multipage-benefits-guide",
+      "prompt": "Create two linked static HTML/CSS pages for a Singapore government benefits guide with about 1.1 million WOGAA visits per year: a guide homepage and a detailed eligibility page. Include the same header/navigation/help mechanisms on both pages, a site search, a short Malay-language notice inside otherwise English content, a benefits callout, an ordered application process, and a search form. Make the pages DSS-accessible and include brief implementation notes keyed to control IDs.",
+      "expected_output": "Two consistent High Impact pages with meaningful DOM order, non-sensory instructions, real text, responsive reflow, distinguishable controls, skip links, multiple navigation methods, descriptive labels, language-of-parts markup, stable focus behaviour, consistent component naming, and help in the same location.",
+      "files": [],
+      "assertions": [
+        "Content whose order conveys meaning has a logical DOM and reading order that matches its visual order, without CSS reordering that changes the sequence (WP-7)",
+        "Instructions identify controls by accessible name or purpose rather than relying only on shape, colour, sound, or visual position (WP-8)",
+        "Headings, callouts, and other essential wording use real text rather than images of text, apart from legitimate logo exceptions (WP-15)",
+        "Both pages reflow at a 320 CSS-pixel viewport without page-level horizontal scrolling or clipped content (WP-16)",
+        "Interactive boundaries, icons, and focus indicators have at least 3:1 non-text contrast against adjacent colours (WP-17)",
+        "Each page provides a working skip link as the first focusable control and uses suitable landmark regions to bypass repeated content (WO-7)",
+        "Users have at least two ways to reach pages, such as consistent navigation plus site search or a sitemap, as required for High Impact services (WO-11)",
+        "Page headings and form labels describe their topic or purpose instead of generic text such as More, Go, or Field (WO-12)",
+        "The search control's accessible name contains its visible label text, so voice users can activate it by the words they see (WO-16)",
+        "The Malay notice is programmatically marked with the correct language while each page declares English as its primary language (WU-2)",
+        "Receiving focus does not automatically submit, navigate, open a new window, or otherwise cause an unexpected context change (WU-5)",
+        "Repeated components and controls with the same function use consistent visible labels and accessible names across both pages (WU-8)",
+        "Contact, FAQ, or other help mechanisms appear in the same relative location and order on both pages (WU-9)"
+      ]
     }
   ]
 }

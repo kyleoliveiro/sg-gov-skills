@@ -53,6 +53,64 @@
         "form fields carry no mandatory/optional indication (BD-7)",
         "maintenance notice is vague ('at some point next week') - no date, time, or duration (PR-4); and no contact channel anywhere on the page (BD-9)"
       ]
+    },
+    {
+      "id": 2,
+      "name": "audit-service-operations",
+      "prompt": "Audit the attached operating posture for our public Licensing Services portal against the DSS Performance and Reliability controls. Write an operational-readiness.md report with findings, control IDs, priorities, and concrete remediation actions. Do not invent policy numbers where our agency has not set them.",
+      "expected_output": "A PR-1..PR-7 operational-readiness report that recognises WOGAA as compliant, finds the seeded review, availability, downtime, broken-link, browser, and performance gaps, and treats all five numeric parameters as unresolved agency SSP tailoring decisions rather than guessing values.",
+      "files": [
+        "files/SERVICE-OPERATIONS.md"
+      ],
+      "assertions": [
+        "Finds the absence of a recurring relevance, usage, ownership, and retirement review, and recommends a documented review and shutdown process tied to the agency-defined PR-1 cadence",
+        "Recognises PR-2 as compliant because the service is registered in WOGAA, has tracking on every page, and has Sentiments enabled; does not report WOGAA as missing",
+        "Flags the unjustified weekday-only availability and unpublished operating hours under PR-3, recommending 24/7 availability or a justified limitation with clearly communicated hours",
+        "Flags same-day vague maintenance notices under PR-4 and requires notice using the agency-defined lead time plus date, time, duration, reason where applicable, and affected features where applicable",
+        "Flags reactive broken-link handling under PR-5 and recommends automated scanning of internal and external links, ownership/evidence, and remediation within the agency-defined period",
+        "Flags Chrome-only manual testing under PR-6 and recommends browser selection based on usage data and repeatable testing of the latest major versions across the agency-defined number of browsers",
+        "Flags subjective page-speed assessment under PR-7 and recommends an agency-approved load-time target plus regular measurement or monitoring, such as WOGAA/PageSpeed and a CI performance budget",
+        "Identifies all five unset parameters as agency SSP decisions: PR-1 review days, PR-4 notice days, PR-5 remediation days, PR-6 browser count, and PR-7 load-time seconds",
+        "Does not invent numeric values for any unset parameter and does not present recommendation examples as binding catalog requirements",
+        "Correctly distinguishes PR-2 as Level 0 from PR-1 and PR-3 through PR-7 as Level 1"
+      ],
+      "seeded_violations": [
+        "no recurring digital-service review, accountable owner, usage assessment, or retirement process (PR-1)",
+        "service is restricted to contact-centre hours without a technical or business justification, and operating hours are not communicated (PR-3)",
+        "scheduled downtime is announced only on the day and omits timing, duration, reason, and affected features (PR-4)",
+        "broken links depend on user reports and have no automated detection, owner, evidence, or remediation target (PR-5)",
+        "browser testing covers only the latest Chrome without analytics-informed browser selection or repeatable cross-browser coverage (PR-6)",
+        "page-load performance has no approved target, measurement, monitoring, alert, or CI budget (PR-7)",
+        "all five PR parameters are unset and require agency SSP tailoring rather than guessed values"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "review-content-and-mobile-posture",
+      "prompt": "Review the attached content, account, and mobile-app posture for our public Benefits Portal against the DSS Trust and Legitimacy and Baseline Design Practices controls. Produce findings.md with control IDs, levels, what is already compliant, and specific fixes. Distinguish requirements from Level 2 best practices.",
+      "expected_output": "A targeted TL/BD report covering consistent design, multilingual support, plain content, SEO, logged-in identity, and app-store developer naming. It should distinguish Level 1 findings from BD-3/4/5 Level 2 improvements and avoid falsely failing the compliant mobile ownership/distribution and service-shell items.",
+      "files": [
+        "files/CONTENT-MOBILE-POSTURE.md"
+      ],
+      "assertions": [
+        "Flags inconsistent cross-section UI and the absence of a shared design system or style guide under BD-6, with SGDS presented as a recommended option rather than the only permitted system",
+        "Treats multilingual support under BD-3 as a Level 2 improvement and recommends evidence-based language selection plus an easy-to-find language switcher, without inventing a mandatory list of languages",
+        "Flags unexplained jargon and abbreviations under BD-4 and recommends plain-language revision validated with representative users and/or readability assessment",
+        "Flags duplicate page titles and missing search metadata under BD-5, recognises that the production public service does not meet the restricted-audience or beta exception, and recommends informative unique metadata",
+        "Flags the absence of the signed-in person's name or identifier under BD-8 and recommends displaying it prominently after login",
+        "Flags the vendor-branded app-store developer account under TL-6 and requires the full agency name",
+        "Recognises TL-5 as compliant because the agency owns the app and distributes it only through the Apple App Store and Google Play; does not report a mobile ownership or distribution failure",
+        "Correctly labels TL-6, BD-6, and BD-8 as Level 1 while treating BD-3, BD-4, and BD-5 as Level 2",
+        "Does not invent failures for the explicitly compliant responsive layout, SearchSG, contact channel, official masthead/footer, or WOGAA implementation"
+      ],
+      "seeded_violations": [
+        "inconsistent UI across vendor-built sections with no shared design system or style guide (BD-6)",
+        "English-only service with no assessment of user language needs or language switching (BD-3, Level 2)",
+        "unexplained jargon and abbreviations with no user testing or readability assessment (BD-4, Level 2)",
+        "duplicate generic page titles and missing meta descriptions on a public production service (BD-5, Level 2)",
+        "logged-in header does not display the user's name or another account identifier (BD-8)",
+        "mobile app store developer account uses the vendor name rather than the full agency name (TL-6)"
+      ]
     }
   ]
 }
