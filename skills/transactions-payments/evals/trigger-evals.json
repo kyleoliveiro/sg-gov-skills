@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Design the multi-step application wizard for our agency's licence e-service: logical steps, a progress indicator, and a save-draft function.",
+    "should_trigger": true
+  },
+  {
+    "query": "Add PayNow and card payment to our agency's permit application, with the fees and refund policy shown before payment.",
+    "should_trigger": true
+  },
+  {
+    "query": "Users abandon our agency's long grant application form halfway. Break it into sections and let applicants save and resume later.",
+    "should_trigger": true
+  },
+  {
+    "query": "After payment succeeds on our government e-service, show a proper receipt with acknowledgement number, date, amount, and payment method, and email the applicant a copy.",
+    "should_trigger": true
+  },
+  {
+    "query": "Build an online status-tracking page with notifications for applicants to follow their case through our agency's processing pipeline.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our agency service shows a bare error page when a payment fails. Add clear failure reasons, alternative actions, and an appeals channel per the DSS.",
+    "should_trigger": true
+  },
+  {
+    "query": "Let users update or remove the stored card details they saved in our agency's payments portal.",
+    "should_trigger": true
+  },
+  {
+    "query": "Applicants only discover the required documents halfway through our government transaction. Surface the prerequisites, fees, and estimated completion time before they start.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our permit process still requires printing and mailing a signed form after online submission. Make the transaction fully digital end to end under the Digital Service Standards.",
+    "should_trigger": true
+  },
+  {
+    "query": "Pre-fill our agency's application form for logged-in Singpass users so they don't retype their personal details, per the DSS pre-fill requirement.",
+    "should_trigger": true
+  },
+  {
+    "query": "Make the form fields in our agency service screen-reader accessible: programmatic labels, visible focus, and WCAG-compliant error identification.",
+    "should_trigger": false
+  },
+  {
+    "query": "Add the Official Government Banner, WOGAA tracking, and the official footer to our new agency website before launch.",
+    "should_trigger": false
+  },
+  {
+    "query": "Implement the Singpass FAPI 2.0 login flow with PAR, PKCE, and DPoP token binding for our citizen portal.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up Corppass entity roles and third-party authorisation checks for our business-facing agency API.",
+    "should_trigger": false
+  },
+  {
+    "query": "Add CSRF protection, input validation, and session hardening to our agency application's form handlers.",
+    "should_trigger": false
+  },
+  {
+    "query": "Decide where our payment records may reside, pin the region, and encrypt them at rest under the data protection controls.",
+    "should_trigger": false
+  },
+  {
+    "query": "Integrate Stripe checkout into my startup's SaaS billing page with a pricing table and coupon support.",
+    "should_trigger": false
+  },
+  {
+    "query": "Determine which DSS profile applies to our service and output the Level 0, 1, and 2 control baseline.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up MFA, access reviews, and account lifecycle automation for the officers who process applications in our back office.",
+    "should_trigger": false
+  },
+  {
+    "query": "Forward our payment gateway webhook logs to tamper-resistant storage with GCSOC integration and retention policies.",
+    "should_trigger": false
+  }
+]

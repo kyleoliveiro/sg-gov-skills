@@ -262,6 +262,9 @@ selected baseline pulls in:
   for the GA-1–GA-8 + DP-8 controls it selects.
 - **dss-accessibility** — when a DSS profile is in scope, for the WCAG 2.2
   controls (WP/WO/WU/WR families).
+- **transactions-payments** — when a DSS profile is in scope and the service is
+  transactional, for the TX family (digital-first journeys, multi-step flows
+  with drafts and pre-fill, payment/refund UX, receipts, status tracking).
 - **sg-service-shell** — for DSS trust and legitimacy (TL-3 banner, TL-4
   footer, .gov.sg domain) and WOGAA integration (PR-2, LM-18).
 - **singpass** / **corppass** — when the service authenticates the public

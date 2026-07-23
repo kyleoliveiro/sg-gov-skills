@@ -1,0 +1,63 @@
+<!-- Hawker stall assistance grant application — single page, served at /apply after Singpass login -->
+<main class="container">
+  <h1>Apply for Stall Assistance Grant</h1>
+  <!-- Users land here directly from the homepage "Apply now" button.
+       There is no information page before this form. -->
+  <form id="grant-application" method="POST" action="/apply/submit">
+    <h2>Applicant details</h2>
+    <label>Full name (as in NRIC) <input name="full_name" required></label>
+    <label>NRIC <input name="nric" required></label>
+    <label>Date of birth <input name="dob" type="date" required></label>
+    <label>Residential address <input name="address" required></label>
+    <label>Postal code <input name="postal" required></label>
+    <label>Mobile number <input name="mobile" required></label>
+    <label>Email <input name="email" required></label>
+
+    <h2>Stall details</h2>
+    <label>Stall licence number <input name="licence_no" required></label>
+    <label>Hawker centre <input name="centre" required></label>
+    <label>Stall unit number <input name="unit" required></label>
+    <label>Years in operation <input name="years_op" required></label>
+    <label>Monthly rental (S$) <input name="rental" required></label>
+
+    <h2>Financial information</h2>
+    <label>Average monthly revenue, last 12 months (S$) <input name="revenue" required></label>
+    <label>Average monthly operating costs (S$) <input name="costs" required></label>
+    <label>Number of employees <input name="employees" required></label>
+    <label>CPF contribution statements (PDF) <input name="cpf_docs" type="file" required></label>
+    <!-- File requirements (format, size, how many months) are not stated anywhere;
+         users find out the upload failed after submitting. -->
+    <label>Income tax Notice of Assessment (PDF) <input name="noa_doc" type="file" required></label>
+    <label>Bank statements, last 6 months (PDF) <input name="bank_docs" type="file" required></label>
+
+    <h2>Grant utilisation plan</h2>
+    <label>Requested amount (S$) <input name="amount" required></label>
+    <label>Description of intended use (min 200 words) <textarea name="plan" rows="10" required></textarea></label>
+    <label>Quotations from vendors (PDF) <input name="quote_docs" type="file" required></label>
+
+    <h2>Declarations</h2>
+    <label><input type="checkbox" name="decl_accuracy" required> I declare the information is accurate</label>
+    <label><input type="checkbox" name="decl_consent" required> I consent to verification with relevant agencies</label>
+
+    <h2>Processing fee</h2>
+    <p>A non-refundable administrative fee applies. The amount will be shown on the
+       payment page after you submit this form.</p>
+    <label>Card number <input name="card_number" required></label>
+    <label>Expiry <input name="card_expiry" required></label>
+    <label>CVC <input name="card_cvc" required></label>
+    <label><input type="checkbox" name="save_card" checked> Save this card for future government payments</label>
+    <!-- Saved cards: raw PAN + expiry are written to the `saved_cards` table.
+         There is no page anywhere to view, update, or remove a saved card. -->
+
+    <button type="submit">Submit and pay</button>
+    <!-- On success: HTTP 302 back to the agency homepage. No confirmation screen.
+         On failure: static page saying "Error 500 — transaction failed". -->
+  </form>
+  <p class="note">Note: after online submission, please print the completed summary
+     page, sign it, and mail it to our office within 5 working days. Applications
+     without the signed hardcopy will not be processed.</p>
+</main>
+<script>
+  // Session expires 15 minutes after login; the server discards form state.
+  // There is no save-draft function. Refreshing the page clears all fields.
+</script>

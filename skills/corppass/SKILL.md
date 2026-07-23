@@ -211,3 +211,6 @@ When reviewing an existing Corppass integration, walk this list:
 - **The catalog controls that mandate all this** — AC-7 (Corppass for public users),
   AC-12 (SSO), and friends live in the **access-control** skill; session hardening and
   per-request authorization are **secure-coding-as**.
+- **The transaction around the login** — the **transactions-payments** skill owns the
+  rest of the DSS TX family (multi-step flow, save draft, payment/refund UX, receipts,
+  status tracking) that consumes this skill's TX-6 Myinfo Business/EDH pre-fill.

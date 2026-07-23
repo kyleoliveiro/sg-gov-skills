@@ -235,8 +235,12 @@ The shell is necessary, not sufficient. Compose with the sibling skills:
   requirement as PR-2, plus the wider LM detection controls.
 - **security-testing** — the ST-3 vulnerability-disclosure programme the footer's
   "Report Vulnerability" link must point to.
-- **singpass** / **corppass** — Transactions & Payments (TX): the Singpass/Myinfo
-  (individuals) and Corppass/Myinfo Business (entities) login and pre-fill that plug into
-  this shell. Use **singpass-legacy** / **corppass-legacy** for pre-FAPI 2.0 integrations.
+- **transactions-payments** — the DSS Transactions & Payments family (TX-1..15): the
+  transaction flows, payment/refund UX, receipts, and status tracking that live inside
+  this shell.
+- **singpass** / **corppass** — the Singpass/Myinfo (individuals) and Corppass/Myinfo
+  Business (entities) login and TX-6 pre-fill that plug into this shell. Use
+  **singpass-legacy** / **corppass-legacy** for pre-FAPI 2.0 integrations.
 
-Receipts, PayNow, and the cybersecurity catalog are also out of scope here.
+Receipts and PayNow belong to **transactions-payments**; the cybersecurity catalog is
+also out of scope here.

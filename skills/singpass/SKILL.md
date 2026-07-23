@@ -203,3 +203,6 @@ DPoP, PKCE). Demo app: https://github.com/singpass/demo-app.
   **access-control**. This skill implements the login and TX-6 pre-fill;
   **sg-service-shell** owns the surrounding DSS page shell. Session hardening,
   secrets, and error handling around the flow are **secure-coding-as**.
+- **The transaction around the login** — the **transactions-payments** skill owns
+  the rest of the DSS TX family (multi-step flow, save draft, payment/refund UX,
+  receipts, status tracking) that consumes this skill's TX-6 Myinfo pre-fill.

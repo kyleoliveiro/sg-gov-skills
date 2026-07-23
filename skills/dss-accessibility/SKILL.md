@@ -398,3 +398,7 @@ the statement); WU-7 adds SG-specific nav-placement requirements beyond WCAG.
   skill owns the accessibility tooling and thresholds; secure-pipeline owns the
   gating pattern and pipeline hardening around it. Load both when wiring
   accessibility scanners into CI.
+- **transactions-payments** — the DSS TX family for the same forms and flows:
+  steps, save draft, payment, receipts, status tracking. TX owns the journey;
+  this skill owns making every step of it accessible (labels, errors, status
+  messages, timeouts). Load both when building a transactional flow.

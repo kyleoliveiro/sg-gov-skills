@@ -1,0 +1,65 @@
+{
+  "skill_name": "transactions-payments",
+  "evals": [
+    {
+      "id": 0,
+      "name": "audit-seeded-transaction-flow",
+      "prompt": "Review our hawker grant application flow against the Singapore government's Digital Service Standards requirements for transactions and payments. I've included the application form markup and the product team's notes on how the flow behaves end to end. Give us an audit report (audit.md) with pass/fail per requirement, the fix for each failure, and a note on which fixes need an agency policy decision rather than engineering.",
+      "expected_output": "An audit report keyed to TX control IDs that catches the seeded violations across the whole journey (prerequisites, form structure, drafts, pre-fill, payment and refund transparency, stored cards, outcome messaging, acknowledgements, and status tracking), distinguishes engineering fixes from agency policy decisions, and pairs every failure with a concrete fix.",
+      "files": [
+        "files/apply.html",
+        "files/FLOW-NOTES.md"
+      ],
+      "assertions": [
+        "Report catches at least 11 of the 14 seeded TX violations listed in seeded_violations",
+        "Findings cite DSS Transactions & Payments control IDs (TX-n)",
+        "Flags the print-sign-mail hardcopy requirements (both the submission summary and the acceptance form) as digital-first failures, recommending a digital alternative such as Sign with Singpass unless a named legal regulation requires the physical step (TX-1)",
+        "Flags the missing pre-transaction information page - eligibility, required documents with accepted formats, processing time, payment modes, and the fee - and the fee being revealed only at the payment step (TX-2, TX-7)",
+        "Flags the single-page 20+ field form with no steps and no progress indicator, recommending a logical multi-step structure with an indicator (TX-3, TX-4)",
+        "Flags the missing save-draft function and the 15-minute session expiry destroying form state (TX-5)",
+        "Flags the absence of Myinfo pre-fill despite Singpass login - name, NRIC, DOB, address should be offered from Myinfo, routing the integration itself to the singpass skill (TX-6)",
+        "Flags the raw card storage with no way to view, update, or remove saved cards, recommending gateway tokenisation and a stored-payment-management screen (TX-8)",
+        "Flags the silent 302-redirect on success and the bare Error 500 on failure: requires an explicit success/failure screen (TX-9), failure reasons with alternative actions and an appeal/enquiry channel (TX-10), and post-payment details with receipt number, date, amount, and method (TX-11)",
+        "Flags the missing acknowledgement email/download (TX-13), the uncommunicated 4-6 week processing timeframe (TX-12), and the missing status notifications and online tracking page (TX-14, TX-15)",
+        "Identifies the refund policy content, disclosable rejection reasons, and the processing-time commitment as agency policy decisions to obtain, not values to invent, while the display surfaces for them are engineering fixes",
+        "Report is structured pass/fail per requirement as asked and does not invent violations that are not present"
+      ],
+      "seeded_violations": [
+        "Submission requires printing, signing, and mailing a summary page; disbursement requires a mailed acceptance form (TX-1)",
+        "No pre-transaction page: eligibility, required documents/formats, processing time, and payment modes undisclosed before the form (TX-2)",
+        "Single page with 20+ ungrouped-into-steps fields (TX-3)",
+        "No progress indicator (TX-4)",
+        "No save-draft; 15-minute session expiry discards all form state (TX-5)",
+        "No Myinfo pre-fill despite Singpass login - all personal fields typed manually (TX-6)",
+        "S$20 fee revealed only at payment; refund policy exists but is published nowhere (TX-7)",
+        "Raw card details stored by default with no view/update/remove capability (TX-8)",
+        "Success is a silent 302 redirect to the homepage - no success message (TX-9)",
+        "Failure is a bare 'Error 500' page with no reason, alternatives, or appeal channel (TX-10)",
+        "No post-payment details displayed - no receipt number, date, amount, or method (TX-11)",
+        "4-6 week processing time communicated nowhere (TX-12)",
+        "No acknowledgement sent or downloadable (TX-13)",
+        "No status-change notifications and no online status tracking - hotline only (TX-14, TX-15)"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "build-licence-transaction-flow",
+      "prompt": "We're building the online application flow for a Singapore government agency's pet licence e-service: applicants sign in with Singpass, fill in their particulars and the pet's details, upload a vaccination certificate, pay a S$15 licence fee, and receive the licence decision within 5 working days. Design and scaffold the transaction flow (React or clearly structured HTML/JS is fine) so it meets the government's Digital Service Standards for transactions and payments — cover the journey from before the user starts through payment to what happens after submission.",
+      "expected_output": "A transaction flow that meets TX-1..TX-15: a prerequisites page with fees and refund policy, a multi-step form with progress indicator and save-draft, Myinfo pre-fill behind Singpass, transparent payment with tokenised storage and a receipt, explicit success/failure handling with actionable failure details, acknowledgement delivery, and status notifications with online tracking - justified against TX control IDs.",
+      "files": [],
+      "assertions": [
+        "The flow starts with a pre-transaction page listing eligibility, required documents with accepted formats, estimated completion and processing time, payment modes, the S$15 fee, and the refund policy (TX-2, TX-7)",
+        "The transaction is fully digital end to end - no printing, wet signatures, or in-person steps (TX-1)",
+        "The form is broken into logical steps of related fields (e.g. applicant, pet, documents, review, payment) with a progress indicator showing position and remaining steps (TX-3, TX-4)",
+        "A visible save-draft function exists with saved-draft feedback and a resume path, and session expiry does not destroy entered data (TX-5)",
+        "Applicant particulars are offered via Myinfo pre-fill behind the Singpass login, remain reviewable, and are not re-asked; the design routes the wire-level integration to the Singpass/Myinfo integration rather than reimplementing it (TX-6)",
+        "Payment shows the fee and refund policy on the payment page; any stored payment method is a gateway token (no raw card data at rest) with the ability to update and remove it (TX-7, TX-8)",
+        "The flow ends on an explicit success or failure screen with clear visual cues, and failures include the reason, alternative actions, and an appeal or enquiry channel (TX-9, TX-10)",
+        "After payment the user sees and can download the payment details - receipt/acknowledgement number, date, item, method, amount (TX-11)",
+        "The 5-working-day decision timeframe is communicated before starting and on the success screen/acknowledgement, and an acknowledgement with key details is sent and/or downloadable (TX-12, TX-13)",
+        "Status updates are pushed on changes and an online status-tracking page exists with clear status labels, timelines, and required actions (TX-14, TX-15)",
+        "The response cites TX control IDs to justify the flow design"
+      ]
+    }
+  ]
+}

@@ -27,7 +27,8 @@
       "description": "Implement controls from the Singapore Government Digital Service Standards Control Catalog.",
       "skills": [
         "./skills/dss-accessibility",
-        "./skills/sg-service-shell"
+        "./skills/sg-service-shell",
+        "./skills/transactions-payments"
       ]
     },
     {
