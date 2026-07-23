@@ -97,6 +97,8 @@ Each skill lives in [`skills/`](skills/) as a folder with a `SKILL.md` entry poi
 
 Every skill ships with an eval suite under `skills/<skill>/evals/`. Each eval is a realistic delivery task: scaffold a portal shell, audit a seeded service, build authenticated endpoints. Each is graded against objective assertions ("every input has a programmatic label", "secrets are read from the environment, never hardcoded", "the Gen-AI overlay controls are emitted"). We run every task twice on the same model, once with the skill and once without, then score the fraction of assertions met.
 
+> **Benchmark refresh pending:** the Cybersecurity skills now include a third holdout scenario and separate description-trigger datasets. The historical results below cover the two scenarios named in the table; the new holdouts are intentionally not folded into the scores until they have been run with the same three-run methodology.
+
 | Skill | Scenarios | Assertions | With skill | Without skill | Lift |
 | ----- | :-------: | :--------: | :--------: | :-----------: | :--: |
 | [ssp-navigator](skills/ssp-navigator/) | 2 | 18 | **100%** | 22% | +78 pts |

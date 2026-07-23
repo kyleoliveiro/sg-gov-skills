@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Audit our Terraform and data-handling SOP against Singapore Government DP-1 through DP-8: residency, encryption, GCC tenancy, sanitisation, witnessed destruction, DLP, and classification disclosure.",
+    "should_trigger": true
+  },
+  {
+    "query": "Design data protection for an agency case-management system that stores CONFIDENTIAL data in AWS and has an on-prem scanning appliance. Use the SSP parameters rather than inventing requirements.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our S3 replication and backup-copy jobs send case records from Singapore to us-east-1. Identify the ICT&SS residency finding and implement enforceable region guardrails.",
+    "should_trigger": true
+  },
+  {
+    "query": "Review whether encryption is actually enabled for RDS, EBS, S3, queues, caches, snapshots, and internal service-to-service traffic in this GCC workload.",
+    "should_trigger": true
+  },
+  {
+    "query": "Draft a storage disposal procedure for government data on failed disks and retired NAS appliances, including recognised sanitisation, destruction, agency witnesses, and evidence records.",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up DLP for a ministry collaboration and cloud-storage environment so sensitive transfers are detected and blocked rather than merely inventoried.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our officer form accepts pasted case notes but gives no security-classification ceiling. Implement the DP-8 disclosure in the UI and user guidance.",
+    "should_trigger": true
+  },
+  {
+    "query": "Assess a proposed SaaS service that may process agency data outside the central cloud tenant. Map residency, encryption, tenancy, and DLP gaps to the government Data Protection controls.",
+    "should_trigger": true
+  },
+  {
+    "query": "We are migrating an agency workload from Azure to GCC AWS. Produce a data-movement plan that preserves Singapore residency, encryption on every hop, backups, tenant guardrails, and sanitisation of the old storage.",
+    "should_trigger": true
+  },
+  {
+    "query": "Explain how the PDPA exclusion for public agencies relates to PSGA and ICT&SS obligations, then audit this system's concrete DP controls without treating the exclusion as a relaxation.",
+    "should_trigger": true
+  },
+  {
+    "query": "Choose approved cryptographic algorithms, design envelope encryption, set key rotation periods, and configure HSM-backed key storage under CK-1 through CK-4.",
+    "should_trigger": false
+  },
+  {
+    "query": "Fix unsalted password hashing, hardcoded secrets, unsafe SQL, CSP, HSTS, and file uploads in this application.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up CloudTrail, database audit logs, off-box storage, GCSOC forwarding, retention, and log sanitisation.",
+    "should_trigger": false
+  },
+  {
+    "query": "We need a privacy notice and consent language for a private-sector Singapore ecommerce site under the PDPA. No government system is involved.",
+    "should_trigger": false
+  },
+  {
+    "query": "Configure immutable backups, recovery testing, RTO/RPO, and annual business continuity exercises for a government service.",
+    "should_trigger": false
+  },
+  {
+    "query": "Review IAM roles, MFA, inactive users, account reviews, SCIM provisioning, and government SSO.",
+    "should_trigger": false
+  },
+  {
+    "query": "Build a Myinfo v5 pre-fill integration with FAPI 2.0, DPoP, consent scopes, and the Singpass Developer Portal.",
+    "should_trigger": false
+  },
+  {
+    "query": "Create a security-testing programme with host vulnerability scans, CSPM, security.txt, independent VAPT, and remediation SLAs.",
+    "should_trigger": false
+  },
+  {
+    "query": "Determine which SSP applies based on system risk, data classification, cloud versus on-prem hosting, and CII status.",
+    "should_trigger": false
+  },
+  {
+    "query": "Route public and confidential prompts between overseas and Singapore-hosted GenAI APIs, add no-log/no-train terms, and evaluate model outputs.",
+    "should_trigger": false
+  }
+]

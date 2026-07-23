@@ -58,6 +58,24 @@
         "Mentions preferring SSO (Singpass/Corppass for public users) or passwordless before building password auth, per AS-5",
         "Provides or plans a forced-password-change / session-revocation path for suspected account compromise (AS-15)"
       ]
+    },
+    {
+      "id": 2,
+      "name": "design-cryptographic-key-lifecycle",
+      "prompt": "Design the cryptography and key-management layer for a Java Spring Boot service used by a Singapore government agency. The service encrypts CONFIDENTIAL case attachments with envelope encryption, signs outbound webhook messages, and verifies signed callbacks from a partner. It runs in GCC on AWS and may use KMS or CloudHSM. Produce a short architecture note and representative Java code showing maintained-library use, authenticated encryption, signature verification, key establishment, rotation, inventory and ownership, access policy, storage, audit logging, failure handling, and emergency revocation. Map the work to AS-14 and CK-1 through CK-4. Any algorithm, key size, rotation interval, or cryptoperiod governed by the SSP must be requested or represented as an unresolved parameter, not invented.",
+      "expected_output": "A Java-oriented cryptographic design that uses maintained standard libraries and managed KMS/HSM capabilities, applies authenticated envelope encryption and safe signature verification, and implements the CK-1..CK-4 key lifecycle without hardcoding or exporting key material or fabricating SSP parameters.",
+      "files": [],
+      "assertions": [
+        "Uses maintained platform or well-established cryptographic libraries and managed KMS/HSM primitives rather than custom cryptography, deprecated algorithms, or homemade key derivation (AS-14)",
+        "Uses authenticated encryption for attachments and separates encrypted data from wrapped data keys, without placing plaintext master keys or long-lived private keys in source, configuration, logs, or ordinary application storage",
+        "Defines CK-1 key establishment and trust: secure generation/import, partner public-key or certificate validation, intended key usage, provenance, and authenticity before accepting callback signatures",
+        "Defines CK-2 rotation and cryptoperiod handling with versioned key identifiers, controlled activation and retirement, decrypt/verify support for permitted old versions, rewrapping or migration where required, and emergency rotation/revocation",
+        "Defines CK-3 lifecycle management with a key inventory, named owner/custodian, purpose, classification, status, creation/activation/retirement/destruction records, access reviews, backup/recovery where applicable, and auditable administration",
+        "Defines CK-4 storage with non-exportable KMS or HSM protection, least-privilege key policies, separation of duties, and restricted administrative and application use",
+        "Representative Java code authenticates before releasing plaintext, verifies signatures before processing callbacks, fails closed on cryptographic errors, and avoids leaking sensitive material in exceptions or logs",
+        "Cites AS-14 and CK-1 through CK-4 accurately and identifies related secrets, logging, data-protection, and access-control boundaries without misattributing them",
+        "Does not invent SSP-governed algorithms, key sizes, rotation periods, or cryptoperiods; it marks them as parameters to obtain while still giving an implementable structure"
+      ]
     }
   ]
 }

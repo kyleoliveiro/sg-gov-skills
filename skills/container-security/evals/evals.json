@@ -58,6 +58,24 @@
         "The response cites CS control IDs to justify the hardening choices",
         "Does not misattribute image signing/verification to the CS family - if signing is mentioned, it is correctly placed under SC-7/SC-8 (Software Supply Chain)"
       ]
+    },
+    {
+      "id": 2,
+      "name": "harden-ecs-fargate-workload",
+      "prompt": "We are moving a Python API for a Singapore government agency from EKS to Amazon ECS on Fargate in GCC. Design the container build, task definition, service networking, registry, scanning, and runtime monitoring under CS-1 through CS-11. Provide a hardened Dockerfile and representative ECS task-definition JSON. The workload writes temporary files during PDF generation, retrieves a database password, and must call one internal API. Explain how Kubernetes-specific controls translate to ECS rather than inventing Kubernetes objects. Leave the SSP-defined CS-7 scan location unresolved if it is not supplied.",
+      "expected_output": "A platform-appropriate ECS/Fargate container design covering all CS controls without assuming Kubernetes: immutable minimal images, runtime secrets, non-root/read-only execution with scoped ephemeral storage, private registry and scanning, private control-plane/service access, security-group segmentation, and AWS-compatible runtime detection.",
+      "files": [],
+      "assertions": [
+        "Dockerfile uses a minimal immutable base identified by digest, a non-root numeric user, no baked credentials, and a multi-stage build or otherwise excludes build tooling from runtime (CS-1 through CS-4)",
+        "Includes Dockerfile linting and image scanning, with blocking policy and the scan location tied to cs-7_prm_1 rather than invented (CS-5 and CS-7)",
+        "Uses a private ECR repository with restricted push/pull permissions, immutable tags or digest deployment, and no public-registry dependency at runtime (CS-8)",
+        "Task definition uses readonlyRootFilesystem, non-root user, no privileged mode or unnecessary Linux capabilities, and a narrowly scoped writable ephemeral mount for PDF temporary files (CS-4 and CS-6)",
+        "Retrieves the database password at runtime from a managed secret store with a scoped task role, without placing plaintext secret values in the image, task-definition JSON, or logs (CS-3)",
+        "Restricts ECS service ingress and egress with private subnets and least-privilege security groups so only the required caller and internal API paths are allowed (CS-9 and CS-10 translated to ECS)",
+        "Uses ECS/Fargate-compatible runtime threat detection and response, such as GuardDuty Runtime Monitoring where supported, with alert ownership and replace-from-clean-image remediation (CS-11)",
+        "Explains Kubernetes-specific concepts only as analogies and does not require namespaces, NetworkPolicy, or an EKS API endpoint for an ECS workload",
+        "Cites CS-1 through CS-11 accurately and keeps artifact signing/verification under SC-7/SC-8 rather than claiming they are CS controls"
+      ]
     }
   ]
 }

@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Audit our CloudTrail, VPC Flow Logs, ALB logs, database audit logs, host events, retention, and GCSOC forwarding against ICT&SS LM-1 through LM-21.",
+    "should_trigger": true
+  },
+  {
+    "query": "Design end-to-end logging and monitoring for a public agency portal on GCC: tamper-resistant off-box storage, all security sources, sanitisation, central management, detections, SLOs, WOGAA, and defacement monitoring.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our application logs NRICs, bearer tokens, and passwords before forwarding them to the SIEM. Identify the LM control failure and implement pre-recording masking and tokenisation.",
+    "should_trigger": true
+  },
+  {
+    "query": "The team says Sentry is enough, but there is no GuardDuty, automated security alerting, SOC forwarding, or response owner. Review the monitoring posture for a Singapore Government system.",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up anomalous database activity monitoring and UEBA for privileged officers and service accounts, with documented triage and escalation under LM-13 and LM-20.",
+    "should_trigger": true
+  },
+  {
+    "query": "Add DORA software-delivery metrics, SLOs, the four golden signals, abnormal resource-usage alerts, and security detection-update automation to our operations baseline.",
+    "should_trigger": true
+  },
+  {
+    "query": "Review a Terraform stack where logs remain on EC2, developers can delete the S3 log archive, CloudTrail is absent, and security logs expire after 30 days instead of the SSP's 365.",
+    "should_trigger": true
+  },
+  {
+    "query": "Prepare SSP evidence for logging: separate storage, immutability and access, five security-log sources, retention, OCSF/ECS formats, GCSOC subscription, alerting, and sanitisation.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our public website needs WOGAA and web-defacement detection, but the team also needs to distinguish those from ordinary uptime monitoring. Map the design to the LM controls.",
+    "should_trigger": true
+  },
+  {
+    "query": "The SSP leaves the detection-update cadence blank. Explain how to flag the parameter gap without inventing a number and design automation once the agency supplies it.",
+    "should_trigger": true
+  },
+  {
+    "query": "Add console.log statements around this small private startup API so I can debug a failing request. There is no government compliance context.",
+    "should_trigger": false
+  },
+  {
+    "query": "Configure an independent VAPT, host vulnerability scans, CSPM, security.txt, and severity-based remediation SLAs.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up AWS backups, immutable retention, recovery testing, RTO/RPO, and a business continuity exercise.",
+    "should_trigger": false
+  },
+  {
+    "query": "Fix IAM wildcard roles, missing MFA, dormant accounts, local officer passwords, and unmanaged admin laptops.",
+    "should_trigger": false
+  },
+  {
+    "query": "Build a generic Grafana dashboard showing request count and average latency for my hobby application.",
+    "should_trigger": false
+  },
+  {
+    "query": "Design network segmentation, private endpoints, WAF, IDS, remote access, and firewall-change alerts.",
+    "should_trigger": false
+  },
+  {
+    "query": "Harden a Kubernetes workload with non-root users, a read-only root filesystem, private registry, image scanning, and runtime protection.",
+    "should_trigger": false
+  },
+  {
+    "query": "Write a privacy notice and cookie banner for a private-sector Singapore website under the PDPA.",
+    "should_trigger": false
+  },
+  {
+    "query": "Configure GitHub Actions to run SAST, SCA, tests, SBOM generation, signing, and OIDC deployment.",
+    "should_trigger": false
+  },
+  {
+    "query": "Determine which SSP profile applies and output the Level 0, Level 1, and Level 2 control baseline.",
+    "should_trigger": false
+  }
+]

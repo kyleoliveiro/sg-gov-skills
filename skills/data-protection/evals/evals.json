@@ -55,6 +55,24 @@
         "Specifies the highest permitted classification (CONFIDENTIAL / Sensitive Normal) at or near every input field in the officer-facing UI and in the user guide (DP-8)",
         "Scopes encryption algorithm and key management choices to the Cryptography/Key Management (CK) family (secure-coding-as) rather than inventing them here, and does not fabricate DP controls that do not exist"
       ]
+    },
+    {
+      "id": 2,
+      "name": "assess-saas-data-boundary",
+      "prompt": "An agency team wants to use a SaaS case-collaboration product. The vendor hosts the primary tenant in Singapore but sends telemetry to Australia, stores support attachments in the US, keeps disaster-recovery copies in Japan, controls its own cloud accounts, and promises encryption without identifying which data stores or internal hops are covered. Officers can paste CONFIDENTIAL / Sensitive Normal case details into free-text fields, and exported files can be shared through public links. Assess the proposal against DP-1 through DP-8 and produce a decision record listing pass, fail, evidence needed, compensating design, and agency/SSP decisions. Distinguish a vendor-managed SaaS boundary from the agency central-tenancy requirement instead of blindly requiring the vendor to join GCC. Do not invent residency or classification exceptions.",
+      "expected_output": "A nuanced SaaS data-protection assessment that traces every data flow and copy, verifies encryption and DLP, handles vendor tenancy according to the actual DP-4 applicability and SSP, requires disposal and witness evidence where applicable, and adds classification disclosure while refusing to assume overseas processing is approved.",
+      "files": [],
+      "assertions": [
+        "Builds a data-flow and data-copy inventory covering primary records, telemetry, support attachments, backups/DR, logs, exports, subprocessors, support access, and deletion paths before deciding DP-1 compliance",
+        "Flags overseas telemetry, support attachments, and DR copies for DP-1 assessment and requires explicit SSP/agency authority or redesign; it does not assume that a Singapore primary tenant makes every data flow resident",
+        "Requires service-by-service evidence for encryption at rest and TLS on external and internal hops, including backups, support systems, telemetry, and exports, rather than accepting a generic vendor promise (DP-2 and DP-3)",
+        "Assesses DP-4 central tenancy according to the SaaS control's actual applicability and agency SSP, requiring governance and evidence for the vendor boundary without incorrectly demanding that the vendor cloud account join the agency AWS Organization",
+        "Requires documented deletion, sanitisation, media-destruction, and witness or assurance evidence appropriate to logical SaaS storage and any physical media handling (DP-5 and DP-6)",
+        "Designs DLP that detects and blocks public-link sharing and other unauthorised exports of classified data, with monitoring and incident handling rather than relying on user policy alone (DP-7)",
+        "Requires a maximum-classification disclosure at or near free-text and attachment inputs and in guidance, aligned to the approved SaaS ceiling rather than the system's aspirational use (DP-8)",
+        "Produces a clear pass/fail/evidence-needed decision record with owners and unresolved SSP or contractual decisions, and does not invent a residency exception",
+        "Uses DP-1 through DP-8 accurately and routes cryptographic algorithm/key-lifecycle detail to CK and vendor certification/whitelisting to PM where relevant"
+      ]
     }
   ]
 }

@@ -54,6 +54,25 @@
         "Prioritisation accounts for known active exploitation, e.g. consulting CISA's Known Exploited Vulnerabilities catalog, ahead of raw severity ordering (ST-5)",
         "Consolidates findings from all sources (host scans, CSPM, VAPT, public disclosure reports, and CI scanners) into one tracked register with found dates and SLA due dates, while correctly scoping CI SAST/dependency scanning to the Secure Development family (secure-pipeline) rather than counting it as ST-1 coverage - and does not fabricate ST controls that do not exist"
       ]
+    },
+    {
+      "id": 2,
+      "name": "retest-hybrid-remediation",
+      "prompt": "A Singapore Government service has completed an independent VAPT across its Azure cloud workload and two on-prem Windows servers. The report contains one Critical authentication bypass, three High findings, and several Medium issues. The supplier says the Critical fix is deployed, wants screenshots accepted as closure, proposes deferring one High for six months, and has excluded the on-prem servers from retest because their application code did not change. The SSP sets Critical 10 days, High 30 days, Medium 90 days, authenticated host scans every 14 days, continuous CSPM, and annual independent VAPT. Design the remediation, evidence, and retest workflow under ST-1 through ST-5, including how risk acceptance and changed scope are handled.",
+      "expected_output": "An audit-ready hybrid remediation plan that validates fixes through independent retesting, keeps all assets in recurring host scanning and cloud posture coverage as applicable, handles scope changes explicitly, applies SSP deadlines, and requires authorised time-bounded risk acceptance rather than supplier assertions.",
+      "files": [],
+      "assertions": [
+        "Requires the Critical authentication-bypass fix to be independently retested against the original reproduction steps and relevant variants; screenshots or supplier attestation alone do not close the finding",
+        "Keeps both on-prem Windows servers in authenticated host vulnerability scanning every 14 days under ST-1 even if application code did not change, and distinguishes this recurring assessment from VAPT retesting",
+        "Maintains continuous CSPM for the Azure estate under ST-2 and explicitly treats it as inapplicable to on-prem hosts rather than pretending it covers them",
+        "Defines retest scope from the original findings, affected components, shared dependencies, fix side effects, environment parity, and any architecture or code changes, documenting every approved scope exclusion (ST-4)",
+        "Applies the SSP deadlines exactly: Critical 10 days, High 30 days, Medium 90 days, with due dates based on discovery and tracked remediation/retest status (ST-5)",
+        "Requires any High deferral to receive the designated approving authority's documented acceptance with rationale, compensating controls, owner, expiry, review date, and residual risk; supplier preference is insufficient",
+        "Keeps findings open until remediation is verified or valid risk acceptance is recorded, preserving original evidence, fix version, deployment evidence, retest result, and closure approval in one register",
+        "Plans regression and targeted testing where the authentication fix can affect adjacent flows and requires a new or expanded independent test when scope or architecture changes materially",
+        "Maintains the public disclosure channel and intake process during remediation and routes newly reported related issues into the same triage and SLA workflow (ST-3/ST-5)",
+        "Cites ST-1 through ST-5 accurately and does not treat SAST/SCA, CSPM, host scans, VAPT, and retesting as interchangeable"
+      ]
     }
   ]
 }

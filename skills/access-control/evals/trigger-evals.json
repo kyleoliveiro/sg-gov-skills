@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Our agency portal has accumulated IAM users, service accounts, and vendor roles across AWS. Audit the Terraform and account export against the Singapore Government AC controls, including least privilege, the account inventory, MFA, dormant accounts, and access reviews.",
+    "should_trigger": true
+  },
+  {
+    "query": "Design authentication and authorisation for a new public permit service: companies apply through the public portal and agency officers use an internal console. We need the right Corppass versus government SSO split and ICT&SS access-control evidence.",
+    "should_trigger": true
+  },
+  {
+    "query": "The VAPT found orphaned contractor accounts, wildcard admin permissions, and production access from unmanaged laptops. Turn this into an IM8-successor remediation plan with the relevant AC control IDs.",
+    "should_trigger": true
+  },
+  {
+    "query": "Help us configure SCIM provisioning, automatic leaver deprovisioning, quarterly entitlement reviews, and validation tests for our WOG AAD-connected application. The SSP contains AC lifecycle parameters.",
+    "should_trigger": true
+  },
+  {
+    "query": "We need a policy for privileged console access to a GCC workload: MFA, short-lived credentials, managed endpoints, device posture, break-glass accounts, and separation of duties for a High-Risk CII system.",
+    "should_trigger": true
+  },
+  {
+    "query": "Review accounts.csv and iam.tf for a Singapore ministry system. Check expired and inactive accounts against the SSP periods, identify default credentials and stale access keys, and produce pass/fail findings.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our internal case-management product keeps its own officer passwords. Should it use the Government SSO, and what AC controls govern the migration, MFA placement, provisioning, and account inventory?",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up access controls for developers administering production remotely. Include MDM, hardened endpoints, identity-and-device conditional access, least privilege, and evidence an agency security reviewer will expect.",
+    "should_trigger": true
+  },
+  {
+    "query": "An API key used by CI has never been rotated and the SSP credential-rotation parameter is blank. Explain the compliant treatment without inventing a rotation period, and propose a move to temporary credentials.",
+    "should_trigger": true
+  },
+  {
+    "query": "Create an end-to-end ICT&SS Access Control checklist for onboarding, transfers, access changes, terminations, non-human accounts, privileged roles, reviews, and separation of duties.",
+    "should_trigger": true
+  },
+  {
+    "query": "Implement the FAPI 2.0 Singpass authorization flow with PAR, PKCE, DPoP, userinfo, and Myinfo v5 scopes in our Node application.",
+    "should_trigger": false
+  },
+  {
+    "query": "Fix SQL injection, weak password hashing, missing CSP, unsafe uploads, and stack-trace leakage in this Express service for an agency project.",
+    "should_trigger": false
+  },
+  {
+    "query": "Build an RFC 9116 security.txt file and a vulnerability remediation register with the Critical, High, Medium, and Low deadlines from our SSP.",
+    "should_trigger": false
+  },
+  {
+    "query": "Our employee offboarding SOP needs exit interviews, return of equipment, confidentiality reminders, and background-screening requirements. Draft the HR security process.",
+    "should_trigger": false
+  },
+  {
+    "query": "Configure VPC segmentation, private endpoints, WAF, IDS, and firewall-change alerts for our cloud network.",
+    "should_trigger": false
+  },
+  {
+    "query": "Review our CloudTrail, VPC Flow Logs, database audit logs, GCSOC forwarding, retention, and alerting against LM-1 through LM-21.",
+    "should_trigger": false
+  },
+  {
+    "query": "Harden this Dockerfile and Kubernetes Deployment: digest-pin the base, run non-root, use runtime secrets, make the filesystem read-only, and add image scanning.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up GitHub branch protection, secret scanning, SAST, dependency scanning, SBOM generation, artifact signing, and OIDC deployment for a government repository.",
+    "should_trigger": false
+  },
+  {
+    "query": "Write a general RBAC middleware function for a private startup's blog admin panel. This is not a Singapore Government system and has no compliance requirements.",
+    "should_trigger": false
+  },
+  {
+    "query": "Determine which SSP profile applies to our new cloud system and list the resulting Level 0, Level 1, and Level 2 control baseline.",
+    "should_trigger": false
+  }
+]

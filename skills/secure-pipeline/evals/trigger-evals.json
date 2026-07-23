@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Audit our GitHub Actions, Dockerfile, and repository settings against Singapore Government SD-1..SD-10 and SC-1..SC-9, with pass/fail findings and concrete fixes.",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up a new agency repository with push protection, protected branches, required tests and reviews, SAST, SCA, DAST, SBOMs, signed artifacts, OIDC, and environment segregation.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our workflow uses mutable action tags, npm install, long-lived AWS keys, and an unsigned image deployed straight to production. Rewrite it with SD/SC control traceability.",
+    "should_trigger": true
+  },
+  {
+    "query": "Design a GitLab CI pipeline for a government service using protected branches and environments, secret detection, SAST/IaC/SCA/DAST, provenance, signing, verification, and SSP scan parameters.",
+    "should_trigger": true
+  },
+  {
+    "query": "The team builds official releases on a laptop from a personal GitHub repository. Move it to a sanctioned central platform with reproducible CI builds, provenance, and peer review.",
+    "should_trigger": true
+  },
+  {
+    "query": "Create an SSDLC adoption plan under SD-10 and show how threat modelling, security requirements, code review, automated gates, release evidence, and vulnerability feedback fit the lifecycle.",
+    "should_trigger": true
+  },
+  {
+    "query": "Add DAST to our staging pipeline using the SSP-defined location and frequency, block unsafe production promotion, and preserve evidence for an ICT&SS audit.",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up an InnerSource workflow for reusable agency components under SC-9: sanctioned hosting, maintainers, contribution policy, review, issue tracking, versioning, and secure releases.",
+    "should_trigger": true
+  },
+  {
+    "query": "Review whether our test command can be bypassed with '|| true', whether approvals dismiss on new commits, and whether staging and production share credentials or data.",
+    "should_trigger": true
+  },
+  {
+    "query": "Prepare CI/CD evidence for an SSP review, including every SD and SC control, unresolved agency parameters, repo settings, workflows, artifact records, and exceptions.",
+    "should_trigger": true
+  },
+  {
+    "query": "Fix SQL injection, weak hashing, unsafe sessions, CSP, HSTS, file uploads, and hardcoded application secrets.",
+    "should_trigger": false
+  },
+  {
+    "query": "Harden a Dockerfile and Kubernetes Deployment under CS-1 through CS-11, including private registries and runtime protection.",
+    "should_trigger": false
+  },
+  {
+    "query": "Perform an independent penetration test, publish security.txt, enable host scans and CSPM, and track remediation SLAs.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up a simple GitHub Actions workflow that runs npm test for my personal open-source toy project. There is no government or compliance context.",
+    "should_trigger": false
+  },
+  {
+    "query": "Review IAM least privilege, MFA, dormant accounts, access reviews, SSO, SCIM, and managed endpoints.",
+    "should_trigger": false
+  },
+  {
+    "query": "Design VPC segmentation, WAF, private endpoints, hybrid connectivity, IDS, VPN, and firewall alerts.",
+    "should_trigger": false
+  },
+  {
+    "query": "Configure immutable backups, recovery tests, RTO/RPO, multi-AZ failover, autoscaling, and load testing.",
+    "should_trigger": false
+  },
+  {
+    "query": "Audit CloudTrail, VPC Flow Logs, database logs, GCSOC forwarding, retention, sanitisation, and UEBA.",
+    "should_trigger": false
+  },
+  {
+    "query": "Integrate Corppass FAPI 2.0 for company users, entity roles, third-party authorisation, and Myinfo Business.",
+    "should_trigger": false
+  },
+  {
+    "query": "Determine which cybersecurity SSP applies and list its Level 0, Level 1, and Level 2 controls.",
+    "should_trigger": false
+  }
+]

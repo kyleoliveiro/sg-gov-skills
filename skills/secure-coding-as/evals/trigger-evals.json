@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Review this Express service for a Singapore agency and report ICT&SS AS/CK findings: validation, SQL injection, passwords, sessions, secrets, headers, uploads, errors, cryptography, and key handling.",
+    "should_trigger": true
+  },
+  {
+    "query": "Build registration, login, password reset, and session handling for an agency e-service using parameterised Postgres queries, Argon2, schema validation, rate limiting, safe errors, and SSP-defined parameters.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our VAPT found IDOR, reflected XSS, wildcard CSP, weak HSTS, stack traces, and a file processed before malware scanning. Remediate the application with AS control traceability.",
+    "should_trigger": true
+  },
+  {
+    "query": "Design cryptographic key establishment, rotation, lifecycle management, and HSM-backed storage for application signing and encryption keys under CK-1 through CK-4.",
+    "should_trigger": true
+  },
+  {
+    "query": "Review a Java Spring API for IM8-successor application controls. Focus on trust-boundary validation, parameterised persistence, object-level authorisation, secret injection, headers, sessions, uploads, and error hygiene.",
+    "should_trigger": true
+  },
+  {
+    "query": "The source hardcodes a DB password and session secret, hashes passwords with SHA-1, and generates reset tokens with Math.random. Produce severity-rated fixes without inventing SSP password or session values.",
+    "should_trigger": true
+  },
+  {
+    "query": "Implement a secure upload endpoint for a government service: validate type and size, quarantine, malware-scan before parsing, avoid shell interpolation, store safely, and return generic errors.",
+    "should_trigger": true
+  },
+  {
+    "query": "Audit our CSP, HSTS, output encoding, authentication throttling, session expiry, forced password-change path, and maintained cryptographic libraries against AS-3, AS-4, AS-9, AS-10, AS-11, AS-14, and AS-15.",
+    "should_trigger": true
+  },
+  {
+    "query": "We are adding envelope encryption to an agency service. Review algorithm/library selection, KMS key policies, key rotation, separation of key material from data, and emergency revocation with CK control IDs.",
+    "should_trigger": true
+  },
+  {
+    "query": "Do a pull-request security review for a Singapore Government API and distinguish application-code findings from IAM, data protection, pipeline, and container controls.",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up branch protection, signed commits, CodeQL, Dependabot, SBOMs, cosign, and GitHub OIDC for AWS deployments.",
+    "should_trigger": false
+  },
+  {
+    "query": "Audit IAM users, MFA, access reviews, inactive accounts, government SSO, SCIM provisioning, and endpoint posture.",
+    "should_trigger": false
+  },
+  {
+    "query": "Configure container digest pinning, non-root execution, runtime secrets, read-only filesystems, private EKS API access, NetworkPolicy, and Falco.",
+    "should_trigger": false
+  },
+  {
+    "query": "Review VPC Flow Logs, CloudTrail, GCSOC forwarding, retention, structured formats, UEBA, and security alerting.",
+    "should_trigger": false
+  },
+  {
+    "query": "Write a simple login form for my personal demo using an in-memory user list. It will never be deployed and has no Singapore Government context.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up Singpass FAPI 2.0 PAR, PKCE, DPoP, Myinfo scopes, identity claims, and application onboarding.",
+    "should_trigger": false
+  },
+  {
+    "query": "Design encrypted backups, immutable retention, restoration tests, RTO/RPO, and disaster recovery exercises.",
+    "should_trigger": false
+  },
+  {
+    "query": "Create a VAPT scope, RFC 9116 disclosure channel, vulnerability register, KEV prioritisation, and remediation SLA workflow.",
+    "should_trigger": false
+  },
+  {
+    "query": "Audit overseas LLM routing, no-log/no-train agreements, safetensors loading, uploads, output evaluations, and hallucination acknowledgement.",
+    "should_trigger": false
+  },
+  {
+    "query": "Determine whether the Low-Risk Cloud, Medium-Risk Cloud, High-Risk CII, Sandbox, or Gen-AI SSP applies.",
+    "should_trigger": false
+  }
+]

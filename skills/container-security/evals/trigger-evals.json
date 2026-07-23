@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Audit this Dockerfile, Kubernetes Deployment, and registry setup against the Singapore Government Container Security controls CS-1 through CS-11. Produce pass/fail findings and concrete fixes.",
+    "should_trigger": true
+  },
+  {
+    "query": "Containerise our agency Node service for EKS in GCC. Give us a digest-pinned minimal image, non-root runtime, safe secret injection, read-only filesystem, private registry, scanning, segmentation, and runtime protection.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our VAPT says the pod is privileged, mounts hostPath, runs as root, and pulls node:latest from Docker Hub. Remediate it with ICT&SS CS control traceability.",
+    "should_trigger": true
+  },
+  {
+    "query": "Review an ECS Fargate task definition for a Singapore agency workload. Check image provenance, private registry use, runtime secrets, vulnerability scans, non-root execution, and runtime detection under the container catalog.",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up a secure container build pipeline with Hadolint, Trivy, digest pinning, a minimal multi-stage runtime image, and blocking scan gates based on the SSP's CS-7 parameter.",
+    "should_trigger": true
+  },
+  {
+    "query": "The EKS API is public to 0.0.0.0/0 and every workload is in default with no NetworkPolicy. Explain the applicable government container controls and supply corrected manifests.",
+    "should_trigger": true
+  },
+  {
+    "query": "We accidentally committed DB_PASSWORD as Docker ENV and copied .npmrc into an image layer. Give an incident-aware remediation that rotates the secrets and redesigns build-time and runtime injection.",
+    "should_trigger": true
+  },
+  {
+    "query": "Prepare container-security evidence for an SSP review: base-image selection, scanning location, private registry, orchestrator API exposure, workload isolation, and live runtime protection.",
+    "should_trigger": true
+  },
+  {
+    "query": "Harden our OpenShift deployment for a government project while preserving arbitrary-UID compatibility and mapping every recommendation to CS-1..CS-11.",
+    "should_trigger": true
+  },
+  {
+    "query": "Explain why Falco or GuardDuty runtime monitoring replaces host AV and EDR inside containers, and how to configure the rest of the CS-11 response workflow.",
+    "should_trigger": true
+  },
+  {
+    "query": "Configure EC2 host patching, CIS benchmarks, SSM Session Manager, anti-malware, EDR, NTP, DNSSEC, and end-of-support inventory.",
+    "should_trigger": false
+  },
+  {
+    "query": "Add cosign artifact signing, SLSA provenance, and a deploy-time signature verification gate to GitHub Actions under SC-7 and SC-8.",
+    "should_trigger": false
+  },
+  {
+    "query": "Design VPC subnets, PrivateLink endpoints, WAF, DDoS protection, hybrid connectivity, and IDS for an agency system.",
+    "should_trigger": false
+  },
+  {
+    "query": "Scan our Kubernetes cluster as part of an independent VAPT and create a vulnerability register with remediation deadlines.",
+    "should_trigger": false
+  },
+  {
+    "query": "Write an ordinary Dockerfile for my personal static website. I just want a small nginx image and there is no government or regulated context.",
+    "should_trigger": false
+  },
+  {
+    "query": "Build secure Express authentication endpoints with parameterised SQL, Argon2, rate limiting, safe errors, and server-side sessions.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up immutable backups, recovery tests, RTO/RPO, a disaster recovery plan, and business continuity exercises.",
+    "should_trigger": false
+  },
+  {
+    "query": "Audit IAM users, privileged MFA, dormant contractors, access reviews, government SSO, and managed admin endpoints.",
+    "should_trigger": false
+  },
+  {
+    "query": "We need central GCSOC log forwarding, VPC Flow Logs, CloudTrail, database audit logs, retention, sanitisation, and automated detections.",
+    "should_trigger": false
+  },
+  {
+    "query": "Determine whether our sandbox should use the Sandbox, Low-Risk Cloud, or Medium-Risk Cloud SSP and emit the control levels.",
+    "should_trigger": false
+  }
+]

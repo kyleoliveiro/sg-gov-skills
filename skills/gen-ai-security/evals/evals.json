@@ -55,6 +55,25 @@
         "Handles the provider API key as an application secret from a vault / environment (AS-8, secure-coding-as), never hardcoded, and does not misattribute this to a GA control",
         "Cites GA control IDs to justify the design choices and does not fabricate GA controls that do not exist (e.g. treats prompt-injection defense as GA-7 safety testing + application security, not a standalone GA control)"
       ]
+    },
+    {
+      "id": 2,
+      "name": "agentic-tool-use-review",
+      "prompt": "Review the design for an internal Singapore Government GenAI agent used by case officers. The agent retrieves CONFIDENTIAL / Sensitive High case records, can draft correspondence, and can call tools that update a case status or send an email. The LLM endpoint is Singapore-hosted, but a third-party tracing service receives prompts and tool results. Officers can attach multiple ZIP files. The agent currently treats retrieved text and tool output as trusted instructions, performs no regression evaluation when prompts or tools change, and shows only a small 'AI-generated' badge. Produce a control-mapped redesign under GA-1 through GA-8 plus DP-8, separating requirements stated by the catalog from additional application-security safeguards.",
+      "expected_output": "A control-accurate agentic redesign covering classification and every data recipient, binding no-log/no-train terms, authorized hosting and model loading, constrained uploads, an agent-specific evaluation gate, and explicit risk acknowledgement, while clearly labeling tool authorization and prompt-injection isolation as implementation safeguards rather than invented GA controls.",
+      "files": [],
+      "assertions": [
+        "Maps the classification and data flow for prompts, retrieved records, attachments, traces, tool arguments/results, outputs, and retained history, applying GA-1/GA-2 to every external or hosted recipient rather than only the primary model endpoint",
+        "Treats the third-party tracing service as a separate provider/data recipient requiring an authorized classification boundary and legally binding no-log/no-train handling; otherwise removes or self-hosts tracing (GA-3)",
+        "Keeps any self-hosted model or embedding component in an environment authorized for the data class and uses only SSP-approved non-executable formats and approved pinned loaders, requesting unresolved GA-5 parameters (GA-4/GA-5)",
+        "Replaces multiple ZIP uploads with controlled per-file upload, extraction limits, type/size validation, malware/DLP inspection, classification confirmation, and safe handling of nested or active content (GA-6 plus related controls)",
+        "Adds DP-8 maximum-classification disclosure at prompt and attachment inputs based on the approved end-to-end route",
+        "Defines GA-7 evaluation scenarios for indirect prompt injection in retrieved files, unauthorized or excessive tool calls, data leakage through traces/email, unsafe correspondence, hallucinated case facts, approval-boundary bypass, and ordinary accuracy/quality",
+        "Makes evaluation a release gate that reruns when the model, system prompt, retrieval corpus, tool schema/permissions, or orchestration code changes, with thresholds, owners, evidence, and rollback",
+        "Requires an explicit pre-use acknowledgement and usable risk/limitation disclosure beyond a passive badge, including the need for officer verification before consequential actions (GA-8)",
+        "Adds least-privilege tool authorization, explicit confirmation for consequential actions, separation of untrusted retrieved content from instructions, and complete audit trails, while labeling these as application/access/logging safeguards rather than fabricating new GA controls",
+        "Cites GA-1 through GA-8 and DP-8 accurately and distinguishes catalog requirements from recommended defence-in-depth"
+      ]
     }
   ]
 }

@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Audit our host scans, CSPM, security.txt, penetration-test records, and vulnerability register against Singapore Government ST-1 through ST-5.",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up pre-launch security testing for a public agency service: authenticated host scans, continuous cloud posture checks, RFC 9116 disclosure, independent VAPT, and remediation SLAs.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our team counts Dependabot and CodeQL as host vulnerability assessment. Explain the SD versus ST boundary and configure the scan type and cadence from the SSP.",
+    "should_trigger": true
+  },
+  {
+    "query": "Fix a security.txt file served at /security.txt with an expired Expires field and no reporting link, and map the result to ST-3.",
+    "should_trigger": true
+  },
+  {
+    "query": "The last pen test was three years ago, performed by our developers with no scope, report, or retest. Produce a compliant independent VAPT plan for the next launch.",
+    "should_trigger": true
+  },
+  {
+    "query": "Review vulnerability-register.csv for overdue Critical and High findings, informal risk acceptance, missing compensating controls, and CISA KEV items left at low priority.",
+    "should_trigger": true
+  },
+  {
+    "query": "Create a consolidated vulnerability-management SOP for findings from host scans, CSPM, VAPT, disclosures, SAST, and SCA, preserving the correct control-family boundaries.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our SSP leaves the vulnerability scan type blank but sets a 14-day cadence. Flag the parameter gap rather than choosing one, and design the programme around the supplied cadence.",
+    "should_trigger": true
+  },
+  {
+    "query": "Plan a remediation retest after VAPT, including evidence of closure, scope for changed components, residual-risk approval, and tracking against ST-5 deadlines.",
+    "should_trigger": true
+  },
+  {
+    "query": "Prepare an audit-ready ST control matrix with owners, tools, frequencies, evidence locations, open findings, risk acceptances, and next test dates.",
+    "should_trigger": true
+  },
+  {
+    "query": "Add CodeQL, dependency scanning, secret scanning, SBOM generation, and signed releases to GitHub Actions.",
+    "should_trigger": false
+  },
+  {
+    "query": "Fix a single SQL injection bug in my personal Express project. I do not need a testing programme or government control mapping.",
+    "should_trigger": false
+  },
+  {
+    "query": "Configure VPC segmentation, WAF, DDoS protection, IDS, VPN access, and firewall alerts.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up immutable backups, recovery tests, a disaster recovery plan, and annual business continuity exercises.",
+    "should_trigger": false
+  },
+  {
+    "query": "Review IAM accounts, MFA, access reviews, credential rotation, SSO, and endpoint posture.",
+    "should_trigger": false
+  },
+  {
+    "query": "Run npm audit once and tell me whether my hobby project's dependencies have known vulnerabilities.",
+    "should_trigger": false
+  },
+  {
+    "query": "Harden a container image and Kubernetes workload with digest pins, non-root execution, scanning, private registry, and Falco.",
+    "should_trigger": false
+  },
+  {
+    "query": "Design cryptographic key rotation, HSM storage, and envelope encryption under CK-1 through CK-4.",
+    "should_trigger": false
+  },
+  {
+    "query": "Audit data residency, encryption, GCC tenancy, storage sanitisation, DLP, and input classification disclosure.",
+    "should_trigger": false
+  },
+  {
+    "query": "Choose the applicable SSP profile and list the control levels before the project begins its security implementation.",
+    "should_trigger": false
+  }
+]

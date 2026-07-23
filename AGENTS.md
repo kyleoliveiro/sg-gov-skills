@@ -12,5 +12,7 @@ Delivering software inside government is its own discipline — the ICT&SS Polic
 
 - One skill per delivery concern; kebab-case folder names.
 - Use the skill-creator skill to scaffold and iterate; validate with `npm run skills:validate -- skills/<skill-name>`.
-- Run trigger evals with `npm run skills:eval -- <skill-name>` (extra `run_eval` flags pass through, e.g. `--runs-per-query 3`); run with no args to list skills that have eval sets. Evals shell out to `claude -p`, so they consume real usage.
+- Task-performance scenarios live in `skills/<skill-name>/evals/evals.json`; description-trigger queries live separately in `skills/<skill-name>/evals/trigger-evals.json`.
+- Validate Cybersecurity task and trigger datasets locally with `npm run skills:evals:validate`.
+- Run description-trigger evals with `npm run skills:eval -- <skill-name>` (extra `run_eval` flags pass through, e.g. `--runs-per-query 3`); run with no args to list skills that have trigger sets. Trigger evals shell out to `claude -p`, so they consume real usage.
 - When adding a skill, also add it to the appropriate catalog table in `README.md` and installer group in `.claude-plugin/marketplace.json`.

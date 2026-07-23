@@ -59,6 +59,23 @@
         "Rotates static credentials (API keys, access keys, tokens) every 90 days per the SSP or replaces them with time-restricted credentials (e.g. STS, OIDC federation for CI) (AC-13), and changes default credentials before first use (AC-6)",
         "Specifies endpoint requirements: hardened posture-checked devices for remote developer/admin access (AC-5) with endpoint device management/MDM (AC-9), identity- and device-based access rather than flat VPN trust (AC-10), and a single primary user per endpoint (AC-11)"
       ]
+    },
+    {
+      "id": 2,
+      "name": "high-risk-cii-separation-of-duties",
+      "prompt": "We are reviewing privileged access for a High-Risk Cloud CII system. Today one platform engineer can request a production change, approve the pull request, assume the production-admin role, deploy it, alter the security logs, and approve their own emergency-access review. Human access is through WOG AAD, but Terraform automation and CI each use shared long-lived service-account keys. Design a corrected operating model and evidence plan under the Singapore Government Access Control controls. Cover separation of duties, privileged roles, non-human identities, break-glass access, reviews, lifecycle validation, and managed endpoints. Do not invent any SSP parameter that is not supplied.",
+      "expected_output": "A High-Risk CII access-control design centred on AC-16 separation of duties, with incompatible request/approve/deploy/audit/risk-acceptance functions assigned to independent identities; distinct, inventoried workload identities using short-lived federation; tightly controlled break-glass access; least-privilege privileged roles; MFA/SSO and managed devices for humans; lifecycle automation and validation; recurring evidence-producing reviews; and explicit requests for missing SSP parameters.",
+      "files": [],
+      "assertions": [
+        "Treats AC-16 separation of duties as a substantive High-Risk CII requirement and separates change request, approval, deployment, log administration/audit, and emergency-access review so one person cannot complete the whole chain",
+        "Defines distinct named human roles and distinct non-human identities in the AC-14 account inventory, with ownership, purpose, privileges, authentication method, lifecycle state, and review evidence",
+        "Replaces shared long-lived Terraform and CI keys with separate workload identities using short-lived federation such as OIDC/STS or managed identity, applying AC-1 least privilege and AC-13 credential controls",
+        "Designs break-glass access with individual attribution, strong MFA, time-bounded activation, approval where practicable, immutable monitoring, post-use review, and automatic expiry rather than a shared standing administrator",
+        "Keeps human privileged access behind government-managed SSO with MFA and managed posture-checked endpoints (AC-2, AC-5, AC-9, AC-10, AC-12)",
+        "Automates joiner/mover/leaver and workload-identity lifecycle changes and requires validation testing of that automation (AC-8 and AC-15)",
+        "Includes recurring privileged-access and separation-of-duties reviews with retained evidence, remediation tracking, and independent review of emergency access (AC-4 and AC-16)",
+        "Uses AC control IDs accurately and asks for missing SSP frequencies, expiry periods, or approval parameters instead of inventing values"
+      ]
     }
   ]
 }

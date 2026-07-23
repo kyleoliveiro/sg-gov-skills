@@ -64,6 +64,25 @@
         "Output references SD/SC control IDs so each setting traces to the SSP",
         "SSP-defined parameters (sd-4_prm_1, sd-5_prm_1/2, sd-6_prm_1/2, sd-9_prm_1) are flagged as agency decisions to fetch from the SSP, not invented"
       ]
+    },
+    {
+      "id": 2,
+      "name": "gitlab-ssdlc-dast-innersource",
+      "prompt": "We are moving a shared Java library and two consuming agency services into an agency-managed GitLab group. Design the repository and pipeline operating model under the Singapore Government Secure Development and Software Supply Chain controls. The current pipeline can ignore failed tests, has no DAST, and deploys to production from feature branches. The library is intended for InnerSource reuse but has no owners, contribution policy, issue tracker, versioning, or supported-release process. Provide representative .gitlab-ci.yml fragments and a concise SSDLC/InnerSource runbook. Cover the sanctioned central repository, mandatory tests, DAST using the SSP parameters, lifecycle security activities, contribution governance, protected promotion, and evidence. Do not invent missing scan locations, frequencies, or approval thresholds.",
+      "expected_output": "A GitLab implementation that closes SD-3, SD-9, SD-10, SC-1, and SC-9 while integrating existing SD/SC controls: sanctioned hosting, non-bypassable tests, SSP-parameterised DAST, an explicit SSDLC, governed InnerSource reuse, protected environments, and audit evidence.",
+      "files": [],
+      "assertions": [
+        "Places all repositories in the agency-sanctioned central GitLab group with controlled ownership, visibility, backup/retention, and an inventory of authoritative repositories (SC-1)",
+        "Makes unit, integration, and relevant security tests mandatory merge and deployment gates; failures cannot be ignored with allow_failure, || true, manual bypass, or an unprotected alternate pipeline (SD-3)",
+        "Includes DAST against the appropriate non-production environment with authentication where required, safe test-data handling, result retention, remediation gating, and scan location/frequency tied to SSP parameters rather than invented (SD-9)",
+        "Defines an SSDLC spanning security requirements, architecture/threat modelling, implementation standards, review, automated verification, release approval, production feedback, vulnerability handling, and retained evidence (SD-10)",
+        "Defines InnerSource governance with named maintainers/CODEOWNERS, contribution and security-reporting guidance, issue tracking, required review and tests, semantic or otherwise controlled versioning, changelogs, supported versions, and deprecation handling (SC-9)",
+        "Uses protected branches/tags and protected environments so feature branches cannot deploy production, with approval and separation appropriate to the environment (SD-2, SD-7, SD-8, SC-3)",
+        "Representative GitLab CI uses immutable or digest-pinned dependencies/images where possible, lockfile-strict builds, protected variables or workload identity, and preserves build/test/scan artifacts as evidence",
+        "Includes software composition/dependency scanning, SAST/IaC scanning, SBOM generation, and artifact signing/verification without treating them as substitutes for tests or DAST",
+        "Explains how consuming services receive and verify approved library releases rather than depending on arbitrary branches or unreviewed source",
+        "Cites SD-3, SD-9, SD-10, SC-1, and SC-9 accurately and requests all missing SSP parameters"
+      ]
     }
   ]
 }

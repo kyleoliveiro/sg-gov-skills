@@ -32,6 +32,7 @@ link to authoritative sources, and be prescriptive about what to do.>
 
 - **Small and composable.** A skill should cover one delivery concern (e.g. Singpass integration, SGDS compliance, PDPA data handling) — not "building for SG government" in general. Compose rather than merge.
 - **Description is the trigger.** Agents decide to load a skill from its `description` alone. State what it does, when to use it, and the phrases that should trigger it.
+- **Keep eval types separate.** Task-performance scenarios belong in `evals/evals.json`; description-trigger queries belong in `evals/trigger-evals.json`. The files use different schemas and must not be interchanged.
 - **Keep SKILL.md lean.** Put the always-needed instructions in SKILL.md; push long reference material into `references/` and tell the agent when to read each file.
 - **Cite authoritative sources.** Government requirements change — link to the canonical source (e.g. developer.gov.sg, designsystem.tech.gov.sg, PDPC guidelines) so users can verify currency.
 - **Model-agnostic.** No agent-specific or model-specific assumptions; these skills should work anywhere the `skills` CLI can install them.

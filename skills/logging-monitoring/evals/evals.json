@@ -57,6 +57,23 @@
         "Sets up service health monitoring: SLOs/SLIs and the 4 Golden Signals (latency, traffic, errors, saturation) plus resource-usage/abnormal-usage alerts (LM-10, LM-11, LM-16)",
         "Addresses the public-facing specifics: WOGAA implementation for the portal (LM-18) and web defacement detection and recovery measures (LM-14)"
       ]
+    },
+    {
+      "id": 2,
+      "name": "database-ueba-delivery-monitoring",
+      "prompt": "Our agency runs a case-management platform with PostgreSQL, WOG AAD for officers, GitLab CI, and a central SIEM. Basic infrastructure logs already reach the SIEM. Extend the monitoring design for the controls the team has not addressed: anomalous database activity, user and entity behaviour analytics, and software-delivery performance. Include the events and identity context to collect, detection examples, privacy and access boundaries, response ownership, DORA-style delivery metrics, and evidence that the controls remain effective. Use LM control IDs and keep security detection distinct from employee-surveillance profiling.",
+      "expected_output": "A focused design implementing LM-13 database anomaly monitoring, LM-20 UEBA, and LM-17 software-delivery performance monitoring, tied into existing LM logging, central SIEM, alerting, sanitisation, and response workflows without indiscriminate employee surveillance.",
+      "files": [],
+      "assertions": [
+        "Implements LM-13 anomalous database activity monitoring using database audit events and examples such as unusual bulk reads/exports, privileged schema changes, access outside expected patterns, repeated denied queries, and access to unusually sensitive tables",
+        "Implements LM-20 UEBA by correlating individual and non-human identity, device, access, network, and resource events against a documented baseline, with examples that distinguish compromised accounts from ordinary operational variation",
+        "Defines alert triage, severity, owner, escalation, investigation evidence, tuning, and periodic effectiveness review for LM-13 and LM-20 rather than merely enabling a product",
+        "Applies least-privilege access, purpose limitation, retention, sanitisation, and human review to behavioural data so UEBA does not become indiscriminate employee surveillance",
+        "Implements LM-17 software-delivery performance monitoring with deployment frequency, lead time for changes, change failure rate, and time to restore service, sourced from GitLab CI and incident/deployment records",
+        "Explains that DORA metrics support delivery performance and reliability but do not replace security monitoring, database anomaly detection, or UEBA",
+        "Connects these controls to central log management and automated alerting while preserving stable identity, timestamp, source, action, result, and classification context in structured events",
+        "Cites LM-13, LM-17, and LM-20 accurately and does not invent SSP thresholds or detection-update frequencies"
+      ]
     }
   ]
 }

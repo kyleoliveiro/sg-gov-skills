@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Audit our agency chatbot against the Gen-AI SSP overlay. It sends prompts to an overseas API, logs conversations, accepts ZIP uploads, and has no output evaluation or hallucination acknowledgement.",
+    "should_trigger": true
+  },
+  {
+    "query": "Design a public-facing RAG assistant on GCC 2.0 with classification-aware provider routing, no-log/no-train terms, safe uploads, model-change evaluation gates, and user risk acknowledgement.",
+    "should_trigger": true
+  },
+  {
+    "query": "Can a ministry send CONFIDENTIAL case records to this overseas LLM API? Apply GA-1 and GA-2 data-classification boundaries and propose a compliant architecture.",
+    "should_trigger": true
+  },
+  {
+    "query": "Review a self-hosted open-weights model that loads pytorch_model.bin with torch.load on a shared GPU host. Check the approved environment, format, and loader requirements in our SSP.",
+    "should_trigger": true
+  },
+  {
+    "query": "Build a secure document-upload flow for a government GenAI assistant: no bulk archives, type and size checks, per-file classification, DLP scanning, extraction controls, and DP-8 disclosure.",
+    "should_trigger": true
+  },
+  {
+    "query": "Create an evaluation harness for an agency LLM feature covering accuracy, safety, prompt injection, jailbreaks, and output quality, with launch thresholds and reruns after model or prompt changes.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our vendor says API traffic is not used for training but the contract is silent on logging and prompt-cache retention. Assess GA-3 and identify the binding agreement we need.",
+    "should_trigger": true
+  },
+  {
+    "query": "Review an agentic government assistant that can call internal tools. Apply the GenAI controls to prompts, retrieved data, tool outputs, file inputs, model hosting, and user-facing limitations.",
+    "should_trigger": true
+  },
+  {
+    "query": "The app uses safetensors but the loader version floats and the SSP's approved format and loader parameters are blank. Produce a finding without inventing the approved list.",
+    "should_trigger": true
+  },
+  {
+    "query": "Prepare launch evidence for GA-1 through GA-8 plus DP-8 for a Singapore Government LLM service, including provider, hosting, uploads, evaluation, and acknowledgement controls.",
+    "should_trigger": true
+  },
+  {
+    "query": "Fix ordinary SQL injection, CSP, password hashing, session expiry, and hardcoded secrets in an Express app with no AI functionality.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up a generic OpenAI API call for my personal recipe chatbot. It only handles public recipe text and has no Singapore Government context.",
+    "should_trigger": false
+  },
+  {
+    "query": "Configure host EDR, OS patching, CIS hardening, Session Manager, NTP, and end-of-support asset tracking.",
+    "should_trigger": false
+  },
+  {
+    "query": "Audit S3 residency, RDS encryption, TLS, GCC tenant placement, retired-disk sanitisation, and DLP for a non-AI case system.",
+    "should_trigger": false
+  },
+  {
+    "query": "Build GitHub Actions with branch protection, SAST, SCA, SBOMs, signed artifacts, OIDC, and environment segregation.",
+    "should_trigger": false
+  },
+  {
+    "query": "Review Singpass FAPI 2.0 PAR, PKCE, DPoP, identity claims, Myinfo scopes, and app onboarding.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up security.txt, independent penetration tests, authenticated host scans, CSPM, and vulnerability remediation deadlines.",
+    "should_trigger": false
+  },
+  {
+    "query": "Design network segmentation, private endpoints, WAF, DDoS protection, IDS, and VPN controls for our cloud estate.",
+    "should_trigger": false
+  },
+  {
+    "query": "Write marketing copy warning that AI can make mistakes. There is no product implementation, security review, or government context.",
+    "should_trigger": false
+  },
+  {
+    "query": "Choose the appropriate cybersecurity SSP and DSS profile for a new agency digital service before we design any controls.",
+    "should_trigger": false
+  }
+]
