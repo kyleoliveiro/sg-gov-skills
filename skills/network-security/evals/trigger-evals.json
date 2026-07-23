@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Design the VPC segmentation for a Singapore government e-service on GCC: public, app, and data subnet tiers with security groups between them and controlled egress.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our agency's security groups allow 0.0.0.0/0 ingress on several ports and all egress. Rework the rules to deny by default and allow by exception under the IM8 network controls.",
+    "should_trigger": true
+  },
+  {
+    "query": "Put a WAF, DDoS protection, and a CDN in front of our agency's public-facing portal per the ICT&SS network security requirements.",
+    "should_trigger": true
+  },
+  {
+    "query": "Wire up AWS PrivateLink and VPC endpoints so our agency's private subnets reach S3 and DynamoDB without traversing the internet.",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up mTLS between the microservices of our GCC workload with a service mesh so inter-service calls are authenticated, authorised, and encrypted.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our .gov.sg service's TLS certificate expired in production last month. Move to managed certificates with auto-renewal and expiry alerts.",
+    "should_trigger": true
+  },
+  {
+    "query": "Connect our agency's on-premises data centre to our GCC cloud environment through a secure intermediary instead of pushing files over the public internet.",
+    "should_trigger": true
+  },
+  {
+    "query": "Deploy an IDS/IPS to inspect traffic between our agency's network and untrusted networks, and route the detections to an owner.",
+    "should_trigger": true
+  },
+  {
+    "query": "Send real-time alerts to appointed administrators whenever firewall or security-group rules change in our agency's AWS environment.",
+    "should_trigger": true
+  },
+  {
+    "query": "Lock down remote VPN access for the vendors administering our agency's private network: MFA, managed devices, periodic re-authentication, and no split tunneling.",
+    "should_trigger": true
+  },
+  {
+    "query": "Harden our agency's container images: digest-pinned minimal base, non-root user, read-only root filesystem, image scanning, and a private registry.",
+    "should_trigger": false
+  },
+  {
+    "query": "Pin our agency's data to ap-southeast-1, block cross-region replication, and set up witnessed destruction of the retired storage disks.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up tamper-resistant off-box security log storage with 365-day retention and GCSOC forwarding for our agency system.",
+    "should_trigger": false
+  },
+  {
+    "query": "Configure GitHub Actions with SAST, secret scanning, SBOM generation, and artifact signing for our agency's repository.",
+    "should_trigger": false
+  },
+  {
+    "query": "Fix the IAM wildcard roles, enforce MFA on officer accounts, and clean up dormant accounts across our agency's AWS organisation.",
+    "should_trigger": false
+  },
+  {
+    "query": "Publish an RFC 9116 security.txt, stand up the vulnerability disclosure programme, and define severity-based remediation SLAs for our agency.",
+    "should_trigger": false
+  },
+  {
+    "query": "Which System Security Plan applies to our new agency service, and what are its Level 0 controls?",
+    "should_trigger": false
+  },
+  {
+    "query": "Integrate Singpass login with PAR and DPoP into our citizen-facing portal, including Myinfo pre-fill.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up an nginx reverse proxy with a Let's Encrypt certificate for my personal blog on a cheap VPS.",
+    "should_trigger": false
+  },
+  {
+    "query": "Add parameterised queries, input validation, and salted password hashing to our agency application's login code.",
+    "should_trigger": false
+  }
+]

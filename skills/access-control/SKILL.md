@@ -222,3 +222,6 @@ as the multi-control failure it is (AC-1, AC-2 accountability, AC-14).
 - **secure-pipeline** — SD/SC pipeline controls; CI credentials fall under AC-13.
 - **data-protection** — DP classification decides when Medium-Risk promotion (and the
   AC-2/3/5/6 Level-0 set) applies at all.
+- **network-security** — NS-10 owns the network path for remote admin access (VPN/ZTNA,
+  split-tunneling ban, session re-authentication); AC owns the accounts, MFA policy, and
+  device hardening of the people using it.

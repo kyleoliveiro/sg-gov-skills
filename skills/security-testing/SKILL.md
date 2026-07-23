@@ -184,3 +184,6 @@ SSP parameter that isn't stated, ask for the value; don't guess a cadence or SLA
   once ST-4 or the ST-3 channel surfaces them.
 - **logging-monitoring** — LM's runtime threat detection (LM-9) complements ST-2's
   continuous configuration/posture scanning; the two are complementary, not substitutes.
+- **network-security** — the NS posture (segmentation, deny-by-default, edge filtering)
+  is what ST-1 host scans, ST-2 CSPM, and a network VAPT exercise from the outside;
+  their findings land in the ST-5 register with NS fixes.

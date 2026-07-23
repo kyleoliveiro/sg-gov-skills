@@ -191,3 +191,7 @@ so this doesn't matter" reasoning.
   built and stored; registries and caches are stores too and fall under DP-1/DP-2.
 - **logging-monitoring** — the LM family owns access-log capture, retention, and
   lifecycle; DP-1 still constrains *where* those logs reside, but LM governs them.
+- **network-security** — NS-6 (certificate validity) and NS-7 (authenticated, encrypted
+  service-to-service traffic) are the network mechanics behind DP-3's
+  encryption-in-transit coverage; DP-1 residency constrains where NS's endpoints, edges,
+  and CDN caches may live.

@@ -193,5 +193,10 @@ one.
   programme, and ST-5 sets the remediation SLAs for the CVEs your scans surface.
 - **data-protection** — DP encryption-at-rest for mounted volumes and the registry, and
   the residency (DP-1) that constrains which region the registry and cluster run in.
+- **network-security** — the NS family owns the VPC/subnet/security-group boundary
+  *around* the cluster (NS-1 segmentation, NS-3 deny-by-default, NS-4 private
+  connectivity); CS-10 owns pod-level NetworkPolicy segmentation *inside* it, and CS-9's
+  private API endpoint is the cluster-shaped instance of the same posture. Load both
+  when networking a containerised workload.
 - **logging-monitoring** — CS-11 runtime detections (Falco/GuardDuty) are a log source;
   route them to the LM central alerting and GCSOC pipeline rather than a local sink.

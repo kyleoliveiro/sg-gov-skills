@@ -17,7 +17,8 @@
         "./skills/security-testing",
         "./skills/data-protection",
         "./skills/logging-monitoring",
-        "./skills/access-control"
+        "./skills/access-control",
+        "./skills/network-security"
       ]
     },
     {

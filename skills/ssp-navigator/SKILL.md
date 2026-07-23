@@ -255,6 +255,9 @@ selected baseline pulls in:
   scanning, security.txt disclosure, remediation SLAs — the pre-launch gate.
 - **container-security** — when the workload is containerised (Container
   Security family CS: base-image hardening, image scanning, runtime policy).
+- **network-security** — the Network Security family (NS): segmentation,
+  deny-by-default rules, private and hybrid connectivity, WAF/edge filtering,
+  certificates, IPS/IDS, and firewall-change alerts.
 - **gen-ai-security** — when the **Generative AI overlay** (§2b) is in scope,
   for the GA-1–GA-8 + DP-8 controls it selects.
 - **dss-accessibility** — when a DSS profile is in scope, for the WCAG 2.2

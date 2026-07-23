@@ -211,3 +211,6 @@ not LM; and correct, don't accept, "we have Sentry so monitoring is covered" rea
 - **secure-coding-as** — AS error hygiene (what users see) alongside LM-19 (what logs
   record).
 - **secure-pipeline** — the SD/SC pipeline controls that LM-17's DORA metrics measure.
+- **network-security** — NS-9 IPS/IDS detections and NS-11 firewall-change alerts are
+  security log/alert sources that must feed the LM central pipeline and GCSOC; NS owns
+  the sensors, LM owns the pipeline.

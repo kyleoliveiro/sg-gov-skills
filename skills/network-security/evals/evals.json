@@ -1,0 +1,61 @@
+{
+  "skill_name": "network-security",
+  "evals": [
+    {
+      "id": 0,
+      "name": "audit-seeded-network",
+      "prompt": "Audit our network setup against the Singapore government network security requirements. I've included our Terraform network stack and the infra team's notes on topology, service-to-service traffic, on-prem integration, remote access, and detection. Give us an audit report (audit.md) with pass/fail per requirement and how to fix the failures, in the order you'd tackle them.",
+      "expected_output": "An audit report keyed to NS control IDs that catches the seeded violations across segmentation, resource restrictions, deny-by-default, private connectivity, edge filtering, certificates, inter-service traffic, hybrid connectivity, IPS/IDS, remote access, and firewall-change alerting, and pairs every failure with a concrete network fix.",
+      "files": [
+        "files/network.tf",
+        "files/NETWORK-SETUP.md"
+      ],
+      "assertions": [
+        "Report catches at least 9 of the 11 seeded NS violations listed in seeded_violations",
+        "Findings cite ICT&SS Network Security control IDs (NS-n)",
+        "Flags the flat single-subnet topology with ALB, app, and database sharing one segment and one security group, and the publicly accessible RDS instance (NS-1)",
+        "Flags the public-read S3 statements bucket and disabled public access block as an out-of-VPC resource restriction failure (NS-2)",
+        "Flags the 0.0.0.0/0 all-ports and port-22 ingress rules and the allow-all egress as deny-by-default failures (NS-3)",
+        "Flags the cross-VPC call to the notifications service over a public Elastic IP with plain unauthenticated HTTP as both a private-connectivity failure (NS-4) and an insecure inter-service communication failure (NS-7), including the sslmode=disable database connection",
+        "Flags the absence of WAF/DDoS/CDN in front of the internet-facing ALB (NS-5) and the self-signed, unmonitored, manually imported certificate (NS-6), recommending a managed certificate with auto-renewal and expiry alerts",
+        "Flags the on-prem mainframe pushing files over internet SFTP with no VPN/Direct Connect intermediary (NS-8) and the vendor SSH-from-home remote access with shared key, no MFA, no session logging, and split tunneling (NS-10)",
+        "Flags the missing IDS/IPS (NS-9) and the missing alerts on security-group/firewall rule changes (NS-11) with concrete mechanisms (e.g. GuardDuty/Network Firewall, CloudTrail-EventBridge alerts or Config rules)",
+        "Every failure comes with a concrete fix (tiered subnets, SG references, public access block, PrivateLink/peering, WAF, ACM DNS-validated cert, mTLS/forced TLS, site-to-site VPN, client VPN with MFA), and the report is structured pass/fail per requirement as asked",
+        "Report does not invent violations that are not present, and attributes account/credential governance findings (the shared SSH key ownership) to the Access Control family rather than treating identity policy as an NS control"
+      ],
+      "seeded_violations": [
+        "Single flat public subnet holding ALB, app instances, and RDS; one shared security group; publicly_accessible RDS (NS-1)",
+        "S3 statements bucket with public-read policy and all four public-access-block settings disabled (NS-2)",
+        "Security group with 0.0.0.0/0 ingress on all TCP ports and on port 22, plus allow-all egress (NS-3)",
+        "App calls the notifications service in another VPC over its public Elastic IP - no peering/PrivateLink, traffic transits the internet (NS-4)",
+        "No WAF, DDoS protection, or CDN in front of the internet-facing ALB (NS-5)",
+        "Self-signed 3-year certificate imported by hand, no auto-renewal, no expiry alerts (NS-6)",
+        "App-to-database traffic with sslmode=disable and rds.force_ssl off; app-to-notifications over plain HTTP with no authentication (NS-7)",
+        "On-prem mainframe pushes settlement files over internet SFTP via the open port-22 rule - no VPN/Direct Connect secure intermediary (NS-8)",
+        "No IDS/IPS - no GuardDuty, no Network Firewall (NS-9)",
+        "Vendor admins SSH from home over the internet with a shared key, no MFA, no session logging, personal split-tunnel VPN in use (NS-10)",
+        "No alerts or drift detection on security-group/firewall rule changes (NS-11)"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "design-gcc-network",
+      "prompt": "We're building a public-facing e-service for a Singapore government agency on AWS in GCC 2.0: an ALB fronting containers on ECS, RDS Postgres, an S3 bucket for uploads, and a call to a legacy on-premises system at the agency. Vendor engineers need remote access for maintenance. Design the network architecture to meet the government's network security requirements — give us Terraform (or clearly structured config) for the core pieces plus a short note on edge protection, certificates, detection, and change alerting.",
+      "expected_output": "A tiered VPC design with deny-by-default rules, policy-restricted out-of-VPC resources, private connectivity choices, WAF/CDN edge protection, managed auto-renewing certificates, authenticated and encrypted service-to-service traffic, a secure hybrid path to on-prem, hardened remote access, IPS/IDS, and firewall-change alerts — all justified against NS control IDs.",
+      "files": [],
+      "assertions": [
+        "Design segments the VPC into public (ALB/NAT), private app (ECS), and private data (RDS) tiers, with RDS not publicly accessible (NS-1)",
+        "The uploads S3 bucket gets a public access block and a policy scoped to specific principals/endpoints rather than any public grant (NS-2)",
+        "Security groups deny by default: specific ports, security-group references over CIDRs, no 0.0.0.0/0 ingress except 443 at the edge, and egress is restricted/allowlisted rather than left allow-all (NS-3)",
+        "Private subnets reach S3 and other AWS APIs via VPC gateway/interface endpoints, and any cross-VPC service dependency uses PrivateLink or peering rather than public IPs (NS-4)",
+        "Edge protection includes AWS WAF (managed rule set and/or rate limiting) plus DDoS protection (Shield) and/or CloudFront, with the origin locked to the CDN/WAF path (NS-5)",
+        "TLS uses an ACM (or equivalent managed) certificate with DNS-validated auto-renewal and expiry alerting, signed by a trusted CA - not self-signed or manually imported (NS-6)",
+        "Service-to-service traffic is authenticated and encrypted: TLS forced on the RDS connection and authenticated/encrypted app-to-service calls (mTLS, IAM auth, or equivalent), with the hops logged (NS-7)",
+        "On-premises connectivity goes through a site-to-site VPN or Direct Connect into an inspected transit path - not workload ports exposed to the internet or an office CIDR (NS-8)",
+        "Remote vendor access uses a client VPN or zero-trust proxy with MFA, managed/authorised devices, session re-authentication, split tunneling disabled, and session logging - not direct SSH from the internet (NS-10)",
+        "Detection includes an IPS/IDS mechanism (GuardDuty and/or Network Firewall) (NS-9) and real-time alerts on security-group/firewall rule changes via CloudTrail/EventBridge or Config rules (NS-11)",
+        "The response cites NS control IDs to justify the design choices"
+      ]
+    }
+  ]
+}
