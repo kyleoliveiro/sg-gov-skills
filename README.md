@@ -12,6 +12,25 @@ These skills are small, composable, and adaptable so delivery teams can plug the
 
 **Fifteen skills, each with its own eval suite:** figure out which System Security Plan applies, write and audit code against the security controls, harden your CI/CD pipeline, lock down your containers, secure your Generative AI features, run your VAPT and vulnerability management programme, keep government data resident, encrypted, and properly destroyed, capture, protect, and monitor your logs, govern accounts, identity, and privileged access, integrate Singpass and Corppass for citizen and business login and verified-data pre-fill, meet the WCAG 2.2 accessibility bar, and stand up the mandatory service shell. Loading the relevant skill lifts assertion pass rates from as low as 22% to 100% on the benchmark tasks below.
 
+## Installation
+
+Install with the [`skills` CLI](https://github.com/vercel-labs/skills):
+
+### Install all skills in this repo
+```sh
+npx skills add kyleoliveiro/sg-gov-skills
+```
+
+### Install individual skills
+```
+npx skills add kyleoliveiro/sg-gov-skills -s <skill-name>
+```
+
+The CLI installs into `.agents/skills/` and symlinks them into the agent directories you choose (Claude Code, Cursor, Codex, and others).
+
+Running the first command interactively presents the skills under the same four groupings documented below. Individual skill names and `-s <skill-name>` installs are unchanged.
+
+
 ## What these skills help you do
 
 - Determine which Singapore government System Security Plan applies.
@@ -27,27 +46,11 @@ These skills are small, composable, and adaptable so delivery teams can plug the
 - Meet WCAG 2.2 and Digital Service Standards accessibility requirements.
 - Build an SGDS-compliant Singapore government service shell.
 
-## Who this is for
+## Who these skills are for
 
 These skills are for engineers at GovTech, OGP, and Singapore government agencies, as well as tech leads, security reviewers, accessibility specialists, and vendors working with those agencies. They are also useful to teams preparing for architecture reviews, security assessments, accessibility audits, or production readiness checks.
 
-## Installation
-
-Install with the [`skills` CLI](https://github.com/vercel-labs/skills):
-
-```sh
-# Install all skills in this repo
-npx skills add kyleoliveiro/sg-gov-skills
-
-# Or pick specific skills
-npx skills add kyleoliveiro/sg-gov-skills -s <skill-name>
-```
-
-The CLI installs into `.agents/skills/` and symlinks them into the agent directories you choose (Claude Code, Cursor, Codex, and others).
-
-Running the first command interactively presents the skills under the same four groupings documented below. Individual skill names and `-s <skill-name>` installs are unchanged.
-
-## Skills
+## List of Available Skills
 
 The official [Control Catalog](https://info.standards.tech.gov.sg/control-catalog/) has two catalogs: [Cybersecurity](https://info.standards.tech.gov.sg/control-catalog/cybersecurity/) and [Digital Service Standards](https://info.standards.tech.gov.sg/control-catalog/dss/). The skills below are grouped by the catalog and control domains they directly implement, with National Digital Identity integrations and cross-catalog System Security Plan navigation in their own groups.
 
@@ -155,19 +158,6 @@ The lift is largest where the requirement is hard to guess without knowing the p
 
 *Methodology: scores are the mean pass rate over 3 runs per configuration. Each scenario reflects its most recent benchmark. Three skills had a follow-up iteration that re-ran a single eval after a fix, and those latest results are the ones shown. "Without skill" is the same model on the same prompt with no skill loaded. Numbers will vary by model; treat them as directional, not a leaderboard.*
 
-## Repository layout
-
-```
-skills/           Published skills — one folder per skill, each with a SKILL.md
-.claude-plugin/   Installer grouping metadata for the skills CLI
-skills-lock.json  Lockfile for skills installed locally for authoring (skill-creator, humanizer)
-.agents/skills/   Locally installed authoring skills (gitignored; restore with `npx skills experimental_install`)
-```
-
-## Contributing
-
-See [`skills/README.md`](skills/README.md) for authoring conventions. In short: one folder per skill, kebab-case name, a `SKILL.md` with `name` and `description` frontmatter, and supporting files (`references/`, `scripts/`, `assets/`) only when they earn their place. Add every new skill to the appropriate catalog table above and installer group in [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json).
-
 ## Frequently asked questions
 
 ### What is an Agent Skill?
@@ -201,6 +191,19 @@ These skills are provided "as is", without warranty of any kind, express or impl
 This is an unofficial, community-maintained resource. It is not affiliated with, endorsed by, or published by GovTech, the Singapore Government, or any of its agencies. Nothing here is legal, security, or compliance advice, and installing a skill does not by itself make a system compliant with the ICT&SS Policy Reform, the Digital Service Standards, PDPA, or any other requirement. You are responsible for verifying every control against the authoritative source and your project's System Security Plan.
 
 To the maximum extent permitted by law, the authors and contributors accept no liability for any claim, damages, or other loss arising from the use of this repository. See [LICENSE](LICENSE) for the full terms.
+
+## Contributing
+
+See [`skills/README.md`](skills/README.md) for authoring conventions. In short: one folder per skill, kebab-case name, a `SKILL.md` with `name` and `description` frontmatter, and supporting files (`references/`, `scripts/`, `assets/`) only when they earn their place. Add every new skill to the appropriate catalog table above and installer group in [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json).
+
+### Repository layout
+
+```
+skills/           Published skills — one folder per skill, each with a SKILL.md
+.claude-plugin/   Installer grouping metadata for the skills CLI
+skills-lock.json  Lockfile for skills installed locally for authoring (skill-creator, humanizer)
+.agents/skills/   Locally installed authoring skills (gitignored; restore with `npx skills experimental_install`)
+```
 
 ## License
 
