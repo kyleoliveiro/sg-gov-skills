@@ -18,7 +18,8 @@
         "./skills/data-protection",
         "./skills/logging-monitoring",
         "./skills/access-control",
-        "./skills/network-security"
+        "./skills/network-security",
+        "./skills/resiliency-recovery"
       ]
     },
     {

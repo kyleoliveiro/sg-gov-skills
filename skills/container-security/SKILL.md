@@ -198,5 +198,9 @@ one.
   connectivity); CS-10 owns pod-level NetworkPolicy segmentation *inside* it, and CS-9's
   private API endpoint is the cluster-shaped instance of the same posture. Load both
   when networking a containerised workload.
+- **resiliency-recovery** — RS-1 multi-AZ placement for containerised workloads
+  (multi-AZ node groups, topology spread, pod disruption budgets) and the backup/DR
+  posture around the cluster; CS hardens the containers, RS/BR keeps them available and
+  recoverable.
 - **logging-monitoring** — CS-11 runtime detections (Falco/GuardDuty) are a log source;
   route them to the LM central alerting and GCSOC pipeline rather than a local sink.

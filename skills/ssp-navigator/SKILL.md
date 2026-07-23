@@ -258,6 +258,10 @@ selected baseline pulls in:
 - **network-security** — the Network Security family (NS): segmentation,
   deny-by-default rules, private and hybrid connectivity, WAF/edge filtering,
   certificates, IPS/IDS, and firewall-change alerts.
+- **resiliency-recovery** — the Resiliency (RS) and Backup & Recovery (BR)
+  families: multi-AZ deployment, auto-scaling, load testing, backups and
+  immutable retention, recovery testing, and the DR/BC plans and exercises
+  (six agency-defined cadence parameters live here).
 - **gen-ai-security** — when the **Generative AI overlay** (§2b) is in scope,
   for the GA-1–GA-8 + DP-8 controls it selects.
 - **dss-accessibility** — when a DSS profile is in scope, for the WCAG 2.2

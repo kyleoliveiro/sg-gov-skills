@@ -1,0 +1,82 @@
+[
+  {
+    "query": "Deploy our agency's ECS service across multiple availability zones with load balancing, health checks, and automated failover under the IM8 resiliency controls.",
+    "should_trigger": true
+  },
+  {
+    "query": "Set up auto-scaling for our agency's workload so it absorbs demand spikes without paying for idle peak capacity year-round.",
+    "should_trigger": true
+  },
+  {
+    "query": "Plan and script load testing against a production replica of our government e-service before the national registration window opens.",
+    "should_trigger": true
+  },
+  {
+    "query": "Configure AWS Backup for our agency's RDS databases and EBS volumes, with encrypted backups stored in a separate account.",
+    "should_trigger": true
+  },
+  {
+    "query": "Make our agency's backups immutable with S3 Object Lock so ransomware or a compromised credential can't delete them during the retention window.",
+    "should_trigger": true
+  },
+  {
+    "query": "Schedule and document recovery testing that proves we can fully restore our agency system's data and services within the RTO and RPO.",
+    "should_trigger": true
+  },
+  {
+    "query": "Draft the disaster recovery plan for our agency system: roles, per-scenario recovery procedures, communications, and RTO/RPO targets.",
+    "should_trigger": true
+  },
+  {
+    "query": "Our agency needs a business continuity plan and a tabletop exercise cadence to satisfy the BR controls before the audit.",
+    "should_trigger": true
+  },
+  {
+    "query": "An availability-zone outage took our government portal down for 40 minutes last month. Redesign the deployment so a single AZ failure doesn't cause an outage.",
+    "should_trigger": true
+  },
+  {
+    "query": "Help us decide what backup frequency, immutable retention period, and recovery-test cadence values to record in our agency SSP's backup parameters.",
+    "should_trigger": true
+  },
+  {
+    "query": "Pin our agency's data to Singapore regions, block cross-region replication, and arrange witnessed destruction of the retired storage media.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up SLO dashboards, golden-signal alerts, and GCSOC-forwarded security monitoring for our agency system.",
+    "should_trigger": false
+  },
+  {
+    "query": "Harden our agency's Kubernetes workloads: non-root containers, read-only root filesystems, image scanning, and a private registry.",
+    "should_trigger": false
+  },
+  {
+    "query": "Design the VPC segmentation with deny-by-default security groups and put a WAF in front of our agency service.",
+    "should_trigger": false
+  },
+  {
+    "query": "Add a scheduled-downtime maintenance banner and publish our agency service's operating hours per the DSS shell requirements.",
+    "should_trigger": false
+  },
+  {
+    "query": "Arrange an independent VAPT and continuous cloud security posture management scanning before our agency service launches.",
+    "should_trigger": false
+  },
+  {
+    "query": "Which System Security Plan applies to our new agency system, and which of its controls are Level 0?",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up a nightly cron job to rsync my personal NAS to an external hard drive at home.",
+    "should_trigger": false
+  },
+  {
+    "query": "Add SAST, dependency scanning, and artifact signing to our agency's GitHub Actions pipeline.",
+    "should_trigger": false
+  },
+  {
+    "query": "Fix the SQL injection in our agency portal's login endpoint and add parameterised queries and input validation.",
+    "should_trigger": false
+  }
+]

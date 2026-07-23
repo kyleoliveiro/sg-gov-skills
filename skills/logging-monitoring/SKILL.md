@@ -214,3 +214,6 @@ not LM; and correct, don't accept, "we have Sentry so monitoring is covered" rea
 - **network-security** — NS-9 IPS/IDS detections and NS-11 firewall-change alerts are
   security log/alert sources that must feed the LM central pipeline and GCSOC; NS owns
   the sensors, LM owns the pipeline.
+- **resiliency-recovery** — RS/BR owns multi-AZ failover, scaling, backups, and DR; LM
+  owns the health checks, SLOs, and golden-signal alerting that detect the failures RS
+  absorbs and that load-test results are judged against.

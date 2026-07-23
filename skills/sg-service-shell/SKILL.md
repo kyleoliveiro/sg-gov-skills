@@ -238,6 +238,9 @@ The shell is necessary, not sufficient. Compose with the sibling skills:
 - **transactions-payments** — the DSS Transactions & Payments family (TX-1..15): the
   transaction flows, payment/refund UX, receipts, and status tracking that live inside
   this shell.
+- **resiliency-recovery** — the cybersecurity RS/BR machinery (multi-AZ, auto-scaling,
+  backups, DR) that actually delivers PR-3's 24/7 availability; PR-4's
+  scheduled-downtime notice is what users see when that machinery is interrupted.
 - **singpass** / **corppass** — the Singpass/Myinfo (individuals) and Corppass/Myinfo
   Business (entities) login and TX-6 pre-fill that plug into this shell. Use
   **singpass-legacy** / **corppass-legacy** for pre-FAPI 2.0 integrations.

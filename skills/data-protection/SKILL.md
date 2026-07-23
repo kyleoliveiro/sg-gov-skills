@@ -45,8 +45,9 @@ Two facts anchor everything:
   DLP on uploads is GA-6 and the classification disclosure at model inputs is DP-8 *as
   shipped with that overlay*. This skill owns DP-8 for ordinary internal applications and
   DP-7 for general data flows.
-- **Backups are BR, access logs are LM.** DP-1 still constrains *where* backups and logs
-  may reside, but their lifecycle belongs to those families.
+- **Backups are BR (resiliency-recovery), access logs are LM (logging-monitoring).**
+  DP-1 still constrains *where* backups and logs may reside, but their lifecycle
+  belongs to those families.
 - **The PDPA trap.** Singapore **public agencies are excluded from the PDPA**; the public
   sector regime is the **Public Sector (Governance) Act (PSGA)** plus the ICT&SS/IM8
   policies themselves — with criminal penalties for unauthorised disclosure or misuse of
@@ -195,3 +196,7 @@ so this doesn't matter" reasoning.
   service-to-service traffic) are the network mechanics behind DP-3's
   encryption-in-transit coverage; DP-1 residency constrains where NS's endpoints, edges,
   and CDN caches may live.
+- **resiliency-recovery** — the BR family owns the backup lifecycle (frequency,
+  immutable retention, recovery testing, DR/BC plans); DP-1 constrains where those
+  backups and DR targets reside, DP-2 their encryption, and DP-5/DP-6 the sanitisation
+  of retired backup media.

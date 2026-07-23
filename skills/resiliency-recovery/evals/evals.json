@@ -1,0 +1,58 @@
+{
+  "skill_name": "resiliency-recovery",
+  "evals": [
+    {
+      "id": 0,
+      "name": "audit-seeded-resilience",
+      "prompt": "Audit our placement portal against the Singapore government resiliency and backup & recovery requirements. I've included our Terraform and the ops team's notes on availability history, backups, and plans. Give us an audit report (audit.md) with pass/fail per requirement and evidence, the fix for each failure, and a clear split between what engineering can do now and what we need from the agency first.",
+      "expected_output": "An audit report keyed to RS and BR control IDs that catches the seeded violations across multi-AZ deployment, scaling, load testing, backups, immutability, recovery testing, and the DR/BC plans and exercises, asks for the blank SSP parameter values and RTO/RPO instead of inventing them, and pairs every failure with a concrete fix.",
+      "files": [
+        "files/infra.tf",
+        "files/OPS-NOTES.md"
+      ],
+      "assertions": [
+        "Report catches at least 8 of the 9 seeded RS/BR violations listed in seeded_violations",
+        "Findings cite ICT&SS Resiliency and Backup & Recovery control IDs (RS-n, BR-n)",
+        "Flags the single-AZ deployment - both app servers and the non-multi-AZ database in ap-southeast-1a - as the single point of failure behind last July's outage, recommending multi-AZ subnets, a load balancer with health checks and failover, and cross-AZ data replication (RS-1)",
+        "Flags the fixed peak-sized fleet (two c5.4xlarge idling at 3% CPU) and DNS round-robin as failing dynamic scaling, recommending load balancing with auto-scaling for the seasonal spike (RS-2)",
+        "Flags that no load testing has ever been performed, recommending cadenced tests on a production replica with realistic July-peak traffic shapes rather than treating the live peak as the test (RS-3)",
+        "Flags the backup failures: RDS automated backups disabled with only a single-host pg_dump cron, unbackedup EBS volumes/config/uploaded documents, and backups stored in the same account and region as production (BR-1)",
+        "Flags the 14-day auto-expiring, developer-deletable dump bucket with no object lock as a retention/immutability failure, recommending S3 Object Lock or vault lock plus deny-delete access (BR-3)",
+        "Flags that no restore has ever been attempted and no one knows the procedure (BR-2), and the absent DR plan, undefined RTO/RPO, absent BCP, and never-run exercises (BR-4, BR-5, BR-6), offering a plan/exercise structure or template",
+        "Treats the blank SSP parameters (AZ count, backup frequency, retention days, test cadences) and the undefined RTO/RPO as values to obtain from the agency - flagged as findings in their own right - rather than inventing numbers, and calls out that 'as fast as possible, lose nothing' must be converted into concrete RTO/RPO",
+        "Report is structured pass/fail per requirement with evidence as asked, does not invent violations that are not present, and routes residency/encryption concerns about where backups live to the Data Protection family rather than double-counting them as BR findings"
+      ],
+      "seeded_violations": [
+        "Everything deployed in a single AZ (ap-southeast-1a): one subnet, both app servers, and the database with multi_az = false (RS-1)",
+        "Fixed-size peak-provisioned fleet with DNS round-robin - no load balancer, no health-check failover, no auto-scaling (RS-2)",
+        "No load testing ever performed despite a known 200x seasonal traffic spike (RS-3)",
+        "RDS automated backups disabled (backup_retention_period = 0); only backup is a nightly pg_dump cron on a single app server with no failure alerting (BR-1)",
+        "EBS volumes, application config, and locally stored uploaded documents not backed up at all (BR-1)",
+        "Dumps stored in the same account and region as production - not a secure, separate location (BR-1)",
+        "No restore ever attempted; restore procedure unknown to the current team (BR-2)",
+        "Dump bucket has 14-day auto-expiry, no object lock/immutability, and is deletable by every developer role (BR-3)",
+        "No DR plan, undefined RTO/RPO, no BCP, and no recovery or continuity exercise ever run (BR-4, BR-5, BR-6)"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "design-resilient-workload",
+      "prompt": "We're standing up a new appointment-booking e-service for a Singapore government agency on AWS in GCC: ALB + ECS Fargate, RDS Postgres, S3 for documents. Bookings spike heavily when new clinics open. Design the resiliency and backup & recovery posture to meet the government's requirements — give us the Terraform (or clearly structured config) for the availability and backup pieces, plus the disaster recovery and business continuity artifacts we need and the testing cadence. Our SSP tailoring session is next month, so tell us what values we need to bring to it.",
+      "expected_output": "A multi-AZ, auto-scaling design with cadenced load testing, encrypted separate-location backups with immutable retention, recovery testing against RTO/RPO, and DR plan/BCP/exercise skeletons - with every agency-defined parameter surfaced as an SSP tailoring decision to bring to the session rather than a number invented in config.",
+      "files": [],
+      "assertions": [
+        "Design deploys across multiple availability zones: subnets per AZ, ALB spanning them with health checks, ECS tasks spread across AZs, and RDS multi-AZ so data is replicated (RS-1)",
+        "Auto-scaling is driven by real signals (request count, CPU, or queue depth) to absorb the clinic-opening spikes and scale in afterwards - not a fixed peak-sized task count (RS-2)",
+        "Load testing is specified on a cadence against a production replica with realistic spike-shaped traffic, with pass criteria tied to latency/error SLOs and observed autoscaling behaviour (RS-3)",
+        "Backups use a managed service (AWS Backup) covering RDS and the S3 documents, stored in a separate location (separate account or vault) and encrypted at rest (BR-1)",
+        "Backup immutability is enforced for the retention window via S3 Object Lock and/or backup vault lock, with delete access denied (BR-3)",
+        "Recovery testing is scheduled on a cadence and verifies full restore of data and services measured against RTO and RPO - not just snapshot existence (BR-2)",
+        "A disaster recovery plan skeleton is provided covering roles, per-scenario recovery procedures, communications, and a test log, driven by RTO/RPO from business requirements (BR-4)",
+        "A business continuity plan and exercise cadence are included (referencing checklist/tabletop/simulation formats and the CSA toolkit or equivalent), with exercise records as evidence (BR-5, BR-6)",
+        "The agency-defined parameters - AZ count (rs-1_prm_1), load-test cadence (rs-3_prm_1), backup frequency (br-1_prm_1), recovery-test cadence (br-2_prm_1), retention days (br-3_prm_1), exercise cadence (br-6_prm_1) - and the RTO/RPO are explicitly listed as SSP tailoring decisions to bring to the session, not invented as final values",
+        "Notes that RPO must be consistent with backup frequency, and that where backups reside is additionally constrained by the Data Protection residency control",
+        "The response cites RS and BR control IDs to justify the design choices"
+      ]
+    }
+  ]
+}
