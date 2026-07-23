@@ -9,7 +9,7 @@
   "scripts": {
     "skills:restore": "skills experimental_install",
     "skills:eval": "sh scripts/run-skill-eval.sh",
-    "skills:evals:validate": "node scripts/validate-cybersecurity-evals.mjs",
+    "skills:evals:validate": "node scripts/validate-skill-evals.mjs",
     "skills:validate": "uv run --with pyyaml .agents/skills/skill-creator/scripts/quick_validate.py"
   }
 }

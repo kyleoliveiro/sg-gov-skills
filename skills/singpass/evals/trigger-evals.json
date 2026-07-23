@@ -1,0 +1,22 @@
+[
+  { "query": "We're adding \"Log in with Singpass\" to a new citizen-facing grant portal. Set up the FAPI 2.0 authorization-code flow end to end with PAR, PKCE, and DPoP against id.singpass.gov.sg.", "should_trigger": true },
+  { "query": "Pre-fill our application form with the resident's Myinfo data (name, dob, registered address, and CPF balances) after they log in with Singpass. Which scopes do we request and how do we read the userinfo response?", "should_trigger": true },
+  { "query": "Our Singpass integration keeps failing at the userinfo call with invalid_dpop_proof. The token exchange works but /userinfo returns 401. Help me debug the DPoP proof and the ath claim.", "should_trigger": true },
+  { "query": "We get invalid_client from the token endpoint on our new Singpass app. Walk me through the client assertion (aud, exp, jti) and the JWKS the Singpass Developer Portal expects.", "should_trigger": true },
+  { "query": "Our ID token comes back encrypted and our library throws on decryption. Explain the JWE-wrapped-JWS scheme Singpass uses and how to select the right enc key by kid.", "should_trigger": true },
+  { "query": "We're onboarding a new service on the Singpass Developer Portal. What do staging vs production need, how many test personas do we get, and what does the production app review check?", "should_trigger": true },
+  { "query": "App review flagged our Singpass form. We cache the Myinfo response in the session and reuse it, and we made the government-verified fields editable. What are the compliance rules we're breaking?", "should_trigger": true },
+  { "query": "Some users authenticate with a Singpass Foreign Account and our /userinfo call returns invalid_request for them. How should we handle SFA users who have no Myinfo?", "should_trigger": true },
+  { "query": "Our new Singpass login has to work in our mobile app's WebView and we want a username/password fallback. Is that allowed for new apps, and what login method must we support instead?", "should_trigger": true },
+  { "query": "Should we key our user records on the NRIC from the Singpass ID token sub, or on something else? Explain the identity model and how NRIC is actually returned.", "should_trigger": true },
+  { "query": "A company needs to log its corporate officers into our B2G licensing portal and pull ACRA entity data. Set up the business-user login and corporate pre-fill.", "should_trigger": false },
+  { "query": "Our Myinfo integration from 2021 uses client_secret and PKI_SIGN with an X.509 cert against api.myinfo.gov.sg/com/v3, and signature verification just started failing. Help me fix it.", "should_trigger": false },
+  { "query": "We run a pre-FAPI Singpass login that builds the /auth URL directly and parses the NRIC out of a comma-separated sub. What's the migration path and deadline?", "should_trigger": false },
+  { "query": "Set up MFA, SSO with the government AAD tenant, and access reviews for our internal agency staff console. This is for employees, not the public.", "should_trigger": false },
+  { "query": "Add the Official Government Banner, the WOGAA tracking code, and the standard footer to our new agency website shell.", "should_trigger": false },
+  { "query": "Audit our login page for WCAG 2.2 AA: colour contrast on the buttons, focus order, and screen-reader labels.", "should_trigger": false },
+  { "query": "Review our Express app's session handling and how we store API secrets in the environment for a government service.", "should_trigger": false },
+  { "query": "What does the PDPC advisory say about storing and retaining NRIC numbers, and how long can we keep them?", "should_trigger": false },
+  { "query": "Add Google and Auth0 social login to my personal SaaS side project. It's not a government system.", "should_trigger": false },
+  { "query": "We want users to digitally sign a PDF agreement using Sign with Singpass (Secure Electronic Signatures). How do we integrate the e-signature product?", "should_trigger": false }
+]

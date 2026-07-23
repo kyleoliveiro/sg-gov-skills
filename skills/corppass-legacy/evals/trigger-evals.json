@@ -1,0 +1,22 @@
+[
+  { "query": "Debug our existing Corppass login: the ID token is flat with entityInfo and userInfo claims, and we read CPEntID, CPEnt_TYPE, and CPAccType. Users intermittently fail to log in.", "should_trigger": true },
+  { "query": "Our legacy Corppass integration parses the user out of a comma-separated sub and gates access on CPAccType and ISSPHOLDER. Explain these claims and whether they'll survive migration.", "should_trigger": true },
+  { "query": "We fetch roles from /authorization-info with a Bearer token and parse PascalCase AuthInfo and TPAuthInfo. Help me maintain this legacy Corppass role retrieval.", "should_trigger": true },
+  { "query": "We're on Myinfo Business v2 calling /entity-person with PKI_SIGN and a client_secret. What's the deadline to move to v3 and what changes?", "should_trigger": true },
+  { "query": "Plan our migration from the legacy Corppass Authorization API to FAPI 2.0. Map the old entityInfo/userInfo claims onto the new auth_info model — CPAccType and ISSPHOLDER especially.", "should_trigger": true },
+  { "query": "Our Corppass integration uses esrvcID in a front-channel authorize redirect and Bearer access tokens. When must we migrate, and what's the plan?", "should_trigger": true },
+  { "query": "I inherited half-migrated Corppass code — some of it references authmode and CPUID_FullName. Which parts are legacy and what has to change before the 2027 deadline?", "should_trigger": true },
+  { "query": "How do third-party service providers work on the legacy Corppass API via TPAuthInfo, and how does that map to the FAPI 2.0 equivalent?", "should_trigger": true },
+  { "query": "Walk me through the legacy-to-FAPI 2.0 claim mapping for Corppass, and confirm whether we need a new client_id or can keep the existing one.", "should_trigger": true },
+  { "query": "Our Myinfo Business v1 integration signs requests with PKI_SIGN. Is it deprecated, and what's the v3 migration path via the Singpass Developer Portal?", "should_trigger": true },
+  { "query": "Set up a brand-new business login on the current Corppass FAPI 2.0 API with PAR, DPoP, auth_info roles, and act.sub for the user.", "should_trigger": false },
+  { "query": "Our new Corppass app returns ESrvc_Row_Count 0 for a test user — it's a fresh FAPI 2.0 integration. How should we handle unprovisioned users?", "should_trigger": false },
+  { "query": "We run a legacy citizen Myinfo v3 integration with client_secret and PKI_SIGN against api.myinfo.gov.sg/com/v3. When do we migrate the personal login?", "should_trigger": false },
+  { "query": "Configure RBAC, MFA, and access reviews for our internal agency officers administering the procurement system.", "should_trigger": false },
+  { "query": "What are the PDPA retention rules for the corporate and personal data we store about company representatives?", "should_trigger": false },
+  { "query": "Review our backend's per-request authorization checks and how we handle secrets for a government service.", "should_trigger": false },
+  { "query": "Add the Singapore Government banner and the mandatory footer links to our business-services portal.", "should_trigger": false },
+  { "query": "Migrate our private enterprise product from SAML 1.1 to OIDC for customer single sign-on. Not a government system.", "should_trigger": false },
+  { "query": "Set up the current citizen Singpass login on FAPI 2.0 with Myinfo v5 pre-fill.", "should_trigger": false },
+  { "query": "Which System Security Plan applies to our new B2G cloud service and what controls are mandatory?", "should_trigger": false }
+]

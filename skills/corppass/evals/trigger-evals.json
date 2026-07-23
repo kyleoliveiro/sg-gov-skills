@@ -1,0 +1,22 @@
+[
+  { "query": "We're letting companies transact with our agency portal. Set up \"Log in with Corppass\" for business users on the FAPI 2.0 Authorization API, including PAR and DPoP against id.corppass.gov.sg.", "should_trigger": true },
+  { "query": "After Corppass login we need to pre-fill the applicant's Myinfo Business data — ACRA entity particulars, IRAS, and CPF corporate figures. How do we request and read it?", "should_trigger": true },
+  { "query": "In the Corppass ID token the sub is the UEN and there's an act.sub UUID. Explain the entity-versus-user model and which one I should key the logged-in user on.", "should_trigger": true },
+  { "query": "How do I read the e-service roles a company assigned to a user from auth_info, and enforce the StartDate/EndDate server-side?", "should_trigger": true },
+  { "query": "A user logs in successfully but auth_info comes back with ESrvc_Row_Count 0. What does that mean and how should the UI handle an authenticated-but-unprovisioned user?", "should_trigger": true },
+  { "query": "Tax agents and corporate secretaries act on behalf of their clients in our service. How do I authorise third-party service providers via tp_auth_info?", "should_trigger": true },
+  { "query": "We're registering a new Corppass Login app on the Corppass Developer Portal. Which roles, entity types, and statuses do we configure, and which choices are one-way doors after publish?", "should_trigger": true },
+  { "query": "Companies report their users can't log in to our B2G tender portal. Help me debug the Corppass FAPI 2.0 flow — DPoP-bound access token, the /userinfo call, and the auth_info retrieval.", "should_trigger": true },
+  { "query": "Our Myinfo Business app is being rejected because we set authentication_context_type. What are the MIB compliance and configuration rules for a Myinfo Business app?", "should_trigger": true },
+  { "query": "Our callback URL is https://portal.gov.sg/corppass/callback and the JWKS is on the same host. Onboarding rejected it — what are the URL rules for a Corppass integration?", "should_trigger": true },
+  { "query": "An individual resident needs to log in as themselves and pre-fill their personal Myinfo profile (name, NRIC, address). Set up the citizen login flow.", "should_trigger": false },
+  { "query": "Our existing Corppass integration reads entityInfo and userInfo claims (CPEntID, CPAccType, ISSPHOLDER) from a flat ID token and calls /authorization-info with a Bearer token. What's the migration deadline?", "should_trigger": false },
+  { "query": "We're on Myinfo Business v2 with /entity-person and PKI_SIGN client_secret signing. When do we have to move to v3 and how?", "should_trigger": false },
+  { "query": "Set up role-based access control, MFA, and access reviews for our internal agency officers who administer the tender system.", "should_trigger": false },
+  { "query": "Add the Singapore Government banner, WOGAA registration, and the official footer to our new business-services website.", "should_trigger": false },
+  { "query": "What are the PDPA obligations for storing corporate contact and personal data we retrieve about company officers, and how long can we retain it?", "should_trigger": false },
+  { "query": "Review our per-request authorization checks and session hardening in the Node backend for an agency service.", "should_trigger": false },
+  { "query": "Audit the company-search and results pages of our portal for WCAG 2.2 AA keyboard navigation and contrast.", "should_trigger": false },
+  { "query": "Add enterprise SSO for our private B2B SaaS so customer companies can log in with their own IdP. Not a government system.", "should_trigger": false },
+  { "query": "Which System Security Plan applies to our new cloud B2G portal and what control baseline do we need before we start building?", "should_trigger": false }
+]

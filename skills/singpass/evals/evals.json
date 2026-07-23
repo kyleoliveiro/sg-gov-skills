@@ -3,7 +3,7 @@
   "evals": [
     {
       "id": 0,
-      "eval_name": "audit-singpass-integration",
+      "name": "audit-singpass-integration",
       "prompt": "You are reviewing the Singpass integration of ReliefGrant, a Singapore government agency portal where residents apply for financial assistance. It was built quickly last year and the team wants a full security and compliance review before their production app renewal. The backend auth module is in singpass-auth.js and the team's notes are in SETUP-NOTES.md. Audit the integration: identify every defect or compliance violation, explain why each is wrong, and give the concrete fix. Write your findings to audit-findings.md.",
       "expected_output": "An audit that catches all seeded violations: missing PAR, legacy sub parsing and NRIC keying, wrong client-assertion aud and lifetime, missing DPoP, Bearer on userinfo, missing state validation, cached Myinfo data, backend-only retrieval without display, no manual alternative, password-login plans, WebView embedding — and routes the corporate-applicant plan to Corppass.",
       "files": ["files/singpass-auth.js", "files/SETUP-NOTES.md"],
@@ -25,7 +25,7 @@
     },
     {
       "id": 1,
-      "eval_name": "design-singpass-service",
+      "name": "design-singpass-service",
       "prompt": "We're a Singapore government agency building CareSupport, a new portal where residents apply for a caregiver subsidy. Applicants should log in with Singpass, and we want to pre-fill the application with verified data: name, NRIC, date of birth, residential address, latest Notice of Assessment income, and CPF balances, so applicants stop uploading payslips and statements. Nothing is built yet. Design the authentication and data integration: which API and flow to use, the identity model, what to configure and onboard where, the compliance and UX rules our form must follow, and the operational constraints to build for. Write the design to caresupport-auth-design.md.",
       "expected_output": "A design grounded in the FAPI 2.0 Singpass API: PAR/PKCE/DPoP/client-assertion flow, UUID-first identity with user.identity/uinfin consciously justified, Myinfo v5 scopes with Plus-tier billing awareness, JWKS requirements, SDP onboarding with staging accounts and test personas, the display/editability/purge/no-cache compliance rules, a manual alternative including SFA users, and the operational hard rules.",
       "files": [],

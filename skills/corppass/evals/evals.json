@@ -3,7 +3,7 @@
   "evals": [
     {
       "id": 0,
-      "eval_name": "audit-corppass-integration",
+      "name": "audit-corppass-integration",
       "prompt": "You are reviewing the Corppass integration of LicenceOne, a Singapore government agency portal where companies apply for and renew business licences. The team migrated to the new Corppass API earlier this year and users are reporting intermittent login failures; the tech lead also wants a security review before the next release. The relevant backend module is in auth.js and the team's integration notes are in INTEGRATION-NOTES.md. Audit the integration: identify every defect or compliance violation, explain why each is wrong, and give the concrete fix. Write your findings to audit-findings.md.",
       "expected_output": "An audit report that catches all seeded FAPI 2.0 violations (identity-model flip, Bearer-vs-DPoP, client assertion lifetime, banned callback URL words, missing state validation, access-token parsing, token lifetime/refresh fiction, static DPoP key, missing enc key, cert pinning, ESrvc_Row_Count mishandling, NRIC-as-key) and routes the citizen-login plan to Singpass Login.",
       "files": ["files/auth.js", "files/INTEGRATION-NOTES.md"],
@@ -25,7 +25,7 @@
     },
     {
       "id": 1,
-      "eval_name": "design-corppass-service",
+      "name": "design-corppass-service",
       "prompt": "We're a Singapore government agency starting to build GrantBridge, a new portal where companies apply for business development grants. Authorised company staff will log in on behalf of their company, and corporate service providers (accounting firms, corporate secretaries) must be able to file applications for their client companies. We want to pre-fill the application with verified company data — ACRA profile, appointments, shareholders, and financials — instead of asking for document uploads. Nothing is built yet. Design the authentication and data integration: which APIs and flows to use, the identity and authorisation model, what we must set up and configure before launch, the onboarding steps and portals involved, and the compliance/UX rules our form must follow. Write the design to grantbridge-auth-design.md.",
       "expected_output": "A design grounded in the Corppass Authorization API (FAPI 2.0): PAR/PKCE/DPoP/client-assertion flow, entity-vs-actor identity model keyed on act.sub UUID, auth_info role enforcement with provisioning UX, tp_auth_info for third-party providers, Myinfo Business v3 via SDP for corporate data with its compliance rules, CDP onboarding with immutable role design flagged, and the operational hard rules (TTLs, no refresh tokens, JWKS requirements, TLS, URL word ban).",
       "files": [],

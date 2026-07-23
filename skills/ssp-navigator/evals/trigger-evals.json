@@ -1,0 +1,22 @@
+[
+  { "query": "We're starting a new cloud-hosted system for an agency. Which System Security Plan applies and what control baseline do we need?", "should_trigger": true },
+  { "query": "Our new public service will use a GenAI chatbot and handle Confidential data. What SSP and controls apply, and does the Gen-AI overlay stack on top?", "should_trigger": true },
+  { "query": "Help us classify our system's risk and data sensitivity and produce the resulting ICT&SS control baseline before we design anything.", "should_trigger": true },
+  { "query": "We're kicking off a new Singapore government project and haven't pinned down the compliance scope yet. What do we need to figure out first?", "should_trigger": true },
+  { "query": "Our service is public-facing with over a million visits a year and uses a GenAI feature. Show me how the DSS profile and Gen-AI overlay stack on the base SSP.", "should_trigger": true },
+  { "query": "Is our system considered High-Risk or CII, and how does that change which SSP and mandatory controls apply?", "should_trigger": true },
+  { "query": "Which controls are Level 0 versus Level 1 versus Level 2 for our medium-risk cloud system, and what's mandatory with no deviation?", "should_trigger": true },
+  { "query": "Given our expected traffic, does a DSS profile apply to our service, and which one — Others or High Impact?", "should_trigger": true },
+  { "query": "We're running a time-boxed pilot with low-sensitivity data. Which SSP applies to a sandbox system and what's the minimal control set?", "should_trigger": true },
+  { "query": "Map our system's hosting model and data classification to the right IM8 successor SSP and list the special obligations like CSA notification.", "should_trigger": true },
+  { "query": "Audit our AWS IAM for least privilege, MFA on privileged accounts, dormant accounts, and access reviews.", "should_trigger": false },
+  { "query": "Review this pull request for SQL injection, input validation, and session handling issues.", "should_trigger": false },
+  { "query": "Set up branch protection, secret push protection, and a SAST gate in our CI pipeline.", "should_trigger": false },
+  { "query": "Harden this Dockerfile — minimal base image, non-root user, and digest-pinned FROM.", "should_trigger": false },
+  { "query": "Configure data residency to the Singapore region and encryption at rest and in transit for our stored government data.", "should_trigger": false },
+  { "query": "Set up central log management, the required log sources, retention, and detection alerting for our system.", "should_trigger": false },
+  { "query": "Plan our VAPT programme, vulnerability scanning cadence, and severity-based remediation SLAs.", "should_trigger": false },
+  { "query": "Secure our RAG chatbot against prompt injection and add safeguards on user file uploads.", "should_trigger": false },
+  { "query": "Make our agency application form meet WCAG 2.2 AA for contrast and keyboard navigation.", "should_trigger": false },
+  { "query": "Add the Official Government Banner and register our new website on WOGAA.", "should_trigger": false }
+]

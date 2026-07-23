@@ -1,0 +1,22 @@
+[
+  { "query": "Our Myinfo v3 person calls started returning signature failures after November 2024. We use PKI_SIGN with an X.509 cert against api.myinfo.gov.sg/com/v3 — help me fix the verification.", "should_trigger": true },
+  { "query": "Debug the PKI_SIGN base-string signature on our Myinfo v3 token call — the timestamp and nonce headers and how the client_secret figures into the signed string.", "should_trigger": true },
+  { "query": "We maintain a Myinfo v4 integration on /com/v4 with client assertions and DPoP, and /person keeps rejecting our access token as a duplicate. What's going on?", "should_trigger": true },
+  { "query": "Our old Singpass login builds the /auth URL directly with no PAR and parses NRIC from a comma-separated sub like s=S1234567A,u=uuid. How does this pre-FAPI flow work and what breaks for SFA users?", "should_trigger": true },
+  { "query": "Plan our migration from Myinfo v3 to v5. Do we go through v4 first, can we reuse our client_id and client_secret, and what's the deadline?", "should_trigger": true },
+  { "query": "Plan the move of our pre-FAPI Singpass login to FAPI 2.0 — what do we add (PAR, DPoP), what changes about the sub and the client assertion aud, and when is it due?", "should_trigger": true },
+  { "query": "I inherited some Singpass code that references attributes=, purpose_id, and person/{sub}. Which legacy Myinfo surface is this and what do I need to know to keep it running?", "should_trigger": true },
+  { "query": "Our Myinfo integration has been live since 2021 using client_secret and an RSA key. Is it affected by a migration deadline, and what exactly do we have to change?", "should_trigger": true },
+  { "query": "Our v3 X.509 verification certificate expired and now every Myinfo person call fails. Where do we get the renewed cert and what toggle in the SDP do we flip?", "should_trigger": true },
+  { "query": "We parse the NRIC positionally out of the ID token sub with split(\",\") on our old Singpass login. Is that safe, and how do the fid/coi keys behave for foreign accounts?", "should_trigger": true },
+  { "query": "We're building a brand-new citizen login from scratch on the current FAPI 2.0 Singpass API with PAR and DPoP and Myinfo v5. Set it up.", "should_trigger": false },
+  { "query": "Our new Singpass app returns invalid_dpop_proof at the userinfo endpoint. There's no legacy code — it's a fresh FAPI 2.0 integration. Help me debug.", "should_trigger": false },
+  { "query": "Our legacy Corppass integration reads CPEntID and CPAccType from the ID token and calls /authorization-info. When do we have to migrate the business login?", "should_trigger": false },
+  { "query": "Set up SSO and MFA for internal agency staff accounts and a quarterly access review.", "should_trigger": false },
+  { "query": "What does the PDPC advisory require for NRIC storage and retention in a government system?", "should_trigger": false },
+  { "query": "Review the crypto in our Node service — how we do AES encryption and manage keys for stored data.", "should_trigger": false },
+  { "query": "Add the government masthead banner and the official footer to our agency site.", "should_trigger": false },
+  { "query": "Migrate my personal app's auth from OAuth 1.0 to OAuth 2.0 using Auth0. It's not a government system.", "should_trigger": false },
+  { "query": "Set up business-user login for companies on the current Corppass FAPI 2.0 API with auth_info roles.", "should_trigger": false },
+  { "query": "Which SSP applies to our system and what control baseline do we need before we start coding?", "should_trigger": false }
+]

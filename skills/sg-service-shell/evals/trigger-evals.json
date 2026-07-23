@@ -1,0 +1,22 @@
+[
+  { "query": "We're scaffolding a new public-facing Singapore government service. What does every gov.sg site need in place before we start building features?", "should_trigger": true },
+  { "query": "Add the Official Government Banner — the \"A Singapore Government Agency Website\" masthead — to the top of every page of our agency site.", "should_trigger": true },
+  { "query": "Register our new service on WOGAA and wire up the tracking code and the Sentiments feedback widget.", "should_trigger": true },
+  { "query": "Build the official government footer with all the mandatory links, including the Report Vulnerability link, for our agency website.", "should_trigger": true },
+  { "query": "Set up our .gov.sg domain and the Singapore Government Design System for a new digital service.", "should_trigger": true },
+  { "query": "Review our existing agency website for DSS shell compliance — banner, footer, WOGAA, domain, and the Level 0 Trust & Legitimacy controls.", "should_trigger": true },
+  { "query": "What are the Baseline Design and Performance & Reliability controls we need to satisfy for a new gov.sg service, and which are mandatory?", "should_trigger": true },
+  { "query": "We're launching a mobile app for our agency. What are the app-store distribution and IP-ownership shell requirements under the Digital Service Standards?", "should_trigger": true },
+  { "query": "Scaffold the base layout for our new agency web service with the masthead, SGDS setup, and the standard footer wired in.", "should_trigger": true },
+  { "query": "Our new gov service is missing the government masthead and isn't registered on WOGAA. Get the mandatory shell in place.", "should_trigger": true },
+  { "query": "Audit our government form for WCAG 2.2 AA — colour contrast, keyboard navigation, and screen-reader labels.", "should_trigger": false },
+  { "query": "Implement the Singpass login and Myinfo pre-fill on our citizen service's sign-in page.", "should_trigger": false },
+  { "query": "Set up business-user login with Corppass for the companies that transact on our portal.", "should_trigger": false },
+  { "query": "Which System Security Plan and DSS profile apply to our new service, and what control baseline results?", "should_trigger": false },
+  { "query": "Configure the Content-Security-Policy and HSTS security headers for our government web app.", "should_trigger": false },
+  { "query": "Set up branch protection, secret scanning, and SAST in the CI pipeline for our agency repo.", "should_trigger": false },
+  { "query": "Wire up central logging, service-health SLOs, and detection alerting for our agency system.", "should_trigger": false },
+  { "query": "Set up a landing page with a nav bar and a footer for my startup's marketing site.", "should_trigger": false },
+  { "query": "Add SSO and MFA for our internal staff who administer the service.", "should_trigger": false },
+  { "query": "Pin our cloud resources to the Singapore region and configure encryption at rest for government data.", "should_trigger": false }
+]

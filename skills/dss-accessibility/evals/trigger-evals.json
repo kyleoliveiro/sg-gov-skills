@@ -1,0 +1,22 @@
+[
+  { "query": "Review this React form for our agency's benefit application against WCAG 2.2 AA — labels, error messaging, and focus management.", "should_trigger": true },
+  { "query": "Run an accessibility audit of our government service's checkout flow and tell me which DSS WP/WO/WU/WR controls we're failing.", "should_trigger": true },
+  { "query": "Our gov portal's primary buttons and link text don't meet colour-contrast requirements. Fix the contrast to pass WCAG 2.2 AA.", "should_trigger": true },
+  { "query": "Make the multi-step wizard on our agency site fully keyboard navigable, with a visible focus indicator and a logical focus order.", "should_trigger": true },
+  { "query": "Add proper ARIA and screen-reader announcements to the modal dialog and the live validation on our government form.", "should_trigger": true },
+  { "query": "Our error messages just turn the field red. Make error handling accessible on this SG government form for screen-reader and low-vision users.", "should_trigger": true },
+  { "query": "Ensure our agency page reflows and stays usable at 400% zoom and 320px width without loss of content, per WCAG 2.2 reflow.", "should_trigger": true },
+  { "query": "Build an accessible date picker component for our government service that works with a keyboard and assistive tech.", "should_trigger": true },
+  { "query": "We're building the UI for a new agency service. What accessibility should we bake in during implementation so we don't retrofit later?", "should_trigger": true },
+  { "query": "Check that our navigation menu and skip links meet the Digital Service Standards accessibility controls for a Singapore government site.", "should_trigger": true },
+  { "query": "Add the Official Government Banner masthead and register the service on WOGAA for our new agency website.", "should_trigger": false },
+  { "query": "Build the official footer with the mandatory gov.sg links and set up SGDS for our new service shell.", "should_trigger": false },
+  { "query": "Configure the Content-Security-Policy and HSTS headers for our government web application.", "should_trigger": false },
+  { "query": "Implement the Singpass login flow and Myinfo pre-fill on the sign-in page of our citizen service.", "should_trigger": false },
+  { "query": "Which DSS profile applies to our service given our traffic, and what control levels do we need?", "should_trigger": false },
+  { "query": "Wire the axe and Oobee accessibility scanners into our GitHub Actions CI so regressions fail the build.", "should_trigger": false },
+  { "query": "Make my personal portfolio website WCAG compliant — it's a static site I host myself, nothing to do with government.", "should_trigger": false },
+  { "query": "Improve the accessibility of my startup's marketing landing page for a product launch.", "should_trigger": false },
+  { "query": "Set up service-health monitoring and SLOs for our agency service's uptime and page-load performance.", "should_trigger": false },
+  { "query": "Add MFA and SSO to the internal admin console our staff use to manage the system.", "should_trigger": false }
+]

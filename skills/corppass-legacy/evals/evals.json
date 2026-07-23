@@ -3,7 +3,7 @@
   "evals": [
     {
       "id": 0,
-      "eval_name": "audit-half-migrated-corppass",
+      "name": "audit-half-migrated-corppass",
       "prompt": "TenderHub is a Singapore government agency portal where companies respond to tenders. The team is midway through migrating its Corppass integration from the legacy Authorization API to FAPI 2.0: the authorization flow was switched to PAR last sprint, but logins now fail intermittently and some downstream features broke. Review the migrated token/identity handler in token-handler.js and the team's migration plan in migration-plan.md. Identify every defect — both code that was not correctly adapted to FAPI 2.0 and plan items that are wrong or missing — explain why each is wrong, and give the concrete fix. Write your findings to migration-audit.md.",
       "expected_output": "An audit that catches the identity-model breakages (sub still parsed as the legacy comma-separated user string, CPAccType gating with no FAPI equivalent), the crypto/config gaps (no enc key in JWKS, 30-minute client assertions, Bearer on /authorization-info instead of DPoP on /userinfo, 10-minute-code retry logic), and the plan errors (reusing the MIB v2 client ID for v3, consuming dropped gov-contracts scopes, missing deadlines and migration-plan submission, http redirect URL).",
       "files": ["files/token-handler.js", "files/migration-plan.md"],
@@ -24,7 +24,7 @@
     },
     {
       "id": 1,
-      "eval_name": "plan-legacy-corppass-migration",
+      "name": "plan-legacy-corppass-migration",
       "prompt": "Our agency runs FilingDesk, a portal where corporate secretaries file statutory returns for their client companies. It integrates Corppass with the legacy Authorization API (onboarded 2023): front-channel authorize with esrvcID, Bearer access tokens, entityInfo/userInfo ID-token claims, and /authorization-info for roles including third-party (TPAuthInfo) authorisations. It also pulls company profile data through Myinfo Business v2. Nothing has been migrated yet. Produce a complete migration assessment and plan: what must change in code, keys, and configuration, in what order, what the deadlines are, and what will silently break if we port the code naively. Write it to filingdesk-migration-plan.md.",
       "expected_output": "A migration plan grounded in the official legacy-to-FAPI 2.0 guide: correct deadlines, the full claim remapping including the sub meaning flip and CPAccType/ISSPHOLDER redesign, PAR/PKCE/DPoP/2-minute client assertions, JWKS enc key addition, /authorization-info to /userinfo swap with TPAuthInfo continuity, a new SDP app for Myinfo Business v3 with a scope diff, config prerequisites, and a staged parallel rollout.",
       "files": [],

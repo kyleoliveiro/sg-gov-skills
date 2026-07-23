@@ -3,7 +3,7 @@
   "evals": [
     {
       "id": 0,
-      "eval_name": "audit-legacy-singpass-estate",
+      "name": "audit-legacy-singpass-estate",
       "prompt": "SchoolReg is a Singapore government agency portal where parents register children for school programmes. It runs a Myinfo v3 integration for form pre-fill (built 2021) plus a pre-FAPI Singpass Login flow, and the team suffers intermittent 401 errors they can't explain. They drafted a migration assessment before asking for review. Audit the code in myinfo-v3-client.js and the plan in MIGRATION-ASSESSMENT.md: identify every defect, wrong assumption, and compliance gap; explain why each is wrong; give the concrete fix. Write your findings to legacy-audit.md.",
       "expected_output": "An audit that identifies the legacy surfaces correctly, catches the live bugs (nonce reuse causing intermittent 401s, disabled JWS verification after the 2024 cert expiry, hardcoded client_secret, positional sub parsing), and corrects the plan's errors (v3-to-v4 detour, wrong deadlines, credential reuse, client_secret and RSA-OAEP assumptions carried into v5, missing Login-flow FAPI migration, WebView usage).",
       "files": ["files/myinfo-v3-client.js", "files/MIGRATION-ASSESSMENT.md"],
@@ -24,7 +24,7 @@
     },
     {
       "id": 1,
-      "eval_name": "plan-legacy-singpass-migration",
+      "name": "plan-legacy-singpass-migration",
       "prompt": "Our agency runs HomeAssist, a portal where residents apply for home-improvement subsidies. It has two Singpass touchpoints, both legacy: (1) Singpass Login on the pre-FAPI authentication API — we build the /auth URL directly, exchange the code at /token with a private_key_jwt client assertion, and parse the NRIC out of the comma-separated sub; (2) Myinfo v4 for pre-fill — /com/v4 endpoints with client assertions carrying cnf.jkt, per-transaction DPoP keys, and person data decrypted with ECDH-ES+A256KW + A256GCM. Nothing has been migrated. Produce a complete migration assessment and plan: what changes per surface, in what order, the deadlines, what breaks silently if ported naively, and how to roll out safely. Write it to homeassist-migration-plan.md.",
       "expected_output": "A migration plan that treats the two surfaces separately: the pre-FAPI Login flow moves to FAPI 2.0 on the same client_id with staged per-flow rollout (PAR, DPoP, aud change, UUID sub, authentication_context_type, 60-second codes), while the Myinfo v4 app is duplicated in SDP for a new v5 client_id (drop cnf.jkt, purpose_id, person/{sub}; adopt /userinfo and A256CBC-HS512), with correct deadlines and compliance re-checks.",
       "files": [],
