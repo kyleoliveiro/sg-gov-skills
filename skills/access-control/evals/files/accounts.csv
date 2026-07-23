@@ -1,0 +1,11 @@
+account,type,system,role,created,last_login,status,notes
+jlim,user,aws-console,developer-admin,2025-03-10,2026-07-20,enabled,
+mkumar,user,aws-console,developer-admin,2025-03-10,2026-07-21,enabled,
+sfaridah,user,aws-console,developer-admin,2025-03-12,2026-02-14,enabled,on secondment since March 2026
+dtan,user,aws-console,developer-admin,2025-04-02,2026-07-19,enabled,
+achew,user,aws-console,developer-admin,2025-06-18,2026-01-08,enabled,moved to another project
+tan.wl.vendor,user,aws-console,developer-admin,2025-05-05,2026-02-27,enabled,vendor contract ended Feb 2026 - may re-engage
+ci-deployer,service,aws,ci-pipeline,2024-01-15,2026-07-21,enabled,access key never rotated
+grafana-admin,local,grafana,admin,2025-05-01,2026-07-15,enabled,default admin/admin
+ops-shared,local,admin-console,superuser,2025-05-01,2025-11-30,enabled,shared break-glass login - password in team wiki
+officer accounts (8),local,admin-console,case-officer,2025-05-01,2026-07-21,enabled,local passwords (SHA-1) in officers table

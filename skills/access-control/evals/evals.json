@@ -1,0 +1,64 @@
+{
+  "skill_name": "access-control",
+  "evals": [
+    {
+      "id": 0,
+      "name": "audit-seeded-ac",
+      "prompt": "Audit the access control posture of our service against the Singapore government requirements. I've included a doc describing our current identity and access setup (ACCESS-POSTURE.md), our IAM Terraform (iam.tf), and an export of our accounts (accounts.csv). Give us an audit report (audit.md) with pass/fail per requirement and how to fix the failures.",
+      "expected_output": "An audit report keyed to AC control IDs (AC-1..AC-16) that catches the seeded violations: the developer role with Action:* on Resource:* (AC-1), no MFA on privileged console accounts (AC-2), the ex-contractor account still active months after contract end plus dormant accounts beyond the SSP's 90-day inactivity limit (AC-3), no access review since launch against the SSP's quarterly cadence (AC-4), production administered from personal laptops (AC-5), Grafana still on admin/admin (AC-6), citizens authenticating with a bespoke email/password login on a high-assurance service instead of Singpass (AC-7), the internal case-officer portal keeping its own password table instead of government SSO (AC-12), the CI access key never rotated since creation (AC-13), and no account inventory (AC-14). It should flag the TBD ac-13_prm_1 rotation parameter and ask for the value rather than inventing one, attribute the unsalted SHA-1 password hashing to the Application Security family (AS-6) rather than an AC control, note that AC-2/3/5/6 are Level 0 for this Medium-Risk (Confidential/Sensitive High) system, and pair every failure with a concrete fix.",
+      "files": [
+        "files/ACCESS-POSTURE.md",
+        "files/iam.tf",
+        "files/accounts.csv"
+      ],
+      "assertions": [
+        "Report catches at least 9 of the 10 seeded AC violations listed in seeded_violations",
+        "Findings cite ICT&SS Access Control control IDs (AC-1 through AC-16) and do not fabricate AC controls that do not exist",
+        "Flags the developer IAM role's wildcard grant (Action * on Resource *) as a least-privilege violation (AC-1), with a deny-by-default fix scoping permissions to specific actions and resources",
+        "Flags that privileged/console accounts have no MFA enforced (AC-2), noting MFA for privileged accounts is mandatory (Level 0) for this Medium-Risk system, with an enforcement fix at the IdP or via IAM condition",
+        "Flags BOTH the ex-contractor account still active after contract end AND the dormant accounts inactive beyond the SSP's 90-day limit (AC-3), with an automated fix such as AWS Config iam-user-unused-credentials-check or SCIM-driven deprovisioning",
+        "Flags that no access review has happened since launch against the SSP's quarterly review frequency with 7-day removal window (AC-4)",
+        "Flags production administration from personal, unmanaged laptops as an endpoint violation (AC-5, with AC-9/AC-10 acceptable as supporting citations), with a fix requiring hardened, posture-checked devices",
+        "Flags the Grafana admin console still using default admin/admin credentials (AC-6), with a fix changing default credentials before use",
+        "Flags the bespoke citizen email/password login on a high-assurance service and requires Singpass (or Singpass/Corppass) MFA instead (AC-7)",
+        "Flags the internal case-officer portal's local username/password table and requires government-managed SSO (e.g. WOG AAD) with MFA at the IdP instead (AC-12)",
+        "Flags the CI deployer access key as never rotated (AC-13) AND flags that ac-13_prm_1 is TBD in the SSP, asking for the value to be defined rather than inventing a rotation period",
+        "Flags the absence of an account inventory (AC-14), noting least privilege (AC-1) is defined against the inventory",
+        "Attributes the unsalted SHA-1 password hashing to the Application Security family (AS-6 / secure coding) rather than to an AC control"
+      ],
+      "seeded_violations": [
+        "The reliefportal-developers IAM role policy grants Action \"*\" on Resource \"*\" - 'everyone has admin for velocity' (AC-1)",
+        "IAM console users have MFA 'optional'; nobody has enabled it, including admins (AC-2, Level 0 at Medium-Risk)",
+        "Ex-contractor tan.wl@vendor.example left in February 2026 but the account is still enabled; three more accounts have been inactive well beyond the SSP's ac-3_prm_2 = 90 days (AC-3, Level 0 at Medium-Risk)",
+        "No access review has ever been performed since the May 2025 launch, against the SSP's ac-4_prm_1 = quarterly and ac-4_prm_2 = 7 days (AC-4)",
+        "Developers administer production from personal MacBooks over VPN - no MDM, no posture checks (AC-5, Level 0 at Medium-Risk; AC-9/AC-10 adjacent)",
+        "The internal Grafana instance still uses admin/admin - 'we'll change it after launch' (AC-6, Level 0 at Medium-Risk)",
+        "Citizens apply for financial assistance (high identity assurance) using a bespoke email+password registration - 'Singpass integration is on the roadmap for v2' (AC-7)",
+        "Case officers log into the internal admin portal with local usernames/passwords instead of WOG AAD / government SSO (AC-12)",
+        "The ci-deployer IAM access key was created in January 2024 and has never been rotated (AC-13)",
+        "No inventory of accounts and access rights exists - 'the team is small, we know who has access' (AC-14)",
+        "The SSP leaves ac-13_prm_1 (credential rotation period) as TBD - the report must flag it and ask, not invent a number (parameter trap)",
+        "The internal portal stores case-officer passwords as unsalted SHA-1 - an Application Security (AS-6) issue included as a cross-family distractor that must NOT be attributed to an AC control"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "setup-ac-baseline",
+      "prompt": "We're building PermitPro, an internet-facing permit application portal for a Singapore government agency, on AWS under our GCC tenancy. Businesses apply for permits (this needs high identity assurance) and internal case officers process them in an admin console. The system handles data up to CONFIDENTIAL / Sensitive High. Our SSP sets: inactive/expired accounts disabled within 1 day of expiry or 90 days of inactivity for all accounts; access reviews quarterly with removals within 7 days; account provisioning and deprovisioning automated for internal accounts via SCIM; static credentials rotated every 90 days; one primary user per endpoint. Design our access control setup end to end: how businesses and officers authenticate, how accounts and permissions are structured and reviewed, how the account lifecycle runs, how credentials are managed, and what we require of the devices that touch the system.",
+      "expected_output": "An access-control baseline keyed to AC control IDs: Corppass MFA for business applicants (Singpass/Corppass for public users - AC-7) and government-managed SSO (WOG AAD-class) with MFA at the IdP for internal officers (AC-12), never bespoke logins; MFA mandatory for privileged accounts and noted as Level 0 at Medium-Risk (AC-2); an account inventory (AC-14) grounding deny-by-default least-privilege IAM with no wildcard grants (AC-1); automated disabling of accounts within 1 day of expiry or 90 days of inactivity (AC-3, Level 0); quarterly access reviews with 7-day removal (AC-4); SCIM/JIT-provisioned account lifecycle with validation testing (AC-8/AC-15); static credentials rotated every 90 days or replaced with time-restricted alternatives like STS/OIDC federation (AC-13); default credentials changed before first use (AC-6); and endpoint requirements - hardened posture-checked devices for remote admin access (AC-5, Level 0), MDM (AC-9), identity- and device-based access rather than flat VPN trust (AC-10), and one primary user per endpoint (AC-11).",
+      "files": [],
+      "assertions": [
+        "Authenticates business applicants with Corppass (or Singpass/Corppass) MFA rather than a bespoke login, citing the public-user identity assurance requirement (AC-7)",
+        "Puts internal case officers behind government-managed SSO (e.g. WOG AAD) with MFA configured at the IdP, with no local password table in the admin console (AC-12)",
+        "Requires MFA for privileged/admin accounts and identifies it as mandatory / Level 0 for this Medium-Risk (Confidential/Sensitive High) system (AC-2)",
+        "Cites ICT&SS Access Control control IDs (AC-1 through AC-16) to justify the setup",
+        "Designs deny-by-default least-privilege IAM with no wildcard grants, explicitly grounded in an account inventory (AC-1 with AC-14)",
+        "Automates disabling/removal of accounts within 1 day of expiry or 90 days of inactivity per the SSP parameters, using automated detection (e.g. AWS Config unused-credentials checks or SCIM workflows) (AC-3)",
+        "Schedules quarterly access reviews with removal of unnecessary rights within 7 days, keeping review evidence (AC-4)",
+        "Automates the internal account lifecycle via SCIM or SSO just-in-time provisioning per the SSP, and includes validation testing of the integration (AC-8, AC-15)",
+        "Rotates static credentials (API keys, access keys, tokens) every 90 days per the SSP or replaces them with time-restricted credentials (e.g. STS, OIDC federation for CI) (AC-13), and changes default credentials before first use (AC-6)",
+        "Specifies endpoint requirements: hardened posture-checked devices for remote developer/admin access (AC-5) with endpoint device management/MDM (AC-9), identity- and device-based access rather than flat VPN trust (AC-10), and a single primary user per endpoint (AC-11)"
+      ]
+    }
+  ]
+}
