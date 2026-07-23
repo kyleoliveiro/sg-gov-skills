@@ -1,0 +1,46 @@
+{
+  "skill_name": "singpass",
+  "evals": [
+    {
+      "id": 0,
+      "eval_name": "audit-singpass-integration",
+      "prompt": "You are reviewing the Singpass integration of ReliefGrant, a Singapore government agency portal where residents apply for financial assistance. It was built quickly last year and the team wants a full security and compliance review before their production app renewal. The backend auth module is in singpass-auth.js and the team's notes are in SETUP-NOTES.md. Audit the integration: identify every defect or compliance violation, explain why each is wrong, and give the concrete fix. Write your findings to audit-findings.md.",
+      "expected_output": "An audit that catches all seeded violations: missing PAR, legacy sub parsing and NRIC keying, wrong client-assertion aud and lifetime, missing DPoP, Bearer on userinfo, missing state validation, cached Myinfo data, backend-only retrieval without display, no manual alternative, password-login plans, WebView embedding — and routes the corporate-applicant plan to Corppass.",
+      "files": ["files/singpass-auth.js", "files/SETUP-NOTES.md"],
+      "assertions": [
+        "Identifies that the code builds the /auth authorization URL directly with scopes and PKCE in the browser query string — the FAPI 2.0 API requires a Pushed Authorization Request (PAR) to the /par endpoint first, with the browser carrying only client_id and request_uri",
+        "Identifies the legacy comma-separated sub parsing (s=NRIC,u=UUID) as obsolete — the FAPI 2.0 ID token sub is a bare UUID, and NRIC is only available via the justification-gated user.identity scope in sub_attributes.identity_number",
+        "Recommends keying user records on the UUID instead of NRIC, citing the UUID-first principle and/or PDPC NRIC advisory guidelines",
+        "Identifies the client assertion problems: aud must be the FAPI issuer (e.g. https://id.singpass.gov.sg/fapi) not the bare host, and exp must be at most 2 minutes after iat rather than 1 hour",
+        "Identifies that DPoP is missing/wrong: FAPI 2.0 requires DPoP proofs on PAR, token, AND userinfo, using an ephemeral EC key pair generated per authentication session (not a static deploy-time key), with the ath claim on the userinfo proof",
+        "Identifies the 'Authorization: Bearer' header on the userinfo request as wrong — the scheme must be DPoP",
+        "Identifies the missing state validation on the callback as a CSRF vulnerability",
+        "Identifies that caching retrieved Myinfo data in Redis for reuse on later visits violates the no-reuse rule — every profile retrieval must fetch fresh data from Myinfo, and unsubmitted data must be purged",
+        "Identifies that pulling NOA/CPF data backend-only for eligibility scoring without displaying it violates the rule that ALL retrieved Myinfo data must be displayed on the form for user verification before submission",
+        "Identifies the absence of a manual/non-Singpass application path as a violation — Singpass cannot be the only authentication or form-filling option (also needed for Singpass Foreign Account users, who have no Myinfo at all)",
+        "Identifies the plan to add password + SMS-OTP login as unworkable — new Singpass Login/Myinfo apps support QR login only under national scam-prevention rules",
+        "Identifies embedding the flow in a mobile WebView as unsupported (discontinued Nov 2024) — must use in-app browser / app-claimed HTTPS universal link patterns",
+        "Routes the roadmap item about companies applying for business relief to Corppass (business-user authentication) rather than extending this Singpass citizen login"
+      ]
+    },
+    {
+      "id": 1,
+      "eval_name": "design-singpass-service",
+      "prompt": "We're a Singapore government agency building CareSupport, a new portal where residents apply for a caregiver subsidy. Applicants should log in with Singpass, and we want to pre-fill the application with verified data: name, NRIC, date of birth, residential address, latest Notice of Assessment income, and CPF balances, so applicants stop uploading payslips and statements. Nothing is built yet. Design the authentication and data integration: which API and flow to use, the identity model, what to configure and onboard where, the compliance and UX rules our form must follow, and the operational constraints to build for. Write the design to caresupport-auth-design.md.",
+      "expected_output": "A design grounded in the FAPI 2.0 Singpass API: PAR/PKCE/DPoP/client-assertion flow, UUID-first identity with user.identity/uinfin consciously justified, Myinfo v5 scopes with Plus-tier billing awareness, JWKS requirements, SDP onboarding with staging accounts and test personas, the display/editability/purge/no-cache compliance rules, a manual alternative including SFA users, and the operational hard rules.",
+      "files": [],
+      "assertions": [
+        "Selects the current FAPI 2.0 Singpass authentication API with a Myinfo (v5) app — Pushed Authorization Request flow, authorization code + PKCE (S256), backend-for-frontend confidential client, certified OIDC RP library recommended — not the legacy Myinfo v3/v4 APIs or a bespoke login",
+        "Specifies the client crypto correctly: private_key_jwt client assertion with aud = the FAPI issuer, unique jti, and exp at most 2 minutes after iat; and DPoP proofs on PAR, token, and userinfo with an ephemeral per-session EC key and the ath claim at userinfo",
+        "Requires a client JWKS with at least one EC signing key and one EC encryption key (ID token and userinfo responses are JWE-encrypted), hosted publicly with a ~3-second response budget, no private key material, and a yearly rotation plan with the 1-hour cache window",
+        "Gets the identity model right: sub is a UUID and should be the primary user key; NRIC comes only via the user.identity scope or uinfin Myinfo scope, which must be consciously justified (PDPC NRIC advisory)",
+        "Chooses Myinfo scopes matching the requirements (e.g. name, uinfin, dob, regadd, noa or noa-basic, cpfbalances) and flags that NOA and CPF balances are Myinfo Plus financial scopes — any Plus scope bills the whole transaction at the Plus tier",
+        "Applies the compliance/UX rules: display ALL retrieved data on the form before submission, government-verified fields non-editable while email/mobileno stay editable, purge data if the form is not submitted, never reuse session/cookie-cached Myinfo data, and show all 15 months of CPF contribution history if that scope is used",
+        "Provides a manual/non-Singpass application path — mandatory because Singpass cannot be the only option, and Singpass Foreign Account (SFA) users can log in but have no Myinfo data (userinfo returns invalid_request)",
+        "Describes onboarding on the Singpass Developer Portal (SDP): Corppass-authorised access, staging app with test accounts (max 5) and Myinfo test personas (password Userinfo@2024, Myinfo-only), then a production app with the Singpass Services Agreement, per-scope justification, and a User Journey document with approval taking up to two weeks",
+        "States the operational hard rules: 60-second request_uri and authorization-code lifetimes, 30-minute access tokens, state/nonce/iss validation, at most 3 retries with exponential backoff before falling back, no certificate pinning, and handling scheduled CPFB/IRAS maintenance windows (502 upstream_dependency_error) for the financial scopes",
+        "Designs the UX to current rules: QR-only login for new apps (no password/SMS-OTP flows), no WebView embedding, and the approved Singpass button treatment (white or red variants, 'Log in' as two words, 'Sing pass' screen-reader label)"
+      ]
+    }
+  ]
+}

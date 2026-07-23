@@ -1,0 +1,46 @@
+{
+  "skill_name": "corppass",
+  "evals": [
+    {
+      "id": 0,
+      "eval_name": "audit-corppass-integration",
+      "prompt": "You are reviewing the Corppass integration of LicenceOne, a Singapore government agency portal where companies apply for and renew business licences. The team migrated to the new Corppass API earlier this year and users are reporting intermittent login failures; the tech lead also wants a security review before the next release. The relevant backend module is in auth.js and the team's integration notes are in INTEGRATION-NOTES.md. Audit the integration: identify every defect or compliance violation, explain why each is wrong, and give the concrete fix. Write your findings to audit-findings.md.",
+      "expected_output": "An audit report that catches all seeded FAPI 2.0 violations (identity-model flip, Bearer-vs-DPoP, client assertion lifetime, banned callback URL words, missing state validation, access-token parsing, token lifetime/refresh fiction, static DPoP key, missing enc key, cert pinning, ESrvc_Row_Count mishandling, NRIC-as-key) and routes the citizen-login plan to Singpass Login.",
+      "files": ["files/auth.js", "files/INTEGRATION-NOTES.md"],
+      "assertions": [
+        "Identifies that the code treats the ID token sub claim as the user's identity when in the Corppass FAPI 2.0 API sub is always the ENTITY (UEN or Corppass Entity ID) and the acting user is act.sub",
+        "Identifies the use of 'Authorization: Bearer' on the /userinfo request as wrong — the scheme must be DPoP (with a DPoP proof containing the ath claim), and notes Bearer yields a bare 401",
+        "Identifies the client assertion lifetime of 1 hour as invalid — Corppass rejects client assertions whose exp is more than 2 minutes after iat",
+        "Identifies that the registered callback URL containing the word 'corppass' violates the anti-scam rule that callback and JWKS URLs must not contain the words singpass, corppass, or myinfo",
+        "Identifies the missing state validation on the OAuth callback as a CSRF vulnerability — state must be strictly matched against the stored session value and the request rejected on mismatch",
+        "Identifies that decoding the access token and reading its claims violates the requirement to treat the access token as an opaque string",
+        "Identifies that caching/reusing the access token for hours is broken — Corppass access tokens live 10 minutes and there are NO refresh tokens, so expiry requires a fresh authorization flow",
+        "Identifies that loading a static long-lived DPoP key from disk is wrong — DPoP requires an ephemeral EC key pair generated per authentication session, reused only across that session's PAR/token/userinfo calls",
+        "Identifies that the client JWKS contains only a signing key — Corppass requires at least one 'enc' encryption key too, and without it token issuance fails (ID tokens and userinfo responses are JWEs encrypted to that key)",
+        "Identifies the certificate pinning of the Corppass TLS certificate as forbidden — Corppass uses AWS-issued certs rotated without notice; trust AWS roots instead",
+        "Identifies that treating auth_info Result_Set.ESrvc_Row_Count of 0 as a generic login failure is wrong — it means the user authenticated but was never assigned to the e-service by their entity's Corppass Admin, and the UX must say so (provisioning, not code); also flags that role validity windows (StartDate/EndDate) are not enforced server-side",
+        "Recommends keying user records on the stable UUID in act.sub instead of the NRIC from act.sub_attributes.identity_number, per Corppass's own key principles and the PDPC NRIC advisory",
+        "Routes the roadmap item about individual sole-trader applicants without a UEN to Singpass Login (individual-facing authentication) rather than trying to serve them through Corppass"
+      ]
+    },
+    {
+      "id": 1,
+      "eval_name": "design-corppass-service",
+      "prompt": "We're a Singapore government agency starting to build GrantBridge, a new portal where companies apply for business development grants. Authorised company staff will log in on behalf of their company, and corporate service providers (accounting firms, corporate secretaries) must be able to file applications for their client companies. We want to pre-fill the application with verified company data — ACRA profile, appointments, shareholders, and financials — instead of asking for document uploads. Nothing is built yet. Design the authentication and data integration: which APIs and flows to use, the identity and authorisation model, what we must set up and configure before launch, the onboarding steps and portals involved, and the compliance/UX rules our form must follow. Write the design to grantbridge-auth-design.md.",
+      "expected_output": "A design grounded in the Corppass Authorization API (FAPI 2.0): PAR/PKCE/DPoP/client-assertion flow, entity-vs-actor identity model keyed on act.sub UUID, auth_info role enforcement with provisioning UX, tp_auth_info for third-party providers, Myinfo Business v3 via SDP for corporate data with its compliance rules, CDP onboarding with immutable role design flagged, and the operational hard rules (TTLs, no refresh tokens, JWKS requirements, TLS, URL word ban).",
+      "files": [],
+      "assertions": [
+        "Selects the Corppass Authorization API (FAPI 2.0) with the Pushed Authorization Request flow for business-user login — not the legacy pre-2026 API, not plain Singpass Login, and not a bespoke login",
+        "Specifies the FAPI 2.0 client crypto correctly: private_key_jwt client assertions (aud = discovery issuer, unique jti, exp no more than 2 minutes after iat), PKCE with S256, and DPoP proofs on PAR, token, and userinfo using an ephemeral per-session EC key with the ath claim at userinfo",
+        "Requires a client JWKS containing BOTH an EC signing key (use sig) and an EC encryption key (use enc), and states the hosting rules (public HTTPS 443, respond within ~3 seconds, no redirects, never expose the private d component) — because ID tokens and userinfo responses arrive as JWEs",
+        "Gets the identity model right: ID token sub is the entity (UEN), the acting user is act.sub (a UUID) which should be the primary user key rather than NRIC, and sessions/records are scoped to the (entity, user) pair",
+        "Designs role-based authorisation on auth_info from the userinfo endpoint (authinfo scope): roles assigned by each company's Corppass Admin, enforced server-side per request including StartDate/EndDate validity windows, with ESrvc_Row_Count 0 handled as a 'ask your Corppass Admin to assign you' provisioning message",
+        "Covers third-party service providers via the tpauthinfo scope and tp_auth_info structure, noting that third-party functionality must be enabled for the digital service at onboarding and that each client entity appears as its own TP_Auth entry",
+        "Names both onboarding portals correctly: the Corppass Developer Portal (CDP) for the Corppass Login digital service and the Singpass Developer Portal (SDP) for the Myinfo Business app — including that Myinfo Business apps must NOT send authentication_context_type while the Login app must",
+        "Flags the CDP one-way doors: roles, parameters, Sub-UEN format, entity types and statuses cannot be modified or removed after the service is published, so the role model (e.g. preparer/approver) must be designed before go-live",
+        "Applies the Myinfo Business compliance rules to the form design: display all retrieved data before submission, government-sourced fields non-editable, no session/cookie caching (re-fetch each time), purge unsubmitted data, provide a manual-entry alternative, and note Singpass Foreign Account holders cannot use Myinfo Business",
+        "States the operational constraints: 60-second request_uri and authorization-code lifetimes, 10-minute DPoP-bound access tokens with no refresh tokens (re-run the flow), no certificate pinning against Corppass TLS, TLS 1.3 or the approved TLS 1.2 ECDHE-GCM suites, and callback/JWKS URLs free of the words singpass/corppass/myinfo"
+      ]
+    }
+  ]
+}

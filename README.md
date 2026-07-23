@@ -10,7 +10,7 @@ Delivering software inside government is its own discipline. The ICT&SS Policy R
 
 These skills are small, composable, and adaptable so delivery teams can plug them into their agent and get moving. They work with any model. Fork them, adapt them, make them your own.
 
-**Eleven skills, each with its own eval suite:** figure out which System Security Plan applies, write and audit code against the security controls, harden your CI/CD pipeline, lock down your containers, secure your Generative AI features, run your VAPT and vulnerability management programme, keep government data resident, encrypted, and properly destroyed, capture, protect, and monitor your logs, govern accounts, identity, and privileged access, meet the WCAG 2.2 accessibility bar, and stand up the mandatory service shell. Loading the relevant skill lifts assertion pass rates from as low as 22% to 100% on the benchmark tasks below.
+**Fifteen skills, each with its own eval suite:** figure out which System Security Plan applies, write and audit code against the security controls, harden your CI/CD pipeline, lock down your containers, secure your Generative AI features, run your VAPT and vulnerability management programme, keep government data resident, encrypted, and properly destroyed, capture, protect, and monitor your logs, govern accounts, identity, and privileged access, integrate Singpass and Corppass for citizen and business login and verified-data pre-fill, meet the WCAG 2.2 accessibility bar, and stand up the mandatory service shell. Loading the relevant skill lifts assertion pass rates from as low as 22% to 100% on the benchmark tasks below.
 
 ## What these skills help you do
 
@@ -23,6 +23,7 @@ These skills are small, composable, and adaptable so delivery teams can plug the
 - Enforce data residency, encryption, DLP, and secure disposal for government data.
 - Set up logging, security monitoring, and GCSOC-centralised detection.
 - Govern accounts, MFA, Singpass/Corppass and SSO, and the account lifecycle.
+- Integrate Singpass and Corppass login and Myinfo pre-fill, and migrate legacy integrations.
 - Meet WCAG 2.2 and Digital Service Standards accessibility requirements.
 - Build an SGDS-compliant Singapore government service shell.
 
@@ -57,6 +58,10 @@ The CLI installs into `.agents/skills/` and symlinks them into the agent directo
 | **Data Protection**<br>[data-protection](skills/data-protection/) | Build or audit data handling against the Data Protection (DP-1..8) controls: Singapore data residency with enforced guardrails, encryption at rest and in transit on every store and hop, central cloud tenancy, witnessed storage sanitisation and destruction, DLP, and classification disclosure at input fields — with the PDPA/PSGA boundary handled correctly. |
 | **Logging & Monitoring**<br>[logging-monitoring](skills/logging-monitoring/) | Set up or audit logging and monitoring against the Logging and Monitoring (LM-1..21) controls: the five security log sources, off-box tamper-resistant storage, retention and sanitisation, central security log management with GCSOC, GuardDuty-class detection, and the SLO/golden-signals/DORA/WOGAA operational layer. |
 | **Access Control**<br>[access-control](skills/access-control/) | Set up or audit identity and access management against the Access Control (AC-1..16) controls: account inventory and deny-by-default least privilege, MFA for privileged accounts, Singpass/Corppass for public users vs government SSO for internal users, inactive-account and access-review lifecycle, credential rotation, endpoint hardening and MDM, and identity- and device-based access. |
+| **Singpass**<br>[singpass](skills/singpass/) | Integrate citizen/resident login and Myinfo (v5) verified person-data pre-fill on the current FAPI 2.0 Singpass API: the PAR/PKCE/DPoP flow, the UUID-first identity model (NRIC only via scope), Myinfo scopes and Plus-tier billing, SDP onboarding, and the display/purge/no-cache/QR-only compliance rules that fail app review. |
+| **Corppass**<br>[corppass](skills/corppass/) | Integrate business-user login and Myinfo Business corporate-data pre-fill via the Corppass Authorization API (FAPI 2.0): the entity-vs-user identity model (`sub` is the entity, `act.sub` the user), `auth_info` roles and third-party authorisation, the CDP-vs-SDP onboarding split and its one-way doors, and why "user can't log in" is usually provisioning. |
+| **Singpass (legacy)**<br>[singpass-legacy](skills/singpass-legacy/) | Maintain, debug, or migrate legacy Singpass integrations — Myinfo v3 (client_secret + PKI_SIGN X.509), Myinfo v4 (OAuth 2.1 + DPoP), and the pre-FAPI auth API — with the surface-identification cheatsheet and the mandatory migration deadlines (v3/v4→v5 by end Sep 2026; FAPI 2.0 by 31 Dec 2026). |
+| **Corppass (legacy)**<br>[corppass-legacy](skills/corppass-legacy/) | Maintain or migrate pre-FAPI 2.0 Corppass integrations (`entityInfo`/`userInfo`, `/authorization-info`, Myinfo Business v1/v2) to FAPI 2.0: the claim-mapping table, the `sub` user→entity flip, and the 2027 deadlines (legacy API by 31 Mar 2027; Myinfo Business v3 by 31 May 2027). |
 | **Digital Service Standards Accessibility**<br>[dss-accessibility](skills/dss-accessibility/) | Build and review frontend code against the 53 WCAG-2.2-derived DSS accessibility controls (WP/WO/WU/WR), with SG-specific Others vs High-Impact leveling and testing workflow. |
 | **Singapore Government Service Shell**<br>[sg-service-shell](skills/sg-service-shell/) | The mandatory "shell" every SG government public digital service needs before feature work: Official Government Banner (SGDS Masthead), WOGAA, official footer, .gov.sg domain, and the rest of the DSS TL/BD/PR controls. |
 
@@ -77,10 +82,14 @@ Every skill ships with an eval suite under `skills/<skill>/evals/`. Each eval is
 | [data-protection](skills/data-protection/) | 2 | 22 | **100%** | 61% | +39 pts |
 | [logging-monitoring](skills/logging-monitoring/) | 2 | 22 | **100%** | 74% | +26 pts |
 | [access-control](skills/access-control/) | 2 | 23 | **100%** | 69% | +31 pts |
+| [singpass](skills/singpass/) | 2 | 23 | **100%** | 45% | +56 pts |
+| [corppass](skills/corppass/) | 2 | 22 | **100%** | 51% | +49 pts |
+| [corppass-legacy](skills/corppass-legacy/) | 2 | 22 | **100%** | 60% | +40 pts |
+| [singpass-legacy](skills/singpass-legacy/) | 2 | 22 | **100%** | 62% | +38 pts |
 | [dss-accessibility](skills/dss-accessibility/) | 3 | 27 | **100%** | 83% | +17 pts |
 | [sg-service-shell](skills/sg-service-shell/) | 2 | 19 | **100%** | 36% | +64 pts |
 
-The lift is largest where the requirement is hard to guess without knowing the policy: which System Security Plan applies, or that a public service needs the Official Government Banner and WOGAA before feature work. Accessibility shows the smallest gap because a capable model already reaches for common WCAG patterns unprompted; the skill's job there is closing the last mile (control IDs, live-region etiquette, a humane session-expiry state).
+The lift is largest where the requirement is hard to guess without knowing the policy: which System Security Plan applies, or that a public service needs the Official Government Banner and WOGAA before feature work. The Singpass and Corppass skills show the same effect for a different reason — the current stack (FAPI 2.0, PAR/DPoP, Myinfo v5, the `sub`-is-the-entity model) largely postdates model training, so a greenfield design without the skill reaches for the wrong version, invents endpoints, or misreads a confidently-held stale belief (a legacy migration baseline insisted "there is no Myinfo v5"). Accessibility shows the smallest gap because a capable model already reaches for common WCAG patterns unprompted; the skill's job there is closing the last mile (control IDs, live-region etiquette, a humane session-expiry state).
 
 <details>
 <summary>Per-scenario breakdown</summary>
@@ -105,6 +114,14 @@ The lift is largest where the requirement is hard to guess without knowing the p
 | logging-monitoring | setup-lm-baseline | 10 | 100% | 73% |
 | access-control | audit-seeded-ac | 13 | 100% | 77% |
 | access-control | setup-ac-baseline | 10 | 100% | 60% |
+| singpass | audit-singpass-integration | 13 | 100% | 59% |
+| singpass | design-singpass-service | 10 | 100% | 30% |
+| corppass | audit-corppass-integration | 12 | 100% | 74% |
+| corppass | design-corppass-service | 10 | 100% | 27% |
+| corppass-legacy | audit-half-migrated-corppass | 12 | 100% | 69% |
+| corppass-legacy | plan-legacy-corppass-migration | 10 | 100% | 50% |
+| singpass-legacy | audit-legacy-singpass-estate | 12 | 100% | 83% |
+| singpass-legacy | plan-legacy-singpass-migration | 10 | 100% | 40% |
 | dss-accessibility | feedback-form-build | 10 | 100% | 90% |
 | dss-accessibility | audit-seeded-page | 8 | 100% | 75% |
 | dss-accessibility | timeout-modal | 9 | 100% | 85% |

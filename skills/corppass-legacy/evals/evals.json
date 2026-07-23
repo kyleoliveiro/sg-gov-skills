@@ -1,0 +1,45 @@
+{
+  "skill_name": "corppass-legacy",
+  "evals": [
+    {
+      "id": 0,
+      "eval_name": "audit-half-migrated-corppass",
+      "prompt": "TenderHub is a Singapore government agency portal where companies respond to tenders. The team is midway through migrating its Corppass integration from the legacy Authorization API to FAPI 2.0: the authorization flow was switched to PAR last sprint, but logins now fail intermittently and some downstream features broke. Review the migrated token/identity handler in token-handler.js and the team's migration plan in migration-plan.md. Identify every defect — both code that was not correctly adapted to FAPI 2.0 and plan items that are wrong or missing — explain why each is wrong, and give the concrete fix. Write your findings to migration-audit.md.",
+      "expected_output": "An audit that catches the identity-model breakages (sub still parsed as the legacy comma-separated user string, CPAccType gating with no FAPI equivalent), the crypto/config gaps (no enc key in JWKS, 30-minute client assertions, Bearer on /authorization-info instead of DPoP on /userinfo, 10-minute-code retry logic), and the plan errors (reusing the MIB v2 client ID for v3, consuming dropped gov-contracts scopes, missing deadlines and migration-plan submission, http redirect URL).",
+      "files": ["files/token-handler.js", "files/migration-plan.md"],
+      "assertions": [
+        "Identifies that parseSub() still parses the ID token sub as the legacy comma-separated user string (s=NRIC,uuid=...) when FAPI 2.0 sub is the ENTITY identifier (UEN or Corppass Entity ID) — so the code now stores UENs as NRICs — and that the user must be read from act.sub instead",
+        "Identifies that the admin gate on userInfo.CPAccType is dead logic — the CPAccType and ISSPHOLDER claims have NO equivalent in FAPI 2.0 ID tokens and role gating must be redesigned on auth_info role rows",
+        "Identifies that the client JWKS still contains only a signing key — FAPI 2.0 ID tokens and userinfo responses are JWEs encrypted to the client's enc key, so an EC encryption key must be published before cutover",
+        "Identifies the 30-minute client assertion lifetime as invalid under FAPI 2.0 — Corppass rejects assertions whose exp is more than 2 minutes after iat (and each needs a fresh unique jti)",
+        "Identifies that the code still calls GET /authorization-info with Authorization: Bearer — FAPI 2.0 replaces it with /userinfo using the DPoP scheme plus a DPoP proof carrying the ath claim, and the payload switches from PascalCase AuthInfo/TPAuthInfo JWS to snake_case auth_info/tp_auth_info inside a JWE",
+        "Identifies the retry loop that retries token exchange for up to 5 minutes as built on the legacy 10-minute code lifetime — FAPI 2.0 authorization codes are single-use and expire in 60 seconds, so retrying a code is futile and exchange must happen immediately",
+        "Identifies that legacy-side positional parsing (sub.split(',')[0]) was always fragile because the legacy docs state the sub key-value order is not guaranteed — parsing must be key-based",
+        "Flags that the plan reuses the Myinfo Business v2 client ID for v3 — the docs state existing Client IDs/App IDs are not interchangeable and a NEW app must be created on the Singpass Developer Portal",
+        "Flags that the plan's v3 scope list still includes gov-contracts data — the entire gov-contracts category was dropped in Myinfo Business v3, and renames like uen to registration_number and entity-status to uen-status must be audited",
+        "Flags the plan's missing or wrong deadlines — legacy Corppass Authorization API must be migrated by 31 March 2027 (deprecated 1 April 2027) and Myinfo Business v1/v2 by 31 May 2027 — and notes the migration plan should be submitted to Corppass (go.gov.sg/cp-fapi-migration-plan)",
+        "Flags that the staging redirect URL using http:// cannot work — FAPI 2.0 requires https redirect URIs (custom schemes and http are not allowed, and PAR initialization is refused without a registered https redirect URL)",
+        "Notes the per-flow parallel-run option (PAR requests hit FAPI 2.0 while browser-redirect authorization stays legacy on the same client_id) as the safe staged-rollout mechanism the plan should use"
+      ]
+    },
+    {
+      "id": 1,
+      "eval_name": "plan-legacy-corppass-migration",
+      "prompt": "Our agency runs FilingDesk, a portal where corporate secretaries file statutory returns for their client companies. It integrates Corppass with the legacy Authorization API (onboarded 2023): front-channel authorize with esrvcID, Bearer access tokens, entityInfo/userInfo ID-token claims, and /authorization-info for roles including third-party (TPAuthInfo) authorisations. It also pulls company profile data through Myinfo Business v2. Nothing has been migrated yet. Produce a complete migration assessment and plan: what must change in code, keys, and configuration, in what order, what the deadlines are, and what will silently break if we port the code naively. Write it to filingdesk-migration-plan.md.",
+      "expected_output": "A migration plan grounded in the official legacy-to-FAPI 2.0 guide: correct deadlines, the full claim remapping including the sub meaning flip and CPAccType/ISSPHOLDER redesign, PAR/PKCE/DPoP/2-minute client assertions, JWKS enc key addition, /authorization-info to /userinfo swap with TPAuthInfo continuity, a new SDP app for Myinfo Business v3 with a scope diff, config prerequisites, and a staged parallel rollout.",
+      "files": [],
+      "assertions": [
+        "States the correct deadlines: legacy Corppass Authorization API migration by 31 March 2027 (legacy profile deprecated 1 April 2027) and Myinfo Business v1/v2 to v3 by 31 May 2027, and recommends submitting the migration plan to Corppass",
+        "Calls out the sub meaning flip as the top silent breakage: legacy sub is the user as a comma-separated string (s=NRIC,uuid=...), FAPI 2.0 sub is the entity (UEN), with the user moved to act.sub as a UUID — and maps entityInfo.CPEntID, CPEnt_TYPE, CPEnt_Status, and userInfo.CPUID_FullName to their new locations",
+        "Identifies that CPAccType and ISSPHOLDER have no FAPI 2.0 equivalent and any logic depending on them must be redesigned (role decisions belong on auth_info rows)",
+        "Plans the protocol upgrade: back-channel PAR (60-second request_uri) replacing the front-channel request, esrvcID dropped, authentication_context_type added for the Login app, PKCE retained with S256, and DPoP proofs on PAR/token/userinfo with an ephemeral per-session EC key",
+        "Plans the client assertion tightening — exp no more than 2 minutes after iat, unique jti per assertion, aud = discovery issuer — replacing any long-lived assertion logic",
+        "Plans adding an EC encryption (enc) key to the client JWKS before cutover because FAPI 2.0 ID tokens and userinfo responses arrive as JWEs, and includes decrypt-then-verify with kid-based key selection",
+        "Plans the /authorization-info to /userinfo swap: Bearer to Authorization: DPoP with the ath claim, PascalCase AuthInfo/TPAuthInfo to snake_case auth_info/tp_auth_info, and confirms third-party (tp_auth_info via the tpauthinfo scope) continuity for the corporate-secretary use case",
+        "Plans a NEW Myinfo Business v3 app on the Singpass Developer Portal (client IDs are not interchangeable), with a field/scope audit covering renames (uen to registration_number, entity-status to uen-status) and dropped items (gov-contracts category, corppass-email/mobileno on appointments), and notes MIB apps must NOT send authentication_context_type",
+        "Covers config prerequisites: at least one https redirect URL registered (http/custom schemes refused), callback and JWKS URLs free of the words singpass/corppass/myinfo, and re-fetching the discovery document for the PAR and userinfo endpoints",
+        "Recommends a staged parallel rollout using per-flow API selection (PAR requests use FAPI 2.0 while browser-redirect authorization stays legacy on the same client_id) plus TTL retesting for the 60-second code and 10-minute no-refresh access tokens"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "skill_name": "singpass-legacy",
+  "evals": [
+    {
+      "id": 0,
+      "eval_name": "audit-legacy-singpass-estate",
+      "prompt": "SchoolReg is a Singapore government agency portal where parents register children for school programmes. It runs a Myinfo v3 integration for form pre-fill (built 2021) plus a pre-FAPI Singpass Login flow, and the team suffers intermittent 401 errors they can't explain. They drafted a migration assessment before asking for review. Audit the code in myinfo-v3-client.js and the plan in MIGRATION-ASSESSMENT.md: identify every defect, wrong assumption, and compliance gap; explain why each is wrong; give the concrete fix. Write your findings to legacy-audit.md.",
+      "expected_output": "An audit that identifies the legacy surfaces correctly, catches the live bugs (nonce reuse causing intermittent 401s, disabled JWS verification after the 2024 cert expiry, hardcoded client_secret, positional sub parsing), and corrects the plan's errors (v3-to-v4 detour, wrong deadlines, credential reuse, client_secret and RSA-OAEP assumptions carried into v5, missing Login-flow FAPI migration, WebView usage).",
+      "files": ["files/myinfo-v3-client.js", "files/MIGRATION-ASSESSMENT.md"],
+      "assertions": [
+        "Identifies the plan's v3-to-v4 stepping-stone as wasted work — v4 migration is no longer mandatory, v3/v4 onboarding is discontinued, and the migration target is Myinfo v5 directly",
+        "Flags the client_secret hardcoded in the repository as a serious credential exposure, noting it is a real shared secret that is also embedded in the PKI_SIGN signature base string",
+        "Identifies that JWS signature verification of Myinfo person payloads was disabled when the X.509 cert expired (Nov 2024) — the fix is to install the renewed Myinfo certificate and toggle 'Renewed certificate' in the Singpass Developer Portal, never to skip verification",
+        "Corrects the deadlines: Myinfo v3/v4 must migrate to v5 by end Sep 2026 (not the plan's 2027 target) and ALL Singpass apps must be FAPI 2.0-compliant by 31 Dec 2026",
+        "Identifies that the v5 migration requires a NEW client_id via the SDP 'Duplicate app' function (which carries config over without re-review) — the plan's assumption of reusing the v3 credentials is wrong",
+        "Identifies the parameter mapping the plan misses: comma-separated attributes= becomes space-separated scope= including openid, and the per-request purpose text moves into SDP app configuration",
+        "Identifies that v5 has NO client_secret and no PKI_SIGN — client authentication becomes private_key_jwt with an EC JWKS (the existing RSA X.509 keys cannot be reused; ECC keys are required)",
+        "Identifies that the JWE decryption code cannot be ported: v3 payloads are RSA-OAEP + A256GCM decrypted with the RSA key, while the v5 stack uses ECDH-ES+A256KW + A256CBC-HS512 with an EC encryption key published in the JWKS",
+        "Identifies the positional sub parsing (sub.split(',')[0]) in the Login flow as fragile — the legacy docs state key order is not guaranteed — and that after the FAPI 2.0 migration sub becomes a bare UUID with NRIC only available via the user.identity scope, so the NRIC-from-sub logic must be deleted",
+        "Diagnoses the intermittent 401s: the PKI_SIGN nonce is derived from the millisecond timestamp, so rapid consecutive requests reuse a nonce, which Myinfo rejects as replay — nonces must be unique per request (and timestamps monotonically non-decreasing)",
+        "Flags that the plan ignores the Singpass Login flow entirely: the pre-FAPI /auth flow must add PAR and DPoP, the client assertion aud changes to the /fapi issuer, sub parsing changes, and the authorization-code budget tightens from 2 minutes to 60 seconds — with per-flow version selection on the same client_id available for staged rollout",
+        "Identifies the mobile app's WebView embedding of the Singpass flow as unsupported (discontinued Nov 2024) — must move to in-app browser / app-claimed HTTPS patterns"
+      ]
+    },
+    {
+      "id": 1,
+      "eval_name": "plan-legacy-singpass-migration",
+      "prompt": "Our agency runs HomeAssist, a portal where residents apply for home-improvement subsidies. It has two Singpass touchpoints, both legacy: (1) Singpass Login on the pre-FAPI authentication API — we build the /auth URL directly, exchange the code at /token with a private_key_jwt client assertion, and parse the NRIC out of the comma-separated sub; (2) Myinfo v4 for pre-fill — /com/v4 endpoints with client assertions carrying cnf.jkt, per-transaction DPoP keys, and person data decrypted with ECDH-ES+A256KW + A256GCM. Nothing has been migrated. Produce a complete migration assessment and plan: what changes per surface, in what order, the deadlines, what breaks silently if ported naively, and how to roll out safely. Write it to homeassist-migration-plan.md.",
+      "expected_output": "A migration plan that treats the two surfaces separately: the pre-FAPI Login flow moves to FAPI 2.0 on the same client_id with staged per-flow rollout (PAR, DPoP, aud change, UUID sub, authentication_context_type, 60-second codes), while the Myinfo v4 app is duplicated in SDP for a new v5 client_id (drop cnf.jkt, purpose_id, person/{sub}; adopt /userinfo and A256CBC-HS512), with correct deadlines and compliance re-checks.",
+      "files": [],
+      "assertions": [
+        "States the correct deadlines: Myinfo v4 must migrate to v5 by end Sep 2026, and all Singpass apps must be FAPI 2.0-compliant by 31 Dec 2026",
+        "Treats the two surfaces as separate migrations: the pre-FAPI Login app keeps its client_id and moves to the FAPI 2.0 API, while the Myinfo v4 app needs a NEW client_id created via the SDP Duplicate-app function (config carried over, no re-review; old credentials not reusable)",
+        "Plans the Login-flow protocol upgrade: Pushed Authorization Requests replacing direct /auth URL construction (browser carries only client_id + request_uri, 60-second request_uri), DPoP proofs on PAR/token (ephemeral per-session key), and the mandatory authentication_context_type for Login apps",
+        "Flags the client assertion aud change as a silent breakage: pre-FAPI used the bare issuer (https://id.singpass.gov.sg), v4 used the API URL being called, and FAPI 2.0 requires the /fapi issuer — assertion code cannot be copy-pasted between surfaces",
+        "Plans the sub rewrite: delete the comma-separated parsing (s=NRIC,u=UUID, order not guaranteed; SFA users add fid/coi keys) because FAPI 2.0 sub is a bare UUID, with NRIC available only via the user.identity scope — and recommends re-keying user records on the UUID",
+        "Notes the ID token becomes ALWAYS encrypted under FAPI 2.0 (JWE even for UUID-only clients), so the JWKS needs an EC encryption key and decrypt-then-verify logic with kid selection",
+        "Plans the Myinfo v4-to-v5 code changes: drop cnf.jkt from client assertions, drop purpose_id (purpose moves to SDP config), replace GET /com/v4/person/{sub} with GET /userinfo (no path/query params), and change the JWE recipe from A256GCM to A256CBC-HS512 — decryption code is not portable",
+        "Carries over the correct v4 operational rules until cutover: access tokens are one-time-use for /person despite the 30-minute expiry, and the /token and /person DPoP proofs of one transaction must use the same ephemeral key",
+        "Recommends staged rollout using per-flow version selection for the Login app (PAR requests hit FAPI 2.0, browser-redirect stays pre-FAPI on the same client_id) plus the troubleshooting tool (developer.singpass.gov.sg/troubleshooting-tool) for validating assertions/DPoP/JWKS",
+        "Includes a compliance re-check in the plan (display-as-is, purge unsubmitted data, no cached Myinfo reuse, manual/non-Singpass alternative, QR-only login and no WebViews for the re-reviewed app) and amr-to-acr handling (amr values renamed; read acr for assurance)"
+      ]
+    }
+  ]
+}
