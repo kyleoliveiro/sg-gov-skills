@@ -10,7 +10,7 @@ Delivering software inside government is its own discipline. The ICT&SS Policy R
 
 These skills are small, composable, and adaptable so delivery teams can plug them into their agent and get moving. They work with any model. Fork them, adapt them, make them your own.
 
-**Fifteen skills, each with its own eval suite:** figure out which System Security Plan applies, write and audit code against the security controls, harden your CI/CD pipeline, lock down your containers, secure your Generative AI features, run your VAPT and vulnerability management programme, keep government data resident, encrypted, and properly destroyed, capture, protect, and monitor your logs, govern accounts, identity, and privileged access, integrate Singpass and Corppass for citizen and business login and verified-data pre-fill, meet the WCAG 2.2 accessibility bar, and stand up the mandatory service shell. Loading the relevant skill lifts assertion pass rates from as low as 22% to 100% on the benchmark tasks below.
+**Eighteen skills, each with its own eval suite:** figure out which System Security Plan applies, write and audit code against the security controls, harden your CI/CD pipeline, lock down your containers, secure your network boundaries, keep services available and recoverable with backups and DR, secure your Generative AI features, run your VAPT and vulnerability management programme, keep government data resident, encrypted, and properly destroyed, capture, protect, and monitor your logs, govern accounts, identity, and privileged access, integrate Singpass and Corppass for citizen and business login and verified-data pre-fill, build compliant transaction and payment flows, meet the WCAG 2.2 accessibility bar, and stand up the mandatory service shell. Loading the relevant skill lifts assertion pass rates from as low as 22% to 100% on the benchmark tasks below.
 
 ## Installation
 
@@ -37,12 +37,15 @@ Running the first command interactively presents the skills under the same four 
 - Audit application code against ICT&SS security controls.
 - Build secure GitHub and GitLab CI/CD pipelines.
 - Harden Docker and Kubernetes workloads.
+- Segment networks, lock down security groups, and secure hybrid and service-to-service connectivity.
+- Deploy multi-AZ, auto-scaling systems with immutable backups, recovery testing, and DR/BC plans.
 - Secure Generative AI features against the Gen-AI SSP overlay.
 - Set up vulnerability scanning, VAPT, and disclosure programmes.
 - Enforce data residency, encryption, DLP, and secure disposal for government data.
 - Set up logging, security monitoring, and GCSOC-centralised detection.
 - Govern accounts, MFA, Singpass/Corppass and SSO, and the account lifecycle.
 - Integrate Singpass and Corppass login and Myinfo pre-fill, and migrate legacy integrations.
+- Build DSS-compliant transaction and payment flows: multi-step forms, save-draft, pre-fill, payments, receipts, and status tracking.
 - Meet WCAG 2.2 and Digital Service Standards accessibility requirements.
 - Build an SGDS-compliant Singapore government service shell.
 
@@ -94,13 +97,17 @@ These skills cover Singpass, Myinfo, and Corppass integration and migration. The
 | **Singpass (legacy)**<br>[singpass-legacy](skills/singpass-legacy/) | Legacy integration migration | Maintain, debug, or migrate Myinfo v3/v4 and pre-FAPI Singpass integrations, including their wire formats and mandatory migration deadlines. |
 | **Corppass (legacy)**<br>[corppass-legacy](skills/corppass-legacy/) | Legacy integration migration | Maintain or migrate pre-FAPI 2.0 Corppass and Myinfo Business v1/v2 integrations, including claim mapping, identity-model changes, and migration deadlines. |
 
+### Deliberately not covered
+
+Four control domains are intentionally out of scope because they are not developer-deliverable in code: [Datacentre (DC)](https://info.standards.tech.gov.sg/control-catalog/cybersecurity/dc/) is physical facility security, inherited from the CSP or datacentre operator; [Human Resource (HR)](https://info.standards.tech.gov.sg/control-catalog/cybersecurity/hr/) is personnel governance; [Security Programme Management (PM)](https://info.standards.tech.gov.sg/control-catalog/cybersecurity/pm/) is agency governance — its SSP selection, tailoring, and submission workflow is what [ssp-navigator](skills/ssp-navigator/) covers; and the DSS [Understand Users (UU)](https://info.standards.tech.gov.sg/control-catalog/dss/uu/) family is user research practice. Coverage gaps against those domains in the tables above are deliberate, not omissions.
+
 Each skill lives in [`skills/`](skills/) as a folder with a `SKILL.md` entry point.
 
 ## Benchmarks
 
 Every skill ships with an eval suite under `skills/<skill>/evals/`. Each eval is a realistic delivery task: scaffold a portal shell, audit a seeded service, build authenticated endpoints. Each is graded against objective assertions ("every input has a programmatic label", "secrets are read from the environment, never hardcoded", "the Gen-AI overlay controls are emitted"). We run every task twice on the same model, once with the skill and once without, then score the fraction of assertions met.
 
-> **Benchmark refresh pending:** the Cybersecurity skills now include a third holdout scenario and separate description-trigger datasets. The historical results below cover the two scenarios named in the table; the new holdouts are intentionally not folded into the scores until they have been run with the same three-run methodology.
+> **Benchmark refresh pending:** the Cybersecurity skills now include a third holdout scenario and separate description-trigger datasets. The historical results below cover the two scenarios named in the table; the new holdouts are intentionally not folded into the scores until they have been run with the same three-run methodology. The three newest skills — [network-security](skills/network-security/), [transactions-payments](skills/transactions-payments/), and [resiliency-recovery](skills/resiliency-recovery/) — ship with full eval suites but have not yet been benchmarked, so they do not appear in the table.
 
 | Skill | Scenarios | Assertions | With skill | Without skill | Lift |
 | ----- | :-------: | :--------: | :--------: | :-----------: | :--: |
