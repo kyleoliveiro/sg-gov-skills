@@ -7,6 +7,8 @@
   "author": "Kyle Oliveiro <hello@kyle.sg>",
   "license": "MIT",
   "scripts": {
-    "skills:restore": "skills experimental_install"
+    "skills:restore": "skills experimental_install",
+    "skills:eval": "sh scripts/run-skill-eval.sh",
+    "skills:validate": "uv run --with pyyaml .agents/skills/skill-creator/scripts/quick_validate.py"
   }
 }

@@ -10,5 +10,6 @@ Delivering software inside government is its own discipline — the ICT&SS Polic
 ## Working on skills
 
 - One skill per delivery concern; kebab-case folder names.
-- Use the skill-creator skill to scaffold and iterate; validate with `python .agents/skills/skill-creator/scripts/quick_validate.py skills/<skill-name>`.
+- Use the skill-creator skill to scaffold and iterate; validate with `npm run skills:validate -- skills/<skill-name>`.
+- Run trigger evals with `npm run skills:eval -- <skill-name>` (extra `run_eval` flags pass through, e.g. `--runs-per-query 3`); run with no args to list skills that have eval sets. Evals shell out to `claude -p`, so they consume real usage.
 - When adding a skill, also add it to the table in `README.md`.
