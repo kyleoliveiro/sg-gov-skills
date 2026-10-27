@@ -3,10 +3,9 @@ import path from "node:path";
 import process from "node:process";
 
 // Validates every published skill's eval datasets:
-//  - evals.json         — task-performance scenarios (graded against assertions)
-//  - trigger-evals.json — description-trigger queries the run_eval harness consumes
-// Skills are discovered from every plugin group in the marketplace manifest, so
-// this stays in sync with what actually ships rather than a hard-coded list.
+//  - evals.json: task-performance scenarios graded against assertions
+//  - trigger-evals.json: description-trigger queries consumed by run_eval
+// The skill list comes from the plugin groups in the marketplace manifest.
 
 const MIN_TASK_EVALS = 2;
 const TRIGGER_COUNT = 20;

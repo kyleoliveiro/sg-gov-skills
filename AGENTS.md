@@ -1,12 +1,13 @@
 Agent skills for developers building tech projects for **Singapore government agencies**.
 
-Delivering software inside government is its own discipline — the ICT&SS Policy Reform (IM8's successor) and its System Security Plans, Singpass and MyInfo integrations, FormSG pipelines, the Singapore Government Design System (SGDS), WCAG 2.2 accessibility under the Digital Service Standards, PDPA obligations, VAPT, and GeBIZ procurement all shape how you build. These skills are small, composable, and adaptable so delivery teams can plug them into their agent and get moving. They work with any model. Fork them, adapt them, make them your own.
+The skills cover the requirements specific to government delivery: the ICT&SS Policy Reform (IM8's successor) and its System Security Plans, the Cybersecurity and Digital Service Standards control catalogs, Singpass, Corppass, and Myinfo integration, SGDS, and WCAG 2.2 accessibility. Each skill is small, covers one concern, and must work with any agent and model.
 
 ## Repository layout
 
-- `skills/<skill-name>/SKILL.md` — the published skills. This is the layout the `skills` CLI discovers, so consumers install with `npx skills add kyleoliveiro/sg-gov-skills`. Authoring conventions live in `skills/README.md`.
-- `.claude-plugin/marketplace.json` — groups published skills in the interactive `skills` CLI installer. Every skill must appear in exactly one group.
-- `.agents/skills/` and `.claude/skills/` — third-party skills installed locally for authoring (skill-creator, humanizer). Gitignored; tracked in `skills-lock.json` and restored with `npx skills experimental_install` (or `npm run skills:restore`).
+- `skills/<skill-name>/SKILL.md`: the published skills. This is the layout the `skills` CLI discovers, so consumers install with `npx skills add kyleoliveiro/sg-gov-skills`. Authoring conventions live in `skills/README.md`.
+- `.claude-plugin/marketplace.json`: groups published skills in the interactive `skills` CLI installer. Every skill must appear in exactly one group.
+- `scripts/`: the eval dataset validator and the trigger-eval runner.
+- `.agents/skills/` and `.claude/skills/`: third-party skills installed locally for authoring (skill-creator, humanizer). Gitignored; tracked in `skills-lock.json` and restored with `npx skills experimental_install` (or `npm run skills:restore`).
 
 ## Working on skills
 
