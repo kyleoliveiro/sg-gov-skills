@@ -1,8 +1,8 @@
 ---
 name: singpass
 description: >-
-  Integrate Singpass — citizen/resident login and Myinfo (v5) government-verified
-  person data — into a Singapore government digital service using the current
+  Integrate Singpass (citizen/resident login and Myinfo (v5) government-verified
+  person data) into a Singapore government digital service using the current
   FAPI 2.0 Singpass authentication API. Use this whenever a service authenticates
   individual members of the public or pre-fills their personal data: "log in with
   Singpass", Singpass Login, Myinfo, NRIC/UUID identity, PAR, DPoP, userinfo,
@@ -17,9 +17,9 @@ description: >-
 
 # Singpass: citizen login and Myinfo (v5) on FAPI 2.0
 
-Singpass is Singapore's national digital identity — an OpenID Connect provider,
-authorization-code flow only, relying parties must be confidential clients. Two
-products ride on one API and one onboarding portal:
+Singpass is Singapore's national digital identity: an OpenID Connect provider that
+supports the authorization-code flow only, and relying parties must be confidential
+clients. Two products share one API and one onboarding portal:
 
 - **Singpass Login** — authentication only. The flow ends at the ID token.
 - **Singpass Myinfo (v5)** — Login plus consented retrieval of government-verified
@@ -29,21 +29,20 @@ products ride on one API and one onboarding portal:
 The current API is **fully OIDC + FAPI 2.0 compliant** (new apps are FAPI 2.0 by
 default since Feb 2026; **all Singpass APIs must be FAPI 2.0-compliant by
 31 Dec 2026**). Use a **certified OIDC relying-party library** (openid.net certified
-list) rather than hand-rolling — Singpass says so explicitly, and the library gets
-PAR, PKCE, DPoP, and claim validation right for free. If you are maintaining a
-Myinfo v3/v4 integration or a pre-FAPI Login flow, read **singpass-legacy** —
-different endpoints, different crypto, hard deadlines.
+list) rather than hand-rolling. Singpass says so explicitly, and the library handles
+PAR, PKCE, DPoP, and claim validation correctly. If you are maintaining a
+Myinfo v3/v4 integration or a pre-FAPI Login flow, read **singpass-legacy**; it
+covers the different endpoints, crypto, and hard deadlines.
 
-The single most important identity fact: **the ID token `sub` is a UUID, never the
-NRIC.** NRIC/FIN arrives only if you request the justification-gated `user.identity`
+Most important identity rule: **the ID token `sub` is a UUID, never the NRIC.** NRIC/FIN arrives only if you request the justification-gated `user.identity`
 scope (`sub_attributes.identity_number`) or the `uinfin` Myinfo scope. Key your user
-records on the UUID; the PDPC NRIC advisory guidelines apply the moment you store
-NRIC instead.
+records on the UUID; the PDPC NRIC advisory guidelines apply once you store NRIC
+instead.
 
 ## Source and currency
 
 Embedded from https://docs.developer.singpass.gov.sg as of **2026-07-23**. The docs
-iterate — verify compliance-critical details live: append `.md` to any docs page URL
+iterate; verify compliance-critical details against the live pages. Append `.md` to any docs page URL
 for markdown; index at https://docs.developer.singpass.gov.sg/docs/llms.txt. Read
 the reference files for exact wire formats:
 
@@ -65,10 +64,10 @@ Backend-for-frontend; all secrets and signing server-side.
    `jti`, **`exp` − `iat` ≤ 2 minutes**), and a `DPoP` header signed with an
    **ephemeral EC key generated for this session**. Login apps must also send
    `authentication_context_type` (anti-fraud enum, e.g.
-   `APP_AUTHENTICATION_DEFAULT`) — it is mandatory for Login apps and not for
+   `APP_AUTHENTICATION_DEFAULT`); it is mandatory for Login apps and not for
    Myinfo apps. Response: `request_uri`, valid **60 seconds**.
-2. **Redirect** to `{issuer}/auth?client_id=...&request_uri=...` — nothing else in
-   the URL. On callback validate `state` (reject mismatch — CSRF) and `iss`; handle
+2. **Redirect** to `{issuer}/auth?client_id=...&request_uri=...` with nothing else
+   in the URL. On callback validate `state` (reject mismatch — CSRF) and `iss`; handle
    error callbacks (`server_error`, `temporarily_unavailable`) and never render
    `error_description` verbatim (content spoofing).
 3. **Token exchange within 60 seconds of code issuance**: fresh client assertion,
@@ -96,34 +95,34 @@ Backend-for-frontend; all secrets and signing server-side.
 | Myinfo scopes (`uinfin`, `dob`, `cpfbalances.oa`, ...) | attributes in `person_info` at userinfo |
 
 Read `acr` for assurance level (`urn:singpass:authentication:loa:2` = 2FA default;
-`loa:3` adds face verification — whitelisted use cases only and **chargeable since
-1 Jan 2026**; `loa:1` appears only in staging). Don't build logic on `amr` values —
+`loa:3` adds face verification, whitelisted use cases only and **chargeable since
+1 Jan 2026**; `loa:1` appears only in staging). Don't build logic on `amr` values;
 the list is non-exhaustive and changes.
 
 **Singpass Foreign Account (SFA) users** can log in (`account_type: "foreign"`) but
-**have no Myinfo** — userinfo returns `invalid_request` for them. Design the manual
-path.
+**have no Myinfo**: userinfo returns `invalid_request` for them. Design a manual
+path for them.
 
 ## Compliance and UX rules that fail app review
 
-The production app review enforces the Key Principles. Bake these in from the start:
+The production app review enforces the Key Principles. Build these in from the start:
 
-- **A non-Singpass alternative is mandatory** — Singpass cannot be the only
+- **A non-Singpass alternative is mandatory**: Singpass cannot be the only
   authentication or form-filling option.
-- **Display all retrieved Myinfo data** on the form before submission — no silent
+- **Display all retrieved Myinfo data** on the form before submission; no silent
   backend-only retrieval. Government-verified fields (`source: "1"`) are
   **non-editable**; user-provided fields (`email`, `mobileno`, and the
   MSF-sourced marital fields) **must stay editable**.
 - **Purge unsubmitted data**; purge save-as-draft data periodically; **never reuse
-  session/cookie-cached Myinfo data** — every retrieval is a fresh fetch.
-- **Request only what you need** — one purpose per app, every scope justified, each
+  session/cookie-cached Myinfo data**; every retrieval is a fresh fetch.
+- **Request only what you need**: one purpose per app, every scope justified, each
   request reviewed. The consent page cannot offer per-field selection.
 - Display rules for specific data: all 15 months of CPF contribution history shown
   even if you need 3; NOA (Detailed) must show year, type (+ "Clearance" when tax
   clearance = Y), assessable income and breakdown; Principal Name shown
   non-editable even when you also capture split name fields.
-- **New Login/Myinfo apps support QR login only** (national scam prevention — no
-  password/SMS-OTP flows) and **WebView embedded browsers are unsupported** — use
+- **New Login/Myinfo apps support QR login only** (national scam prevention; no
+  password/SMS-OTP flows) and **WebView embedded browsers are unsupported**; use
   in-app browser patterns (see the official iOS/Android demo repos).
 - Singpass button: white or red fill only, "Log in" as two words, aria-label so
   screen readers say "Sing pass". App logo: square PNG, transparent, 256–512 px,
@@ -131,20 +130,20 @@ The production app review enforces the Key Principles. Bake these in from the st
 
 ## Onboarding (Singpass Developer Portal)
 
-SDP at https://developer.singpass.gov.sg — access is **authorised via Corppass** by
+SDP is at https://developer.singpass.gov.sg. Access is **authorised via Corppass** by
 your entity's Corppass Admin. Singapore-registered entities only. Staging first:
 create the app, register redirect URLs (https; no IP-address URLs; custom schemes
-unsupported — mobile uses app-claimed HTTPS universal links), configure JWKS
+unsupported; mobile uses app-claimed HTTPS universal links), configure JWKS
 (endpoint or object), pick scopes, create **staging test accounts (max 5 per
 entity)**. Myinfo test personas (password `Userinfo@2024`) are for Myinfo testing
-only — not Login. Production needs the Singpass Services Agreement, billing
+only, not Login. Production needs the Singpass Services Agreement, billing
 contacts, and a **User Journey document**; approval takes **up to two weeks**;
 config changes re-enter review and propagate in 5–10 minutes after approval.
 
 Pricing: government agencies get the WOG-intranet pricing plan (not public). For
-others, Login is pay-per-transaction; Myinfo bills **Standard vs Plus** tiers — any
+others, Login is pay-per-transaction; Myinfo bills **Standard vs Plus** tiers: any
 single Plus (financial) scope in a transaction bills the whole transaction at Plus.
-Requesting `cpfbalances.*` casually is a billing decision, not just a scope choice.
+Request a `cpfbalances.*` scope only when the service needs it, because it bills the whole transaction at Plus.
 
 Validate your crypto with the official tool:
 https://developer.singpass.gov.sg/troubleshooting-tool (JWKS, client assertions,
@@ -152,23 +151,23 @@ DPoP, PKCE). Demo app: https://github.com/singpass/demo-app.
 
 ## Operational hard rules
 
-- **60-second fuses**: `request_uri` and authorization code both expire in 60 s;
+- **60-second limits**: `request_uri` and authorization code both expire in 60 s;
   client assertion and DPoP `exp` ≤ 2 min after `iat`; access token 30 min.
 - **Your JWKS endpoint is on the user-facing critical path**: ≥1 `sig` + ≥1 `enc`
   EC key (P-256/384/521), public HTTPS, **3-second response budget**, never expose
   `d`, never reuse retired `kid`s. Failures surface as `invalid_client` /
-  `upstream_dependency_error` during real user logins. Rotate at least yearly with
+  `upstream_dependency_error` during user logins. Rotate at least yearly with
   the 1-hour-cache choreography.
 - Retry policy is normative: at most 3 retries with exponential backoff on
   `server_error` / `upstream_dependency_error` / `temporarily_unavailable`, then
   guide users to the alternative path.
-- Never pin Singpass TLS certs; never hardcode Singpass keys or `kid`s — select by
+- Never pin Singpass TLS certs; never hardcode Singpass keys or `kid`s; select by
   `kid` from a ≥1-hour-cached JWKS, re-fetch once on validation failure.
-- Plan for **scheduled upstream downtimes** (CPFB/IRAS/MOM maintenance windows —
+- Plan for **scheduled upstream downtimes** (CPFB/IRAS/MOM maintenance windows;
   see reference): Myinfo financial scopes return 502 `upstream_dependency_error`
   during them; map to a friendly message and the manual path.
 - **CIBA** (backchannel push-notification step-up auth) exists for high-risk
-  transactions — government agencies only, case-by-case whitelisting, poll mode,
+  transactions: government agencies only, case-by-case whitelisting, poll mode,
   and it runs on the pre-FAPI endpoint family. See the reference before designing
   for it.
 
@@ -199,7 +198,7 @@ DPoP, PKCE). Demo app: https://github.com/singpass/demo-app.
   products with separate docs (docs.sign.singpass.gov.sg); this skill only routes
   you there.
 - **PDPA, NRIC retention, data classification policy** — **data-protection**.
-- **The catalog controls mandating Singpass** — AC-7 and friends live in
+- **The catalog controls mandating Singpass** — AC-7 and related controls live in
   **access-control**. This skill implements the login and TX-6 pre-fill;
   **sg-service-shell** owns the surrounding DSS page shell. Session hardening,
   secrets, and error handling around the flow are **secure-coding-as**.

@@ -20,20 +20,20 @@ description: >-
 # resiliency-recovery: RS + BR controls for SG government systems
 
 You are building or auditing **whether a Singapore government system stays up and can
-come back** — the ICT&SS Policy Reform **Resiliency family (RS-1..RS-3)** and **Backup
-& Recovery family (BR-1..BR-6)**, treated as one concern: RS keeps the service
+come back**: the ICT&SS Policy Reform **Resiliency family (RS-1..RS-3)** and **Backup
+& Recovery family (BR-1..BR-6)**, treated as one concern. RS keeps the service
 available through zone failures and demand spikes; BR gets data and service back when
 availability fails anyway.
 
-Two facts anchor the families:
+Two points apply throughout:
 
-1. **A backup that has never been restored is a hypothesis.** BR-1 backups only count
+1. **A backup that has never been restored is unproven.** BR-1 backups only count
    with BR-2 recovery tests proving full restore of *data and services* within the
-   RTO/RPO — and BR-3 immutability is what keeps those backups alive through the
-   ransomware scenario they exist for.
+   RTO/RPO, and BR-3 immutability keeps those backups intact through a ransomware
+   attack.
 2. **Six of the nine controls carry SSP parameters.** AZ count, load-test cadence,
    backup frequency, recovery-test cadence, retention days, and exercise cadence are
-   agency tailoring decisions. **Locate the values; never invent them** — a report that
+   agency tailoring decisions. **Locate the values; never invent them.** A report that
    asserts "backups daily" without the SSP saying so is itself a finding.
 
 ## Source and currency
@@ -68,13 +68,13 @@ compliance-critical:
 
 Ask for the project's SSP (the sibling skill **ssp-navigator** determines which SSP
 applies); if values are blank, flag the gap as its own finding. RTO and RPO come from
-business requirements and the risk assessment (BR-4) — they are inputs you collect,
+business requirements and the risk assessment (BR-4). They are inputs you collect,
 and RPO must be consistent with the backup frequency (`br-1_prm_1`): an RPO of 1 hour
-with daily backups is a contradiction to surface, not paper over.
+with daily backups is a contradiction to report.
 
 ## Procedure
 
-Work **stay-up → come-back → prove-it**. For **setup**, produce each
+Work in order: **stay up → come back → prove it**. For **setup**, produce each
 configuration/artifact. For **audit**, verify each and record pass / fail /
 not-applicable-per-SSP with evidence (the ASG/subnet config, the backup vault policy,
 the object-lock setting, the test records, the plan documents).
@@ -88,14 +88,13 @@ and **data replicated across AZs** (RDS Multi-AZ, zone-redundant storage). A "mu
 app whose database lives in one AZ still has the single point of failure.
 
 **1b. Dynamic scaling (RS-2).** Auto-scaling driven by real signals (CPU, request
-count, queue depth) behind load balancing — scale out before saturation, scale in to
+count, queue depth) behind load balancing: scale out before saturation, scale in to
 cut idle capacity; serverless/managed autoscaling counts. Fixed instance counts sized
 for peak are a finding in both directions.
 
 **1c. Load testing on cadence (RS-3).** Every `rs-3_prm_1` days, against a
-**production replica**, with load that mimics real user traffic and the spike shapes
-you actually fear. Pass criteria tie to SLOs and to whether autoscaling actually
-engaged. Harness notes in `references/dr-bcp-templates.md`.
+**production replica**, with load that mimics real user traffic and the expected spike
+patterns. Pass criteria tie to SLOs and to whether autoscaling engaged. Harness notes in `references/dr-bcp-templates.md`.
 
 ### Stage 2 — Come back (BR-1, BR-3, BR-4, BR-5)
 
@@ -104,18 +103,18 @@ up at least every `br-1_prm_1` days via CSP-managed tooling (AWS Backup / Azure 
 / GCP Backup and DR), stored **separately from primary storage** (separate
 account/vault at minimum) and encrypted at rest. For SaaS, confirm the provider's
 restore capability in writing. Where backups live is constrained by **DP-1 residency**
-(data-protection) — an overseas backup vault is a residency breach, not a BR win.
+(data-protection); an overseas backup vault is a residency breach.
 
 **2b. Immutable retention (BR-3).** Backups cannot be modified or deleted for
 `br-3_prm_1` days (or the agency retention policy): S3 Object Lock in compliance mode,
-Azure immutable blob storage, vault lock policies — plus deny-delete IAM on the vault.
+Azure immutable blob storage, vault lock policies, plus deny-delete IAM on the vault.
 This is the ransomware control; soft-delete alone is not immutability.
 
 **2c. DR plan (BR-4).** A maintained, regularly tested plan restoring critical
 functions and data within the RTO/RPO: roles, detection and declaration, per-scenario
 recovery procedures, communications, validation, test log. Template in
-`references/dr-bcp-templates.md`. The RTO/RPO themselves are business decisions —
-collect, don't invent.
+`references/dr-bcp-templates.md`. The RTO/RPO themselves are business decisions;
+collect them, don't invent them.
 
 **2d. BCP (BR-5).** The business-level continuity plan (degraded-mode operations,
 manual workarounds, activation and comms), built on the CSA Cybersecurity Toolkit
@@ -123,15 +122,15 @@ templates; the DR plan is its systems layer.
 
 ### Stage 3 — Prove it (BR-2, BR-6)
 
-**3a. Recovery testing (BR-2).** Every `br-2_prm_1` days, actually restore — **data
-and services, fully** — and measure against RTO/RPO. A snapshot-exists check is not a
+**3a. Recovery testing (BR-2).** Every `br-2_prm_1` days, perform a restore (**data
+and services, fully**) and measure against RTO/RPO. A snapshot-exists check is not a
 recovery test. Record date, scenario, RTO/RPO met, gaps, and actions: the record is
 the audit evidence.
 
-**3b. Continuity exercises (BR-6).** Every `br-6_prm_1` days, exercise the BCP —
-checklist walkthrough, tabletop, or simulation/game-day — with the same evidence
-discipline. Feed gaps back into the plans (BR-4/BR-5 both require their plans to be
-*maintained*, and exercises are what force the updates).
+**3b. Continuity exercises (BR-6).** Every `br-6_prm_1` days, exercise the BCP
+(checklist walkthrough, tabletop, or simulation/game-day) and record evidence the same
+way. Feed gaps back into the plans (BR-4/BR-5 both require their plans to be
+*maintained*, and exercises surface the updates needed).
 
 ## Audit checklist
 
@@ -160,7 +159,7 @@ to DP (data-protection), and user-facing downtime notices to the DSS PR controls
 - **data-protection** — DP-1 residency constrains where backups and DR targets may
   live; DP-2 owns encryption-at-rest mechanics; DP-5/DP-6 own sanitisation and
   witnessed destruction when backup media retire. BR owns the backup lifecycle itself.
-- **sg-service-shell** — the DSS user-facing twins: PR-3 24/7 availability (what
+- **sg-service-shell** — the user-facing DSS counterparts: PR-3 24/7 availability (what
   RS-1/RS-2 deliver) and PR-4 scheduled-downtime notices (what users see when DR/BC
   events interrupt service).
 - **container-security** — CS hardens the containers whose placement (topology spread,

@@ -1,16 +1,14 @@
 <h1 align="center">Singapore Government Agent Skills for Secure Digital Services, ICT, and Smart Systems</h1>
 
-![sg-gov-skills — composable agent skills for Singapore government technology delivery](assets/readme-banner.png)
+![sg-gov-skills: agent skills for Singapore government technology delivery](assets/readme-banner.png)
 
 ---
 
-Reusable Agent Skills for Codex, Claude Code, Cursor, and other AI coding agents building secure, accessible digital services for **Singapore government agencies**. Apply ICT&SS Policy Reform requirements, System Security Plans (SSPs), secure coding and CI/CD controls, container security, the Singapore Government Design System (SGDS), and WCAG 2.2 accessibility under the Digital Service Standards (DSS).
+Agent skills for teams building digital services for **Singapore government agencies**. They work with Claude Code, Codex, Cursor, and any other agent the [`skills` CLI](https://github.com/vercel-labs/skills) supports, and they are not tied to a particular model.
 
-Delivering software inside government is its own discipline. The ICT&SS Policy Reform (IM8's successor) and its System Security Plans, Singpass and MyInfo integrations, FormSG pipelines, the Singapore Government Design System (SGDS), WCAG 2.2 accessibility under the Digital Service Standards, PDPA obligations, VAPT, and GeBIZ procurement all shape how you build.
+Each skill covers one part of the government delivery stack: choosing the System Security Plan (SSP) under the ICT&SS Policy Reform (IM8's successor), implementing controls from the Cybersecurity and Digital Service Standards (DSS) control catalogs, integrating Singpass, Corppass, and Myinfo, and meeting WCAG 2.2 accessibility requirements. Skills are small and self-contained, so you can install only what you need or fork and adapt them.
 
-These skills are small, composable, and adaptable so delivery teams can plug them into their agent and get moving. They work with any model. Fork them, adapt them, make them your own.
-
-**Eighteen skills, each with its own eval suite:** figure out which System Security Plan applies, write and audit code against the security controls, harden your CI/CD pipeline, lock down your containers, secure your network boundaries, keep services available and recoverable with backups and DR, secure your Generative AI features, run your VAPT and vulnerability management programme, keep government data resident, encrypted, and properly destroyed, capture, protect, and monitor your logs, govern accounts, identity, and privileged access, integrate Singpass and Corppass for citizen and business login and verified-data pre-fill, build compliant transaction and payment flows, meet the WCAG 2.2 accessibility bar, and stand up the mandatory service shell. Loading the relevant skill lifts assertion pass rates from as low as 22% to 100% on the benchmark tasks below.
+There are 18 skills, each with its own eval suite. On the benchmark tasks below, loading the relevant skill raised assertion pass rates to 100%, from baselines between 22% and 83%.
 
 ## Installation
 
@@ -26,10 +24,7 @@ npx skills add kyleoliveiro/sg-gov-skills
 npx skills add kyleoliveiro/sg-gov-skills -s <skill-name>
 ```
 
-The CLI installs into `.agents/skills/` and symlinks them into the agent directories you choose (Claude Code, Cursor, Codex, and others).
-
-Running the first command interactively presents the skills under the same four groupings documented below. Individual skill names and `-s <skill-name>` installs are unchanged.
-
+The CLI installs into `.agents/skills/` and symlinks the skills into the agent directories you choose (Claude Code, Cursor, Codex, and others). Run interactively, the first command groups the skills the same way as the tables below.
 
 ## What these skills help you do
 
@@ -51,13 +46,13 @@ Running the first command interactively presents the skills under the same four 
 
 ## Who these skills are for
 
-These skills are for engineers at GovTech, OGP, and Singapore government agencies, as well as tech leads, security reviewers, accessibility specialists, and vendors working with those agencies. They are also useful to teams preparing for architecture reviews, security assessments, accessibility audits, or production readiness checks.
+Engineers, tech leads, security reviewers, and accessibility specialists at GovTech, OGP, and other agencies, and vendors who build for them. They are also useful when preparing for an architecture review, security assessment, accessibility audit, or production readiness check.
 
-## List of Available Skills
+## Skills
 
-The official [Control Catalog](https://info.standards.tech.gov.sg/control-catalog/) has two catalogs: [Cybersecurity](https://info.standards.tech.gov.sg/control-catalog/cybersecurity/) and [Digital Service Standards](https://info.standards.tech.gov.sg/control-catalog/dss/). The skills below are grouped by the catalog and control domains they directly implement, with National Digital Identity integrations and cross-catalog System Security Plan navigation in their own groups.
+The official [Control Catalog](https://info.standards.tech.gov.sg/control-catalog/) has two catalogs: [Cybersecurity](https://info.standards.tech.gov.sg/control-catalog/cybersecurity/) and [Digital Service Standards](https://info.standards.tech.gov.sg/control-catalog/dss/). The skills below are grouped by the catalog and control domains they implement. The SSP navigator, which spans both catalogs, and the national digital identity integrations have their own groups.
 
-### Security System Plan
+### System Security Plan
 
 | Skill | Catalog scope | Description |
 | ----- | ------------- | ----------- |
@@ -88,7 +83,7 @@ The official [Control Catalog](https://info.standards.tech.gov.sg/control-catalo
 
 ### National Digital Identity
 
-These skills cover Singpass, Myinfo, and Corppass integration and migration. They are implementation companions to Cybersecurity control AC-7, but their primary scope is product APIs, onboarding, data use, and migration rather than a control family.
+These skills cover Singpass, Myinfo, and Corppass integration and migration. They support Cybersecurity control AC-7, but they are organised around the product APIs, onboarding, data use, and migration rather than a control family.
 
 | Skill | Area | Description |
 | ----- | ---- | ----------- |
@@ -97,17 +92,17 @@ These skills cover Singpass, Myinfo, and Corppass integration and migration. The
 | **Singpass (legacy)**<br>[singpass-legacy](skills/singpass-legacy/) | Legacy integration migration | Maintain, debug, or migrate Myinfo v3/v4 and pre-FAPI Singpass integrations, including their wire formats and mandatory migration deadlines. |
 | **Corppass (legacy)**<br>[corppass-legacy](skills/corppass-legacy/) | Legacy integration migration | Maintain or migrate pre-FAPI 2.0 Corppass and Myinfo Business v1/v2 integrations, including claim mapping, identity-model changes, and migration deadlines. |
 
-### Deliberately not covered
+### Not covered
 
-Four control domains are intentionally out of scope because they are not developer-deliverable in code: [Datacentre (DC)](https://info.standards.tech.gov.sg/control-catalog/cybersecurity/dc/) is physical facility security, inherited from the CSP or datacentre operator; [Human Resource (HR)](https://info.standards.tech.gov.sg/control-catalog/cybersecurity/hr/) is personnel governance; [Security Programme Management (PM)](https://info.standards.tech.gov.sg/control-catalog/cybersecurity/pm/) is agency governance — its SSP selection, tailoring, and submission workflow is what [ssp-navigator](skills/ssp-navigator/) covers; and the DSS [Understand Users (UU)](https://info.standards.tech.gov.sg/control-catalog/dss/uu/) family is user research practice. Coverage gaps against those domains in the tables above are deliberate, not omissions.
+Four control domains are out of scope because delivery teams cannot meet them in code: [Datacentre (DC)](https://info.standards.tech.gov.sg/control-catalog/cybersecurity/dc/) is physical facility security, inherited from the CSP or datacentre operator; [Human Resource (HR)](https://info.standards.tech.gov.sg/control-catalog/cybersecurity/hr/) is personnel governance; [Security Programme Management (PM)](https://info.standards.tech.gov.sg/control-catalog/cybersecurity/pm/) is agency governance, although [ssp-navigator](skills/ssp-navigator/) covers its SSP selection, tailoring, and submission workflow; and the DSS [Understand Users (UU)](https://info.standards.tech.gov.sg/control-catalog/dss/uu/) family is user research practice.
 
 Each skill lives in [`skills/`](skills/) as a folder with a `SKILL.md` entry point.
 
 ## Benchmarks
 
-Every skill ships with an eval suite under `skills/<skill>/evals/`. Each eval is a realistic delivery task: scaffold a portal shell, audit a seeded service, build authenticated endpoints. Each is graded against objective assertions ("every input has a programmatic label", "secrets are read from the environment, never hardcoded", "the Gen-AI overlay controls are emitted"). We run every task twice on the same model, once with the skill and once without, then score the fraction of assertions met.
+Every skill ships with an eval suite under `skills/<skill>/evals/`. Each eval is a delivery task, such as scaffolding a portal shell, auditing a seeded service, or building authenticated endpoints, graded against objective assertions such as "every input has a programmatic label" or "secrets are read from the environment, never hardcoded". Each task runs on the same model with and without the skill, and the score is the fraction of assertions met.
 
-> **Benchmark refresh pending:** the Cybersecurity skills now include a third holdout scenario and separate description-trigger datasets. The historical results below cover the two scenarios named in the table; the new holdouts are intentionally not folded into the scores until they have been run with the same three-run methodology. The three newest skills — [network-security](skills/network-security/), [transactions-payments](skills/transactions-payments/), and [resiliency-recovery](skills/resiliency-recovery/) — ship with full eval suites but have not yet been benchmarked, so they do not appear in the table.
+> **Benchmark refresh pending:** the Cybersecurity skills now have a third holdout scenario and separate description-trigger datasets. The results below cover only the scenarios listed in the per-scenario breakdown; the holdouts will be added once they have been run three times like the others. [network-security](skills/network-security/), [transactions-payments](skills/transactions-payments/), and [resiliency-recovery](skills/resiliency-recovery/) have eval suites but have not been benchmarked yet, so they are not in the table.
 
 | Skill | Scenarios | Assertions | With skill | Without skill | Lift |
 | ----- | :-------: | :--------: | :--------: | :-----------: | :--: |
@@ -127,7 +122,7 @@ Every skill ships with an eval suite under `skills/<skill>/evals/`. Each eval is
 | [dss-accessibility](skills/dss-accessibility/) | 3 | 27 | **100%** | 83% | +17 pts |
 | [sg-service-shell](skills/sg-service-shell/) | 2 | 19 | **100%** | 36% | +64 pts |
 
-The lift is largest where the requirement is hard to guess without knowing the policy: which System Security Plan applies, or that a public service needs the Official Government Banner and WOGAA before feature work. The Singpass and Corppass skills show the same effect for a different reason — the current stack (FAPI 2.0, PAR/DPoP, Myinfo v5, the `sub`-is-the-entity model) largely postdates model training, so a greenfield design without the skill reaches for the wrong version, invents endpoints, or misreads a confidently-held stale belief (a legacy migration baseline insisted "there is no Myinfo v5"). Accessibility shows the smallest gap because a capable model already reaches for common WCAG patterns unprompted; the skill's job there is closing the last mile (control IDs, live-region etiquette, a humane session-expiry state).
+The gains are largest where a model cannot infer the requirement without knowing the policy, such as which System Security Plan applies, or that a public service needs the Official Government Banner and WOGAA. The Singpass and Corppass skills gain for a different reason: most of the current stack (FAPI 2.0, PAR/DPoP, Myinfo v5, `sub` identifying the entity) is newer than the models' training data. Without the skill, greenfield designs used the wrong API version or invented endpoints, and one legacy-migration baseline claimed that Myinfo v5 does not exist. Accessibility gains the least because models already apply common WCAG patterns; the skill adds control IDs, correct live-region usage, and a usable session-expiry state.
 
 <details>
 <summary>Per-scenario breakdown</summary>
@@ -168,33 +163,33 @@ The lift is largest where the requirement is hard to guess without knowing the p
 
 </details>
 
-*Methodology: scores are the mean pass rate over 3 runs per configuration. Each scenario reflects its most recent benchmark. Three skills had a follow-up iteration that re-ran a single eval after a fix, and those latest results are the ones shown. "Without skill" is the same model on the same prompt with no skill loaded. Numbers will vary by model; treat them as directional, not a leaderboard.*
+*Methodology: scores are the mean pass rate over 3 runs per configuration, from each scenario's most recent benchmark. For three skills, one eval was re-run after a fix, and the re-run is shown. "Without skill" is the same model and prompt with no skill loaded. Results vary by model, so read them as a rough indication.*
 
 ## Frequently asked questions
 
 ### What is an Agent Skill?
 
-An Agent Skill is a folder of instructions, references, scripts, and other resources that an AI coding agent loads for a specific task. Each skill in this repository has a `SKILL.md` entry point and focuses on one Singapore government delivery concern.
+A folder of instructions, reference material, and optional scripts that an AI coding agent loads when a task needs it. Each skill here has a `SKILL.md` entry point and covers one Singapore government delivery concern.
 
 ### Which AI coding agents can use these skills?
 
-The skills are model-independent. The `skills` CLI can install them for Codex, Claude Code, Cursor, and other supported agents.
+Any agent the `skills` CLI supports, including Claude Code, Codex, and Cursor. The skills do not depend on a particular model.
 
 ### Can I install a single skill?
 
-Yes. Run `npx skills add kyleoliveiro/sg-gov-skills -s <skill-name>` and replace `<skill-name>` with the slug shown in the Skills table.
+Yes. Run `npx skills add kyleoliveiro/sg-gov-skills -s <skill-name>` and replace `<skill-name>` with a folder name from the tables above.
 
 ### Do these skills guarantee compliance?
 
-No. They help agents apply the published controls, but they do not replace your agency's governance process, security review, or System Security Plan. Verify compliance-critical work against the authoritative standards and your project's approved requirements.
+No. They help agents apply the published controls, but they do not replace your agency's governance process, security review, or System Security Plan. Check compliance-critical work against the published standards and your project's approved requirements.
 
 ### Are these official Singapore government resources?
 
-No. This is an unofficial, community-maintained project. It is not affiliated with, endorsed by, or published by GovTech, the Singapore Government, or any of its agencies.
+No. This is an unofficial community project. See the [disclaimer](#disclaimer).
 
 ## Sources
 
-The control text embedded in these skills is transcribed from the public ICT&SS control catalog and related standards published at [info.standards.tech.gov.sg](https://info.standards.tech.gov.sg/), as of the dates noted in each skill's `SKILL.md`. That site is authoritative and the standards iterate, so verify against the live pages for anything compliance-critical. Each skill links the specific catalog pages it draws from.
+Control text in these skills is transcribed from the public control catalogs and related standards at [info.standards.tech.gov.sg](https://info.standards.tech.gov.sg/), as of the date given in each skill's `SKILL.md`. The standards change, so check the live pages for anything compliance-critical. Each skill links the catalog pages it uses.
 
 ## Disclaimer
 
@@ -206,15 +201,17 @@ To the maximum extent permitted by law, the authors and contributors accept no l
 
 ## Contributing
 
-See [`skills/README.md`](skills/README.md) for authoring conventions. In short: one folder per skill, kebab-case name, a `SKILL.md` with `name` and `description` frontmatter, and supporting files (`references/`, `scripts/`, `assets/`) only when they earn their place. Add every new skill to the appropriate catalog table above and installer group in [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json).
+See [`skills/README.md`](skills/README.md) for authoring conventions. In short: one folder per skill, kebab-case name, a `SKILL.md` with `name` and `description` frontmatter, and supporting files (`references/`, `scripts/`, `assets/`) only when the skill needs them. Add every new skill to the appropriate catalog table above and installer group in [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json).
 
 ### Repository layout
 
 ```
-skills/           Published skills — one folder per skill, each with a SKILL.md
-.claude-plugin/   Installer grouping metadata for the skills CLI
-skills-lock.json  Lockfile for skills installed locally for authoring (skill-creator, humanizer)
-.agents/skills/   Locally installed authoring skills (gitignored; restore with `npx skills experimental_install`)
+skills/           Published skills, one folder per skill, each with a SKILL.md and evals/
+.claude-plugin/   Installer groups for the skills CLI
+scripts/          Eval validation and trigger-eval runners
+research/         Background notes used to write the skills
+skills-lock.json  Lockfile for the authoring skills (skill-creator, humanizer)
+.agents/skills/   Installed authoring skills (gitignored; restore with `npm run skills:restore`)
 ```
 
 ## License

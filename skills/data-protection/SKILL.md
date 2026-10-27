@@ -6,9 +6,9 @@ description: >-
   encryption at rest and in transit, central cloud tenant management, storage sanitisation
   and witnessed destruction, data loss prevention, and classification disclosure in the
   UI. Use whenever handling government data classifications, pinning cloud regions or
-  checking cross-region replication, configuring encryption — including the CK
-  key-management work behind it (algorithms, rotation, HSM; load secure-coding-as
-  alongside) — decommissioning storage, setting up DLP, or when PDPA questions come up
+  checking cross-region replication, configuring encryption (including the CK
+  key-management work behind it: algorithms, rotation, HSM; load secure-coding-as
+  alongside), decommissioning storage, setting up DLP, or when PDPA questions come up
   on an agency project. Triggers: "data residency", IM8 data protection requirements,
   DP controls, ap-southeast-1 pinning, encryption at rest / in transit or key
   management for government data, AWS Organizations / landing zone / GCC tenancy, media
@@ -24,21 +24,21 @@ data may reside, encryption at rest and in transit, the cloud tenancy it lives i
 sanitising and destroying the media it touched, preventing loss in flight, and telling
 users what classification they may put in.
 
-Two facts anchor everything:
+Two points apply throughout:
 
-1. **DP-1 (data residency) sits in the Level-0 spine of every published SSP** —
-   mandatory, no deviation path, for cloud and on-prem alike. Residency is the one
-   control you cannot trade away, and it fails quietly: a cross-region replica, an
-   overseas DR target, or a managed service that processes in another region breaches it
-   without any code change.
+1. **DP-1 (data residency) sits in the Level-0 spine of every published SSP**. It is
+   mandatory, with no deviation path, for cloud and on-prem alike. Residency cannot be
+   traded away, and breaches are easy to miss: a cross-region replica, an overseas DR
+   target, or a managed service that processes in another region breaches it without any
+   code change.
 2. **The data classification determines the strength of everything else.** Confirm the
    maximum classification (and sensitivity tier) with the data owner before assessing any
-   DP control — "we think it's just OPEN data" is where breaches start.
+   DP control. Do not proceed on an assumption such as "we think it's just OPEN data".
 
 ## What this family is *not* about
 
 - **Encryption algorithms and key management are CK** (secure-coding-as). DP-2/DP-3 say
-  *that* data at rest and in transit must be encrypted; the CK family owns *how* — the
+  *that* data at rest and in transit must be encrypted; the CK family owns *how*: the
   approved algorithms, key storage, and rotation. A weak cipher or a mishandled key is a
   CK finding, not a DP one.
 - **GenAI input safeguards are the Gen-AI overlay** (gen-ai-security). For GenAI features,
@@ -50,10 +50,10 @@ Two facts anchor everything:
   belongs to those families.
 - **The PDPA trap.** Singapore **public agencies are excluded from the PDPA**; the public
   sector regime is the **Public Sector (Governance) Act (PSGA)** plus the ICT&SS/IM8
-  policies themselves — with criminal penalties for unauthorised disclosure or misuse of
-  data by public officers. "The PDPA doesn't apply to us" is true and *changes nothing*
-  about these obligations; vendors additionally carry them by contract. Never let a
-  PDPA-exclusion claim excuse a DP control. (Context, not legal advice — route legal
+  policies themselves, with criminal penalties for unauthorised disclosure or misuse of
+  data by public officers. "The PDPA doesn't apply to us" is true but does not change
+  these obligations; vendors additionally carry them by contract. Never let a
+  PDPA-exclusion claim excuse a DP control. (Context, not legal advice; route legal
   questions to the agency's counsel.)
 
 ## Source and currency
@@ -73,12 +73,12 @@ the live page:
 - `references/implementation-recipes.md` — concrete config and artifacts per control:
   region-pinning SCPs and replication checks, at-rest/in-transit encryption verification,
   landing-zone notes, the sanitisation-and-witness SOP, DLP setup, and the DP-8 input
-  disclosure. Read it when actually building.
+  disclosure. Read it when building.
 
 ## Before you start: classification and the SSP parameters
 
 Confirm the **maximum data classification and sensitivity tier** with the data owner, and
-get these parameter values from the System Security Plan — if the SSP is missing or the
+get these parameter values from the System Security Plan. If the SSP is missing or the
 values are blank, flag that as its own finding (the sibling skill **ssp-navigator**
 determines levels):
 
@@ -89,7 +89,7 @@ determines levels):
 | DP-4 | dp-4_prm_1 | The systems to be hosted on a central tenant |
 | DP-4 | dp-4_prm_2 | The central tenant management structure |
 
-DP-1 is Level 0 in every SSP; the rest of the family commonly sits at Level 1 — the
+DP-1 is Level 0 in every SSP; the rest of the family commonly sits at Level 1. The
 project's own SSP is authoritative for which level applies.
 
 ## Procedure
@@ -102,34 +102,34 @@ policy, the UI screenshot). Recipes for every step are in
 
 ### Stage 1 — Pin the data down (DP-1, DP-4)
 
-**1a. Enforce residency in code, not intention (DP-1).** All in-scope data (dp-1_prm_2)
-resides in dp-1_prm_1 — Singapore. Enforcement means technical guardrails: deny non-SG
-regions via SCP/policy, pin resources to `ap-southeast-1` (or the SG region of your CSP),
-and then hunt the quiet leaks — **cross-region replication, overseas backup/DR targets,
+**1a. Enforce residency with technical guardrails (DP-1).** All in-scope data (dp-1_prm_2)
+resides in dp-1_prm_1 (Singapore). Deny non-SG regions via SCP/policy, pin resources to
+`ap-southeast-1` (or the SG region of your CSP), then check for the less obvious leaks:
+**cross-region replication, overseas backup/DR targets,
 managed services that process or fail over in another region, global CDN/edge caches
 holding response data, and SaaS whose processing region isn't contractual**. Support
-access from overseas and third-party subprocessors count as residency questions too — ask
+access from overseas and third-party subprocessors count as residency questions too; ask
 the provider, don't assume.
 
 **1b. Central tenant management (DP-4).** Host the in-scope systems (dp-4_prm_1) under
-the central structure (dp-4_prm_2) — AWS Organizations / Azure Management Groups / GCP
+the central structure (dp-4_prm_2): AWS Organizations / Azure Management Groups / GCP
 Organizations with a landing zone, consistent guardrails, centralised logging, and
-tagging. **GCC tenancies provide this by construction** — a standalone account outside
-the agency's organisation is the finding to look for.
+tagging. GCC tenancies provide this by default. Look for standalone accounts outside the
+agency's organisation.
 
 ### Stage 2 — Encrypt everywhere (DP-2, DP-3)
 
-**2a. At rest (DP-2).** Every store — block volumes, object storage, databases, queues,
-caches, snapshots — encrypted at rest. CSPs encrypt much of this by default, but
+**2a. At rest (DP-2).** Every store (block volumes, object storage, databases, queues,
+caches, snapshots) is encrypted at rest. CSPs encrypt much of this by default, but
 **confirm and validate per service**; defaults vary by service and era, and a
 pre-encryption-era volume or an exempted cache is a typical miss.
 
 **2b. In transit (DP-3).** TLS on every hop, **including service-to-service traffic
-inside the VPC** — network-layer encryption by the CSP does not excuse plaintext HTTP at
+inside the VPC**. Network-layer encryption by the CSP does not excuse plaintext HTTP at
 the application layer. Internal load balancers, queues, and database connections all
 count.
 
-For both: *which* algorithms, *where* keys live, and rotation are **CK** — pair with
+For both: *which* algorithms, *where* keys live, and rotation are **CK**; pair with
 secure-coding-as; here the question is coverage, not cipher choice.
 
 ### Stage 3 — Destroy what you retire (DP-5, DP-6)
@@ -137,7 +137,7 @@ secure-coding-as; here the question is coverage, not cipher choice.
 Sanitise all hardware that stored data at rest; **shred or incinerate** storage meant for
 retirement, using recognised standards (Gutmann, Schneier, DoD 5220.22-M). An **agency
 staff member must witness** the sanitisation/destruction, under a documented SOP, with a
-witness record per device — a vendor certificate alone is not a witnessed destruction. In
+witness record per device. A vendor certificate alone is not a witnessed destruction. In
 cloud, physical media sanitisation is the CSP's responsibility under its certifications;
 the agency-witnessed process applies to media the agency controls (on-prem disks, office
 equipment, USB media, devices returned at contract end). Selling or e-waste-binning an
@@ -146,7 +146,7 @@ old NAS without this fails DP-5 *and* DP-6.
 ### Stage 4 — Watch the flows (DP-7)
 
 Implement DLP that **monitors data flows, detects sensitive-data transfers, and blocks
-unauthorised sharing** — built-in solutions first (Microsoft Purview, Google Workspace
+unauthorised sharing**. Use built-in solutions first (Microsoft Purview, Google Workspace
 DLP rules), tuned to the classifications in play, with policies reviewed on a schedule.
 For GenAI features, the upload-specific DLP requirement is GA-6 (gen-ai-security); DP-7
 is the general mechanism across email, storage, and endpoints.
@@ -154,15 +154,15 @@ is the general mechanism across email, storage, and endpoints.
 ### Stage 5 — Tell users the ceiling (DP-8)
 
 For **internal applications serving public officers**, state the highest permitted
-security/sensitivity classification for input data — text, audio, uploads — **in the UI
+security/sensitivity classification for input data (text, audio, uploads) **in the UI
 (at or near the input field) and in the user guides**. Keep the message in sync with what
-the system is actually authorised to hold; a disclosure that overstates the ceiling is
+the system is authorised to hold; a disclosure that overstates the ceiling is
 worse than none.
 
 ## Audit checklist
 
 Verify each row; record evidence. "Param" marks controls whose pass criteria come from
-the SSP — ask for the values rather than inventing them.
+the SSP; ask for the values rather than inventing them.
 
 | ID | Check | Where | Param |
 |---|---|---|---|
@@ -175,8 +175,8 @@ the SSP — ask for the values rather than inventing them.
 | DP-7 | DLP monitoring flows, detecting sensitive transfers, blocking unauthorised sharing; policies reviewed | DLP config + policy | |
 | DP-8 | Internal officer-facing inputs show the max permitted classification at/near the field and in guides | UI + user guide | |
 
-Report per control ID with pass / fail / not-applicable-per-SSP, the evidence found, and —
-for failures — the fix from `references/implementation-recipes.md`. Attribute
+Report per control ID with pass / fail / not-applicable-per-SSP, the evidence found, and
+for failures the fix from `references/implementation-recipes.md`. Attribute
 algorithm/key findings to CK, not DP; and correct, don't accept, any "PDPA doesn't apply
 so this doesn't matter" reasoning.
 

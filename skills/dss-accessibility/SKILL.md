@@ -20,9 +20,8 @@ description: >-
 Make frontend work for Singapore government services conform to the 53
 WCAG-derived controls of the Digital Service Standards (DSS) under the ICT&SS
 Policy Reform (IM8's successor): WP Perceivable (19), WO Operable (18), WU
-Understandable (14), WR Robust (2). These are effectively WCAG 2.2 Level A/AA
-requirements republished as government controls — but compliance is assessed
-against **DSS control IDs**, not SC numbers, so tag findings and commits with
+Understandable (14), WR Robust (2). These are WCAG 2.2 Level A/AA requirements
+republished as government controls. Compliance is assessed against **DSS control IDs**, not SC numbers, so tag findings and commits with
 IDs like WP-13 or WO-18.
 
 Full control text (statements, recommendations, rationale, levels, and the
@@ -33,7 +32,7 @@ need exact wording for a compliance artefact or a disputed review comment.
 ## Source and currency
 
 Embedded from **info.standards.tech.gov.sg** as of **2026-07-16** (catalog
-pages last updated 5 March 2026). The standards iterate actively — verify
+pages last updated 5 March 2026). The standards change often; verify
 against the live pages for compliance-critical decisions:
 
 - https://info.standards.tech.gov.sg/control-catalog/dss/wp/
@@ -46,7 +45,7 @@ against the live pages for compliance-critical decisions:
 ## Step 0 — Determine the profile
 
 Two DSS profiles exist; the split is annual traffic **measured by WOGAA**
-(the mandatory whole-of-government analytics — see the sg-service-shell
+(the mandatory whole-of-government analytics; see the sg-service-shell
 skill for WOGAA itself, and ssp-navigator for full SSP selection):
 
 | Profile | Qualifier | Effect on the 53 controls |
@@ -57,26 +56,26 @@ skill for WOGAA itself, and ssp-navigator for full SSP selection):
 The 9 controls that are Level 2 in Others and promoted to Level 1 in High
 Impact: **WP-4, WP-5, WP-9, WP-15, WO-3, WO-11, WO-14, WO-15, WU-3**.
 
-Level semantics: **Level 1** is default hygiene — skipping it requires agency
+Level semantics: **Level 1** is default hygiene: skipping it requires agency
 IDSC/CIO/CISO-approved deviation documented in a custom SSP, so treat Level 1
 as required. **Level 2** is best practice — implement unless there's a reason
 not to; the cost is usually low if considered up front. No WCAG-derived
 control is Level 0. For a new service with no WOGAA history, ask the agency
-for the expected traffic tier; when in doubt, build to High Impact — it only
-adds the 9 promotions and they're all cheap except live captions (WP-4) and
+for the expected traffic tier; when in doubt, build to High Impact. It only
+adds the 9 promotions, and all are low-cost except live captions (WP-4) and
 audio description (WP-5).
 
 ## Building: page structure and navigation
 
 - **Semantic HTML first** (WP-6): headings in order (`h1`→`h2`→`h3`, no
   skips), real `<ul>/<ol>`, `<table>` with `<th scope>`, `<button>` not
-  clickable `<div>`. Add ARIA only where semantics fall short — the control
-  text explicitly warns against ARIA overuse.
+  clickable `<div>`. Add ARIA only where semantics fall short; the control
+  text warns against ARIA overuse.
 - **DOM order = reading order** (WP-7, WO-9): screen readers and Tab follow
   the DOM. Never use CSS `order`/absolute positioning to visually reorder
   content whose sequence carries meaning. Avoid `tabindex` > 0.
-- **Unique, descriptive `<title>` per page — and per SPA view** (WO-8): DSS
-  explicitly extends this to "distinct Single-Page Application view served
+- **Unique, descriptive `<title>` per page and per SPA view** (WO-8): DSS
+  extends this to "distinct Single-Page Application view served
   from the same URI". Update `document.title` on route change.
 - **Skip link** (WO-7): first focusable element, may be visually hidden until
   focused, plus landmark regions (`<main>`, `<nav>`, `<header>`):
@@ -88,10 +87,10 @@ audio description (WP-5).
   ```
 
 - **Language** (WU-1, WU-2): `<html lang="en">`; wrap other-language content
-  — common on multilingual SG sites — in `lang` spans:
+  (common on multilingual SG sites) in `lang` spans:
   `<span lang="ms">Majulah Singapura</span>`. PDFs need `/Lang`; iOS apps use
   `accessibilityLanguage`.
-- **Main navigation** (WU-7 — stricter than WCAG): place it at or near the
+- **Main navigation** (WU-7, stricter than WCAG): place it at or near the
   top; on desktop it must **not** be hidden behind a hamburger icon; keep
   link order identical across pages. Hamburger on mobile is fine.
 - **Link text stands alone** (WO-10): "Download the 2026 fee schedule (PDF)",
@@ -109,7 +108,7 @@ audio description (WP-5).
 ## Building: forms and validation
 
 - **Every input has a programmatic label** (WP-10, WR-1): `<label for>` or
-  `aria-labelledby` — placeholder text is not a label. State the expected
+  `aria-labelledby`. Placeholder text is not a label. State the expected
   format where ambiguous: `Date of birth (DD/MM/YYYY)`. Add `autocomplete`
   tokens (`name`, `postal-code`, `tel`) so browsers and assistive tech can
   identify purpose and pre-fill.
@@ -118,7 +117,7 @@ audio description (WP-5).
   "Find" breaks voice-control users who say "click Search").
 - **Errors: identify, describe, associate** (WU-10, WU-11): mark the failing
   field visually *and* programmatically; never rely on a red border alone
-  (WP-11 — colour cannot be the only signal; pair with icon + text):
+  (WP-11: colour cannot be the only signal; pair with icon + text):
 
   ```html
   <label for="nric">NRIC/FIN</label>
@@ -130,11 +129,11 @@ audio description (WP-5).
   ```
 
   Write messages in plain, non-technical language and say how to fix the
-  problem — including 404/500 pages (WU-11).
+  problem, including on 404/500 pages (WU-11).
 - **Validate early, not only on submit** (WU-10, WU-11): run field
   validation on blur, and once a field has an error re-validate on change so
-  the message clears the moment it's fixed. Keep the full check on submit
-  with a focused error summary — but don't make users fill the whole form
+  the message clears as soon as it's fixed. Keep the full check on submit
+  with a focused error summary, but don't make users fill the whole form
   before hearing about a mistake they made in the first field.
 - **Announce dynamic errors and status** (WR-2): render inline errors and
   "Saving… / Saved" indicators into an `aria-live="polite"` region (or
@@ -156,20 +155,20 @@ audio description (WP-5).
 
 ## Building: interactive components, modals, custom widgets
 
-Prefer native elements and established accessible component libraries — the
+Prefer native elements and established accessible component libraries; the
 SGDS (Singapore Government Design System) components are built against these
 requirements. For anything custom:
 
 - **Full keyboard operation** (WO-1): everything a mouse can do, a keyboard
-  can do — Enter/Space activate, arrows move within composite widgets. No
+  can do: Enter/Space activate, arrows move within composite widgets. No
   timing-dependent keystrokes.
 - **No keyboard traps** (WO-2): Tab and Shift+Tab must always escape. Modals
-  are the sanctioned exception — trap focus *inside* while open, close on
+  are the exception: trap focus *inside* while open, close on
   Esc, and on close return focus to the trigger element (WO-9). Prefer
   `<dialog>` with `showModal()`, which handles most of this natively.
 - **Name, role, value for custom controls** (WR-1): a custom toggle needs
-  `role="switch"`, `aria-checked`, and an accessible name — and the state
-  must update in the DOM, not just visually.
+  `role="switch"`, `aria-checked`, and an accessible name, and the state
+  must update in the DOM, not only visually.
 - **Focus visible and not obscured** (WO-13): never `outline: none` without a
   replacement meeting 3:1 contrast (WP-17). Check sticky headers/footers and
   floating widgets don't cover the focused element — scroll-margin helps:
@@ -183,7 +182,7 @@ requirements. For anything custom:
   visible while the pointer moves onto them, be dismissible with Esc, and
   not vanish on their own.
 - **Single-character shortcuts** (WO-3, L2 in Others): if you add keys like
-  `?` or `j/k`, provide a way to disable or remap them — dictation software
+  `?` or `j/k`, provide a way to disable or remap them; dictation software
   fires them accidentally.
 - **Moving/auto-updating content** (WO-5): anything that moves, blinks,
   scrolls, or auto-refreshes for more than 5 seconds alongside other content
@@ -202,12 +201,13 @@ requirements. For anything custom:
   video. Exempt only when the media is itself a labelled alternative for
   text.
 - **Live streams** (WP-4, L2 in Others): live captions for webinars and
-  livestreams — the promoted controls' biggest cost, so flag it early for
-  High Impact services.
+  livestreams. This is the most expensive of the promoted controls, so flag
+  it early for High Impact services.
 - **Audio description** (WP-5, L2 in Others): user-selectable described audio
   track covering critical visual information.
 - **No autoplaying audio > 3 s** (WP-12) without pause/stop/volume controls
-  placed near the start of the page — it talks over screen readers.
+  placed near the start of the page; autoplaying audio talks over screen
+  readers.
 - **No content flashing > 3×/second** (WO-6), or show a seizure warning with
   the option to skip.
 - **Real text, not images of text** (WP-15, L2 in Others): logos are the
@@ -234,7 +234,7 @@ requirements. For anything custom:
   `overflow: hidden` on text containers; let boxes grow. You do *not* need
   these as defaults or in-page spacing controls.
 - **Both orientations** (WP-9, L2 in Others): don't lock portrait/landscape
-  unless the function demands it — wheelchair-mounted devices are often
+  unless the function requires it; wheelchair-mounted devices are often
   fixed in one orientation.
 
 ## Building: gestures and pointer input
@@ -264,27 +264,26 @@ requirements. For anything custom:
   login** (scan-and-approve) satisfies this and is the idiomatic choice for
   citizen-facing services (see AC-7/TX-1 context in ssp-navigator);
   text/email one-time codes also qualify. A CAPTCHA or memorised password as
-  the *only* path fails. Never block paste on password or OTP fields —
+  the *only* path fails. Never block paste on password or OTP fields;
   paste/password-manager support is the standard technique.
 - **Don't re-ask during the flow** (WU-13): data known from login or earlier
   steps (Singpass/MyInfo profile) is pre-filled, not re-typed.
-- **Session timeouts** (WO-4): warn before expiry and allow extension —
-  balance against the security team's AS-11 session-timeout parameter rather
-  than silently logging users out mid-form.
-- **Expiry must land somewhere humane** (WU-11): when the session does
-  expire, deliver a plain-language logged-out state — what happened, why,
-  and a clear re-authentication path (e.g. a Singpass login link). A bare
-  redirect to an unexplained URL or a dead page strands the user; if you
-  emit the redirect, you own the page it lands on. Say what happens to
-  unsaved work.
+- **Session timeouts** (WO-4): warn before expiry and allow extension.
+  Balance this against the security team's AS-11 session-timeout parameter
+  rather than logging users out mid-form without warning.
+- **Explain session expiry** (WU-11): when the session expires, show a
+  plain-language logged-out page that says what happened, why, and how to
+  log in again (e.g. a Singpass login link). Do not redirect to an
+  unexplained URL or a dead page; if you emit the redirect, you own the page
+  it lands on. Say what happens to unsaved work.
 
 ## Testing and review
 
 Run all three passes; automated tools catch roughly a third of these
 controls at best.
 
-**1. Keyboard walkthrough (WO-1/2/7/9/13, WP-19).** Unplug the mouse. Tab
-through every page: Can you reach everything interactive? Is the focus ring
+**1. Keyboard walkthrough (WO-1/2/7/9/13, WP-19).** Use only the keyboard.
+Tab through every page: Can you reach everything interactive? Is the focus ring
 always visible and never hidden under sticky UI? Does Tab order match visual
 order? Can you escape every widget and dismiss every popup with Esc? Does
 focus return to the trigger after a modal closes?
@@ -296,12 +295,12 @@ async actions and confirm live regions announce them.
 
 **3. Automated + visual checks.**
 
-- **Oobee** (GovTech's open-source scanner, formerly Purple A11y —
+- **Oobee** (GovTech's open-source scanner, formerly Purple A11y;
   https://github.com/GovTechSG/oobee): the scanner SG agencies expect;
   crawls whole sites, CLI fits CI.
 - **axe** (axe-core / browser DevTools extension): per-page engine checks.
-- **WebAIM Contrast Checker** — the tool the WP-13/WP-17 control text itself
-  names — for token-level ratios; axe catches rendered violations.
+- **WebAIM Contrast Checker** (named in the WP-13/WP-17 control text) for
+  token-level ratios; axe catches rendered violations.
 - Browser zoom to **200%** (WP-14) and viewport at **320 px** (WP-16).
 - A text-spacing bookmarklet applying the WP-18 values; confirm nothing
   clips.
@@ -317,7 +316,7 @@ heights on text (WP-14/18), `mousedown` handlers (WO-15), icon buttons under
 ## Full control checklist
 
 Levels: O = DSS (Others, <1M visits/yr), H = DSS (High Impact, ≥1M). WCAG SC
-is an **inferred** mapping (the site prints no SC numbers) — details and full
+is an **inferred** mapping (the site prints no SC numbers); details and full
 text in [references/wcag-controls.md](references/wcag-controls.md).
 
 | ID | Control | O | H | WCAG SC (inferred) |
@@ -378,7 +377,7 @@ text in [references/wcag-controls.md](references/wcag-controls.md).
 
 Content notes (see the reference file for details): WU-3/WU-4 correspond to
 WCAG **AAA** criteria yet appear in DSS; WO-12's published recommendations
-currently duplicate WO-13's focus text (site publishing error — implement to
+currently duplicate WO-13's focus text (site publishing error; implement to
 the statement); WU-7 adds SG-specific nav-placement requirements beyond WCAG.
 
 ## Related skills

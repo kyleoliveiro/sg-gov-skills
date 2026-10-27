@@ -21,20 +21,20 @@ description: >-
 
 You are designing or auditing the **network boundaries** of a Singapore government
 system against the ICT&SS Policy Reform **Network Security family (NS-1..NS-11)**. The
-family's scope is *securing the network boundaries of a system* — how the network is
+family's scope is *securing the network boundaries of a system*: how the network is
 segmented, what may talk to what, how the edge is filtered, how services and sites
 connect privately, and how changes and intrusions are detected. Almost all of it is
-cloud/IaC configuration — security groups, endpoints, certificates, alert rules — cheap
-to get right on day one and exactly what a VAPT or CSPM scan walks through first.
+cloud/IaC configuration (security groups, endpoints, certificates, alert rules), and a
+VAPT or CSPM scan checks it.
 
-Two facts anchor the family:
+Two principles run through the family:
 
-1. **Deny by default is the posture, not a control.** NS-3 states it, but NS-1
-   segmentation, NS-2 resource policies, NS-9 private connectivity, and CS-9's private
-   cluster API are all the same idea applied at different interfaces. An audit that
-   finds one `0.0.0.0/0` rule should immediately ask where else the default was left
-   open — including **egress**, which teams forget.
-2. **The internet is never the transport between trusted parts.** Private-to-private
+1. **Deny by default applies across the family, not just in NS-3.** NS-3 states it, but
+   NS-1 segmentation, NS-2 resource policies, NS-9 private connectivity, and CS-9's
+   private cluster API apply the same idea at different interfaces. If an audit finds one
+   `0.0.0.0/0` rule, check where else the default was left open, including **egress**,
+   which teams often miss.
+2. **Traffic between trusted parts never crosses the internet.** Private-to-private
    (NS-4), service-to-service (NS-7), and cloud-to-on-prem (NS-8) traffic all must move
    over private, authenticated, encrypted paths. "It's HTTPS anyway" does not satisfy
    the private-routing half.
@@ -57,20 +57,20 @@ against the live page:
   resource policies, deny-by-default rules, PrivateLink/peering/TGW choices, WAF/CDN
   setup, certificate automation, mTLS options, hybrid connectivity, IPS/IDS, remote
   access hardening, and firewall-change alert wiring, with AWS/Azure/GCP specifics.
-  Read it when actually building or fixing.
+  Read it when building or fixing.
 
 ## Before you start: the SSP, and no parameters to invent
 
-No NS control carries an agency-defined parameter — but the project's **System Security
+No NS control carries an agency-defined parameter, but the project's **System Security
 Plan (SSP)** still determines which level each NS control sits at for this system. If
 no SSP exists yet, flag that first; the sibling skill **ssp-navigator** determines
 which SSP applies. Get the network diagram (or derive one from the IaC) before
 auditing: NS findings are topology findings, and a control can only be judged against
-where the component actually sits.
+where the component sits.
 
 ## Procedure
 
-Work outside-in — **segment → connect privately → protect the edge → secure the hops →
+Work outside-in: **segment → connect privately → protect the edge → secure the hops →
 detect**. For **setup**, produce each configuration. For **audit**, verify each and
 record pass / fail / not-applicable-per-SSP with evidence (the SG rule, the route
 table, the endpoint config, the certificate chain, the alert rule). Recipes for every
@@ -84,9 +84,9 @@ them; separate VPCs/accounts per environment. Internet-facing components never s
 segment with sensitive systems. Databases are not `publicly_accessible`, ever.
 
 **1b. Out-of-VPC resources restricted (NS-2).** Resources that live outside the
-virtual network — S3/storage buckets, DynamoDB, Lambda, API Gateway, CDN — are governed
+virtual network (S3/storage buckets, DynamoDB, Lambda, API Gateway, CDN) are governed
 by access policy: public-access blocks on, IAM scoped to principals and actions,
-an authorizer on every API route. A subnet cannot protect these; only policy can.
+an authorizer on every API route. Subnets do not protect these resources.
 
 **1c. Deny by default, allow by exception (NS-3).** Security groups and ACLs start from
 deny-all; every allow rule names a specific port and source (prefer SG references over
@@ -102,7 +102,7 @@ at scale, with route tables connecting only the pairs that must talk. Gateway/in
 endpoints so private subnets reach CSP APIs without a public path.
 
 **2b. Cloud ↔ on-premises through a secure intermediary (NS-8).** Site-to-site VPN or
-Direct Connect/ExpressRoute landing in a transit/DMZ segment with inspection — never a
+Direct Connect/ExpressRoute landing in a transit/DMZ segment with inspection, never a
 workload port exposed to an office CIDR over the internet. Prefer exposing services
 (API gateway, private endpoint) over routing whole networks.
 
@@ -110,34 +110,34 @@ workload port exposed to an office CIDR over the internet. Prefer exposing servi
 to private resources goes through a VPN or zero-trust proxy with MFA, authorised
 devices only, a dedicated landing segment, session re-authentication (≈4-hourly),
 failed-attempt lockout, **split tunneling disabled**, and full session logging. The
-*accounts and privileges* of those admins are the access-control skill; the network
-path is yours.
+*accounts and privileges* of those admins belong to the access-control skill; this skill
+covers the network path.
 
 ### Stage 3 — Protect the edge (NS-5, NS-6)
 
 **3a. Filter internet traffic (NS-5).** WAF (managed OWASP rule set + rate limiting) on
-every internet-facing entry point, DDoS protection, and a CDN for public content — with
+every internet-facing entry point, DDoS protection, and a CDN for public content, with
 the origin locked to accept traffic only from the CDN/WAF path.
 
 **3b. Valid, trusted, auto-renewed certificates (NS-6).** Certificates signed by a
-trusted root CA, matching every served hostname, unexpired, not revoked — via a
+trusted root CA, matching every served hostname, unexpired, not revoked, managed by a
 certificate manager (ACM or equivalent) with DNS-validated auto-renewal *and* expiry
-alerts. A self-signed or lapsed certificate on a .gov.sg endpoint is the
-reputational-harm finding the whole family exists to prevent.
+alerts. A self-signed or lapsed certificate on a .gov.sg endpoint is a high-visibility
+finding with reputational impact.
 
 ### Stage 4 — Secure the hops (NS-7)
 
-Every service-to-service hop — microservice calls, database connections, queues — is
+Every service-to-service hop (microservice calls, database connections, queues) is
 **authenticated, authorised, and encrypted**, and logged for investigation. A service
-mesh with mTLS STRICT plus authorization policies gets all four mechanically;
+mesh with mTLS STRICT plus authorization policies covers all four;
 without a mesh, combine TLS-required datastores, IAM/OAuth2 service auth, and
 authenticated queues. Plaintext HTTP inside the VPC fails this control *and* DP-3.
 
 ### Stage 5 — Detect and alert (NS-9, NS-11)
 
 **5a. IPS/IDS (NS-9).** Network (or host) intrusion detection/prevention watching
-traffic to and from untrusted networks — AWS Network Firewall/GuardDuty, Azure Firewall
-Premium IDPS, Cloud IDS, or Suricata/Zeek — with findings routed to the central
+traffic to and from untrusted networks (AWS Network Firewall/GuardDuty, Azure Firewall
+Premium IDPS, Cloud IDS, or Suricata/Zeek), with findings routed to the central
 alerting/GCSOC pipeline (logging-monitoring skill) and an owner for triage.
 
 **5b. Firewall-change alerts (NS-11).** Real-time alerts to appointed administrators on
@@ -166,7 +166,7 @@ certificate chain, alert rule, session logs).
 | NS-11 | Real-time alerts on firewall rule changes and unusual utilisation; drift detection | EventBridge/Config etc. |
 
 Report per control ID with pass / fail / not-applicable-per-SSP, the evidence found,
-and — for failures — the fix from `references/implementation-recipes.md`. Attribute
+and for failures the fix from `references/implementation-recipes.md`. Attribute
 in-cluster pod segmentation to CS-10 (container-security) and log-pipeline gaps to LM
 (logging-monitoring) rather than double-counting them as NS findings.
 

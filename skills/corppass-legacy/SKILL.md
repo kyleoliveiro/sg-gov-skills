@@ -18,7 +18,7 @@ description: >-
 # Corppass legacy: maintain and migrate pre-FAPI 2.0 integrations
 
 Every Corppass integration onboarded before 23 March 2026 runs on the legacy
-Corppass Authorization API. It still works, but it is on a countdown:
+Corppass Authorization API. It still works, but it has fixed migration deadlines:
 
 | What you have | Deadline | After that |
 |---|---|---|
@@ -26,9 +26,9 @@ Corppass Authorization API. It still works, but it is on a countdown:
 | Myinfo Business v1/v2 | **migrate to v3 by 31 May 2027** | v1/v2 deprecated |
 
 Submit your migration plan (current progress + target date) at
-https://go.gov.sg/cp-fapi-migration-plan. New services cannot choose legacy — for
-anything greenfield, use the **corppass** skill. This skill exists for two jobs:
-keeping an existing legacy integration healthy until it migrates, and executing the
+https://go.gov.sg/cp-fapi-migration-plan. New services cannot onboard to legacy; for
+anything greenfield, use the **corppass** skill. This skill covers two jobs:
+keeping an existing legacy integration working until it migrates, and executing the
 migration correctly.
 
 ## Source and currency
@@ -46,7 +46,7 @@ mechanics:
 
 - **Front-channel authorization**: `GET /mga/sps/oauth/oauth20/authorize` with
   `scope`, `response_type=code`, `client_id`, `redirect_uri`, `state`, `nonce`,
-  PKCE challenge, and (deprecated) `esrvcID` — all in the browser URL. Redirects
+  PKCE challenge, and (deprecated) `esrvcID`, all in the browser URL. Redirects
   during Singpass login use **HTTP 303** (since v2.0).
 - **Scopes**: only `openid`, `authinfo`, `tpauthinfo`.
 - **Token endpoint** returns `token_type: "Bearer"` (not DPoP), a JWE ID token, and
@@ -55,10 +55,10 @@ mechanics:
   string: `"s=S1234567P,uuid=0f14a2fc-...,u=CP192,c=SG"` — key order **not
   guaranteed** since v2.1; parse by key, never by position. Entity data sits in the
   `entityInfo` claim (`CPEntID`, `CPEnt_TYPE`, `CPEnt_Status`, `CPNonUEN_*`), user
-  metadata in `userInfo` (`CPAccType` — Administrator/Sub-Administrator/User/Enquiry
+  metadata in `userInfo` (`CPAccType`: Administrator/Sub-Administrator/User/Enquiry
   User, `CPUID_FullName`, `ISSPHOLDER`).
 - **Authorization data** comes from `GET /authorization-info` with
-  `Authorization: Bearer <token>` — a **JWS (signed, not encrypted)** whose payload
+  `Authorization: Bearer <token>`. It returns a **JWS (signed, not encrypted)** whose payload
   carries PascalCase `AuthInfo` / `TPAuthInfo` (same `Result_Set` row shapes as the
   FAPI `auth_info`).
 - Crypto: `private_key_jwt` client assertions (ES256-family), PKCE S256, JWE
@@ -66,18 +66,18 @@ mechanics:
 - Legacy JWKS responses include `x5c`/`x5t`/`x5t#S256` — deprecated; do not build
   on them. SSO support was removed in v2.0 (May 2024). The `email`/`email_verified`
   ID-token claims were a restricted beta and are deprecated — do not adopt them.
-- Myinfo Business v1/v2 is a different API family entirely:
+- Myinfo Business v1/v2 is a separate API family:
   `https://api.myinfo.gov.sg/biz/[v1|v2]` with `/authorise`, `/token`
-  (**client_secret!**), and `/entity-person/{uen}/{uuid}` — the uen/uuid taken from
-  the decoded access token, which v3 forbids.
+  (**uses client_secret**), and `/entity-person/{uen}/{uuid}`, with the uen/uuid
+  taken from the decoded access token (v3 forbids this).
 
-Debugging tips that differ from FAPI 2.0: the authorization code lives **10
+Debugging differences from FAPI 2.0: the authorization code lives **10
 minutes** (not 60 s); `Bearer` on `/authorization-info` is correct here; the
 response needs signature verification but no decryption.
 
-## The migration, in essence
+## The migration
 
-The migration is not an endpoint swap — the identity model flips underneath you:
+The migration changes the identity model, not only the endpoints:
 
 1. **`sub` changes meaning.** Legacy `sub` = the user (comma-separated string).
    FAPI 2.0 `sub` = **the entity** (UEN / Corppass Entity ID); the user moves to
@@ -101,13 +101,13 @@ The migration is not an endpoint swap — the identity model flips underneath yo
    capped at **2 minutes** with mandatory unique `jti`; `request_uri` 60 s.
 6. **Config prerequisites.** At least one **https** redirect URL registered (or PAR
    initialization is refused); custom app schemes banned; review the auto-backfilled
-   finer-grained scopes and drop what you don't need; same discovery URL — re-fetch
+   finer-grained scopes and drop what you don't need; same discovery URL, but re-fetch
    it to pick up `pushed_authorization_request_endpoint` and `userinfo_endpoint`.
-7. **Same client_id for the API migration** — but **Myinfo Business v1/v2 → v3
+7. **The API migration keeps the same client_id**, but **Myinfo Business v1/v2 → v3
    requires a NEW app on the Singpass Developer Portal**; old App IDs/Client IDs are
    not interchangeable. v3 also renames/drops fields (`uen` →
    `registration_number`, `entity-status` → `uen-status`, `gov-contracts.*` dropped,
-   several CPF person scopes dropped) — audit every consumed attribute against the
+   several CPF person scopes dropped). Audit every consumed attribute against the
    v3 scope list before cutover.
 8. **Parallel run is possible**: the API version is selected per-flow (PAR ⇒ FAPI
    2.0, browser-redirect authorization ⇒ legacy), so you can stage the rollout
@@ -124,7 +124,7 @@ When reviewing a migration plan or a half-migrated codebase:
 |---|---|
 | `sub` parsing rewritten for the entity model | code still splits `sub` on commas, or reads it as a person |
 | `sub` key-order-independent parsing (if still on legacy) | `sub.split(",")[0]` positional parsing |
-| `CPAccType`/`ISSSPHOLDER` logic redesigned | branches on claims that no longer exist |
+| `CPAccType`/`ISSPHOLDER` logic redesigned | branches on claims that no longer exist |
 | `enc` key added to JWKS before cutover | JWKS still sig-only; userinfo decrypt fails |
 | DPoP + PAR + 2-min assertions implemented | Bearer tokens, front-channel auth params |
 | Token-exchange latency budget re-tested | 10-min-code assumptions; retries past 60 s |
@@ -136,7 +136,7 @@ When reviewing a migration plan or a half-migrated codebase:
 ## What this skill does not cover
 
 - **The target state.** The full FAPI 2.0 wire spec, JWKS/DPoP/assertion details,
-  CDP onboarding, and Myinfo Business v3 compliance live in the **corppass** skill —
+  CDP onboarding, and Myinfo Business v3 compliance live in the **corppass** skill;
   read it alongside this one when executing a migration.
 - **Individual-facing login** — the **singpass** skill (and **singpass-legacy** for
   Myinfo v3/v4-era person-data integrations, which have their own deadlines).

@@ -19,9 +19,8 @@ description: >-
 You are building or auditing a containerised workload against the **11 Container Security
 controls (CS-1..CS-11)** of the ICT&SS Policy Reform Cybersecurity Control Catalog. The
 family's scope is *securing container building, distribution, and deployment*. Almost all
-of these are configuration in a Dockerfile or an orchestrator manifest — cheap to get
-right on day one, and exactly what an audit or VAPT walks through for a container
-platform.
+of these are configuration in a Dockerfile or an orchestrator manifest, and an audit or
+VAPT of a container platform checks them.
 
 ## Source and currency
 
@@ -31,7 +30,7 @@ compliance-critical decision, verify against the live page:
 
 - CS: https://info.standards.tech.gov.sg/control-catalog/cybersecurity/cs/
 
-Machine-readable OSCAL: https://github.com/GovtechSG/tech-standards — handy for tooling,
+Machine-readable OSCAL: https://github.com/GovtechSG/tech-standards. Useful for tooling,
 but it **lags the site**; the site is authoritative.
 
 ## Reference files
@@ -41,40 +40,40 @@ but it **lags the site**; the site is authoritative.
   wording, e.g. for an audit response or SSP documentation.
 - `references/platform-recipes.md` — concrete Dockerfile, Kubernetes, and CI recipes per
   control, open-source-first (Trivy, Grype, Hadolint, Falco, Cosign) with cloud-native
-  equivalents. Read it when actually configuring a build or cluster.
+  equivalents. Read it when configuring a build or cluster.
 
 ## Before you start: find the SSP
 
 Every agency system has a **System Security Plan (SSP)** that selects which controls apply
 at which level and **sets parameter values**. One CS control carries an agency-defined
-parameter — the catalog deliberately leaves it blank:
+parameter, which the catalog leaves blank:
 
 | Control | Parameter | What the SSP defines |
 |---|---|---|
 | CS-7 | cs-7_prm_1 | The location where container image scanning occurs (e.g. "CI pipeline on push, plus continuous registry scanning") |
 
 **Ask for the project's SSP (or the agency ISO/CISO contact) and use its value. Do not
-invent the scan location** — write what the SSP says. If no SSP exists yet, flag that
+invent the scan location**; write what the SSP says. If no SSP exists yet, flag that
 first; the sibling skill **ssp-navigator** determines which SSP applies and at which level
 each CS control sits for this system.
 
 Container Security also **depends on the Software Supply Chain (SC) family**: image signing
-is SC-7 and signature verification before deploy is SC-8 — both live in the
-**secure-pipeline** skill, not here. CS-8 is about registry *privacy*, not provenance. When
+is SC-7 and signature verification before deploy is SC-8. Both live in the
+**secure-pipeline** skill. CS-8 is about registry *privacy*, not provenance. When
 a workload needs "signed images verified before they run", that is SC-7/SC-8; point the
 team at secure-pipeline for it.
 
 ## Procedure
 
-Work the container lifecycle in order — **build → distribute → run**. For **setup**, apply
+Work the container lifecycle in order: **build → distribute → run**. For **setup**, apply
 each step. For **audit**, verify each step and record pass / fail / not-applicable-per-SSP
 with evidence (the Dockerfile line, the manifest field, the CI run URL, the registry
 setting). Recipes for every step are in `references/platform-recipes.md`.
 
 ### Stage 1 — Build the image (Dockerfile)
 
-**1a. Minimal base image (CS-2).** Build on the smallest viable base — `scratch`,
-`distroless`, `wolfi`, `alpine`, or a `-slim` variant — using a multi-stage build so
+**1a. Minimal base image (CS-2).** Build on the smallest viable base (`scratch`,
+`distroless`, `wolfi`, `alpine`, or a `-slim` variant), using a multi-stage build so
 compilers, package managers, and shells never reach the runtime image. Why: every package
 in the base is attack surface and a potential CVE; a minimal image has less to exploit and
 less to patch.
@@ -84,7 +83,7 @@ less to patch.
 rolling tags silently change what you build on between builds, introducing untracked
 drift and vulnerabilities. (This also satisfies the base-image half of SC-4 pinning.) If
 you cannot resolve a digest right now, pin the most specific immutable tag, mark the
-digest as a blocking TODO, and report CS-1 as **open — not satisfied** — a mutable `FROM`
+digest as a blocking TODO, and report CS-1 as **open (not satisfied)**. A mutable `FROM`
 is never compliant.
 
 **1c. Non-root default user (CS-4).** Create a dedicated user and set `USER <numeric-uid>`
@@ -93,17 +92,17 @@ with `runAsNonRoot: true` / `runAsUser`, `allowPrivilegeEscalation: false`, and 
 capabilities. Why: a container running as root that escapes its boundary is root on
 concerns beyond itself; least privilege contains the blast radius.
 
-**1d. No build-time secrets (CS-3).** Never `COPY`/`ARG`/`ENV` a credential into an image
-— it persists in a layer (and history) even if later removed. Use BuildKit
+**1d. No build-time secrets (CS-3).** Never `COPY`/`ARG`/`ENV` a credential into an image;
+it persists in a layer (and history) even if later removed. Use BuildKit
 `--mount=type=secret` for build-time needs, and inject runtime secrets via the
 orchestrator (K8s `Secret` files sourced from a vault via CSI/External Secrets; Docker
-secrets) — never `ENV`. Why: an image is copied and stored widely; a baked secret is a
-leaked secret. Audit existing images with `trivy image --scanners secret`.
+secrets), never `ENV`. Why: an image is copied and stored widely, so a secret baked into
+it should be treated as leaked. Audit existing images with `trivy image --scanners secret`.
 
 **1e. Lint the Dockerfile (CS-5).** Run **Hadolint** as a required CI check (and ideally
 pre-commit), tuning via `.hadolint.yaml` rather than blanket-ignoring. Why: linting
 catches the misconfigurations and anti-patterns (unpinned installs, missing `USER`,
-shell-form pitfalls) that become the vulnerabilities above — before the image is built.
+shell-form pitfalls) that become the vulnerabilities above, before the image is built.
 Wire it into the SD-3 required-checks gate (see secure-pipeline).
 
 ### Stage 2 — Distribute (registry + scanning)
@@ -114,8 +113,8 @@ vulnerabilities in **cs-7_prm_1** (per the SSP) with Trivy/Grype/Amazon Inspecto
 findings (`--ignore-unfixed` to stay actionable; suppressions link to an approved risk
 acceptance). Scan the **digest**, not a tag. Why: an image bundles OS packages and app
 layers that carry their own CVEs; scanning is the gate that stops known-exploitable images
-from shipping — and continuous registry scanning catches CVEs disclosed *after* push. This
-complements SD-5 (which scans declared dependencies) — you need both.
+from shipping, and continuous registry scanning catches CVEs disclosed *after* push. This
+complements SD-5 (which scans declared dependencies); you need both.
 
 **2b. Private registry only (CS-8).** Host org-built images exclusively in a **private**
 registry (ECR private, ACR with public access disabled, GCP Artifact Registry internal,
@@ -129,8 +128,8 @@ registry exposes all of it and invites tampering.
 explicit writable paths (`emptyDir`/`tmpfs` for scratch, volumes for stateful data);
 `docker run --read-only --tmpfs /tmp` for plain Docker. Patch by rebuild + redeploy, never
 by editing a running container. Why: an immutable filesystem denies an attacker the
-ability to drop tools, tamper with binaries, or persist — and enforces the
-immutable-infrastructure discipline the whole family assumes.
+ability to drop tools, tamper with binaries, or persist, and enforces the
+immutable-infrastructure model the whole family assumes.
 
 **3b. Private orchestrator API (CS-9).** The Kubernetes API server (or equivalent) must
 not be internet-reachable: EKS private/CIDR-restricted endpoint, AKS/GKE private cluster
@@ -144,13 +143,13 @@ per-namespace RBAC and ResourceQuota; separate node pools or clusters for sensit
 tenants. Why: flat clusters let one compromised pod move laterally to everything;
 segmentation contains an incident to its blast radius.
 
-**3d. Runtime protection (CS-11).** Deploy a runtime threat-detection tool — **Falco**
-(open) or managed GuardDuty EKS / Defender for Containers / GKE runtime — that detects
+**3d. Runtime protection (CS-11).** Deploy a runtime threat-detection tool (**Falco**,
+or managed GuardDuty EKS / Defender for Containers / GKE runtime) that detects
 changes and threats in running containers; on detection, **isolate and replace** the
 instance with a rebuilt, patched image, cycling from clean images until a patch exists.
 Why: builds and scans are point-in-time; runtime protection is the only control that sees
-a live compromise. Note this **replaces IS-7 (malware) and IS-8 (EDR)** for containers —
-do not also demand a host AV/EDR agent inside the container.
+a live compromise. This **replaces IS-7 (malware) and IS-8 (EDR)** for containers; do
+not also demand a host AV/EDR agent inside the container.
 
 ## Audit checklist
 
@@ -172,14 +171,14 @@ setting, CI run URL). "Param" marks the control whose pass criteria come from th
 | CS-11 | Runtime protection deployed (Falco/GuardDuty/Defender); isolate-and-replace on detection | Cluster / cloud console | |
 
 Report audit results per control ID with pass / fail / not-applicable-per-SSP, the
-evidence found, and — for failures — the fix from `references/platform-recipes.md`. Where a
+evidence found, and for failures the fix from `references/platform-recipes.md`. Where a
 pass depends on the SSP (CS-7 scan location), ask for the SSP value rather than inventing
 one.
 
 ## Related skills in this repo
 
 - **secure-pipeline** — SD (Secure Development) + SC (Software Supply Chain), including
-  **image signing (SC-7) and signature verification before deploy (SC-8)** and base-image
+  image signing (SC-7) and signature verification before deploy (SC-8) and base-image
   pinning (SC-4). CS secures the image and its runtime; SC secures its provenance and the
   pipeline that produces it. Use both for a containerised delivery.
 - **secure-coding-as** — AS (Application Security) + CK (Crypto/Key Management): the code
@@ -196,11 +195,11 @@ one.
 - **network-security** — the NS family owns the VPC/subnet/security-group boundary
   *around* the cluster (NS-1 segmentation, NS-3 deny-by-default, NS-4 private
   connectivity); CS-10 owns pod-level NetworkPolicy segmentation *inside* it, and CS-9's
-  private API endpoint is the cluster-shaped instance of the same posture. Load both
+  private API endpoint applies the same principle to the cluster control plane. Load both
   when networking a containerised workload.
 - **resiliency-recovery** — RS-1 multi-AZ placement for containerised workloads
-  (multi-AZ node groups, topology spread, pod disruption budgets) and the backup/DR
-  posture around the cluster; CS hardens the containers, RS/BR keeps them available and
+  (multi-AZ node groups, topology spread, pod disruption budgets) and backup/DR for the
+  cluster; CS hardens the containers, RS/BR keeps them available and
   recoverable.
 - **logging-monitoring** — CS-11 runtime detections (Falco/GuardDuty) are a log source;
   route them to the LM central alerting and GCSOC pipeline rather than a local sink.
