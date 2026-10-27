@@ -24,10 +24,10 @@ agency's security team can trace to its System Security Plan (SSP).
 
 Use this skill in three modes:
 
-1. **Writing new code** — apply the scenario sections below as you write.
-2. **Reviewing a diff** — run the review checklist against every changed file; flag
+1. **Writing new code**: apply the scenario sections below as you write.
+2. **Reviewing a diff**: run the review checklist against every changed file; flag
    violations with the control ID.
-3. **Auditing a codebase** — sweep for each checklist row; report findings per control ID
+3. **Auditing a codebase**: sweep for each checklist row; report findings per control ID
    with file:line references.
 
 ## Source and currency
@@ -41,7 +41,7 @@ verify against the live pages:
 - CK family: https://info.standards.tech.gov.sg/control-catalog/cybersecurity/ck/
 - SSP profiles (control levels): https://info.standards.tech.gov.sg/ssp/
 
-Machine-readable OSCAL: https://github.com/GovtechSG/tech-standards — useful for tooling
+Machine-readable OSCAL: https://github.com/GovtechSG/tech-standards is useful for tooling
 but **lags the site**; the site is authoritative.
 
 ## Before you start: levels and parameters
@@ -52,7 +52,7 @@ but **lags the site**; the site is authoritative.
   and AS-8 are Level 0** (promoted from Level 1 in low-risk); AS-10, AS-12, AS-13, AS-14
   sit at Level 2 in both cloud SSPs; CK-1/CK-2 are Level 1 in medium-risk. Use the
   sibling skill **ssp-navigator** to determine the applicable SSP and each control's
-  level for this system — treat every control below as required unless the SSP says
+  level for this system. Treat every control below as required unless the SSP says
   otherwise.
 - **Parameters are agency-defined.** `as-5_prm_1/2/3` (password length, policy, type),
   `as-11_prm_1/2` (session hours, session type), `ck-2_prm_1` (key rotation days) have
@@ -76,7 +76,7 @@ crashes that can lead to unauthorised access or service disruption.
 - Cover every input channel: body, query string, path params, headers, cookies, file
   metadata, webhook payloads, message-queue consumers.
 - Allowlist (expected shape) over denylist (known-bad patterns). Reject, don't repair.
-- Level 0 in medium-risk cloud — never skip, never partially apply.
+- Level 0 in medium-risk cloud: never skip it or apply it partially.
 
 **AS-2 — Parameterised Interfaces.** Use parameterised interfaces for database queries
 and system commands. Why: string-built queries are the direct path to SQL/command
@@ -84,16 +84,16 @@ injection and system compromise.
 
 - Prepared statements, query builders, or ORMs only. Any string concatenation or
   template interpolation into SQL, shell commands, LDAP filters, or NoSQL queries is a
-  finding — including "safe-looking" cases like dynamic column names (allowlist those).
+  finding, including "safe-looking" cases like dynamic column names (allowlist those).
 - For OS commands, use exec-style APIs with argument arrays (`execFile`, `subprocess.run`
   with a list, `ProcessBuilder`), never `shell=True` / backtick interpolation.
 
 **AS-3 — Output Sanitisation.** Sanitise all application outputs used to render an HTML
-document. Why: unsanitised output is XSS — malicious code executing in users' browsers.
+document. Why: unsanitised output enables XSS, with malicious code executing in users' browsers.
 
 - Rely on auto-escaping template engines/frameworks (React JSX, Jinja2 autoescape,
-  Thymeleaf). Treat every escape hatch — `dangerouslySetInnerHTML`, `| safe`,
-  `v-html`, `innerHTML` — as a finding unless the value passes an HTML sanitiser
+  Thymeleaf). Treat every escape hatch (`dangerouslySetInnerHTML`, `| safe`,
+  `v-html`, `innerHTML`) as a finding unless the value passes an HTML sanitiser
   (e.g. DOMPurify) with a tight allowlist.
 - Applies to API responses that clients render into HTML, error pages, and emails too.
 - Level 0 in medium-risk cloud. Pairs with the AS-9 CSP header as defence in depth.
@@ -106,21 +106,21 @@ mechanisms. Why: without it, weak credentials fall to brute force.
 - Site recommendation: max 3 consecutive failed attempts within 15 minutes (or other
   reasonable limit); add time delays between attempts; consider CAPTCHA/bot mitigation.
 - "All mechanisms" means login, registration, password reset, OTP/MFA verification, API
-  token endpoints — not just the main login form. Registration is the one teams forget:
+  token endpoints, not just the main login form. Teams often miss registration:
   an unthrottled signup endpoint enables mass account creation and email/SMS flooding,
   and it exercises the same password and notification paths as the rest of auth. Key
   limits on account and source IP.
 
 **AS-5 — Password Requirements.** Where SSO or passwordless is not supported, enforce
 the SSP-defined minimum length (`as-5_prm_1`), policy (`as-5_prm_2`), and password type
-(`as-5_prm_3`). Why: short or common passwords are the cheapest account takeover.
+(`as-5_prm_3`). Why: short or common passwords are the easiest route to account takeover.
 
 - Prefer SSO (for agency staff, typically the WOG identity provider; for public users,
-  Singpass/Corppass — see AC-7) or passwordless before building password auth at all.
+  Singpass/Corppass; see AC-7) or passwordless before building password auth at all.
 - Per NIST SP 800-63B (which the control cites): length is the primary strength factor;
   composition rules add little. Implement a length minimum plus breached/common-password
   screening rather than character-class rules, unless `as-5_prm_2` says otherwise.
-- **Do not invent parameter values** — get them from the SSP (see "Before you start").
+- **Do not invent parameter values**: get them from the SSP (see "Before you start").
 
 **AS-6 — Password Salting and Hashing.** Store passwords as salted hashes using an
 offline-attack-resistant scheme per NIST SP 800-63B; salts must be (a) generated by a
@@ -128,7 +128,7 @@ cryptographically secure PRNG, (b) at least 32 bits, (c) unique per account. Why
 breach, unsalted or weakly hashed passwords are trivially extracted.
 
 - Use Argon2, scrypt, bcrypt, or PBKDF2 via a maintained library. These generate
-  compliant per-account salts internally — do not hand-roll salting, and never use
+  compliant per-account salts internally; do not hand-roll salting, and never use
   general-purpose hashes (MD5/SHA-x) for passwords.
 - CSPRNG examples from the control itself: `crypto.randomBytes` not `Math.random`
   (Node.js); `java.security.SecureRandom.nextBytes` not `java.util.Random` (Java).
@@ -138,8 +138,8 @@ breach, unsalted or weakly hashed passwords are trivially extracted.
 authenticated requests. Why: authenticated-but-unauthorised access is how data breaches
 and IDOR happen.
 
-- Enforce via middleware/filters/route guards so checks are structural, not per-handler
-  discipline: deny by default, every route declares its authorisation requirement.
+- Enforce via middleware/filters/route guards so checks are enforced structurally rather than
+  left to each handler. Deny by default; every route declares its authorisation requirement.
 - Check object-level ownership on every request (`WHERE owner_id = :current_user`), not
   just role at login. Re-check on state-changing requests; never trust hidden fields or
   client-supplied IDs as authorisation.
@@ -151,7 +151,7 @@ re-authenticate after the session exceeds `as-11_prm_1` hour(s), or terminate th
 session. Why: stale sessions let whoever holds them act as the user indefinitely.
 
 - Enforce absolute session lifetime server-side (issue time + max age), not only idle
-  timeout, and not only cookie expiry — the server must reject expired sessions.
+  timeout, and not only cookie expiry. The server must reject expired sessions.
 - NIST SP 800-63B reference points from the control: AAL1 re-auth every 30 days; AAL2
   12 h or 30 min inactivity; AAL3 12 h or 15 min inactivity. Also consider forcing
   re-authentication on role/credential changes and before privileged functions.
@@ -176,14 +176,14 @@ code or config are standing credentials for anyone who reads the repo.
   Never unencrypted in source code, config files, or committed `.env` files.
 - Use cloud-native (AWS Secrets Manager, Azure Key Vault) or cloud-agnostic (HashiCorp
   Vault, CyberArk Conjur) stores; inject at runtime. On platforms, use the platform's
-  secret facility — e.g. GitHub Actions **secrets**, not variables.
+  secret facility, e.g. GitHub Actions **secrets**, not variables.
 - Level 0 in medium-risk cloud. Push protection and secret scanning in the pipeline are
-  SD-1/SD-6 — see the **secure-pipeline** skill; this control is about where the app
+  SD-1/SD-6 (see the **secure-pipeline** skill). This control covers where the app
   gets secrets at runtime.
 
 **AS-14 — Secure Cryptographic Libraries.** Use reputable, secure cryptographic
 libraries and functions for all cryptographic operations. Why: home-grown or obsolete
-crypto quietly fails, exposing data.
+crypto can fail silently and expose data.
 
 - Never implement primitives yourself. Use the platform's vetted library (OpenSSL,
   `libsodium`, language-standard crypto modules); prefer FIPS 140-2/140-3 validated
@@ -196,8 +196,8 @@ key derivation (NIST SP 800-56A/B/C). Why: weak establishment = weak or broken
 encryption. In code: use your KMS or library's standard ECDH/RSA-KEM + HKDF flows;
 never derive keys from passwords without a proper KDF.
 
-**CK-2 — Cryptographic Key Rotation.** Rotate keys every `ck-2_prm_1` days (SSP-defined
-— do not invent). Why: long-lived keys raise breakage risk. Enable automatic rotation in
+**CK-2 — Cryptographic Key Rotation.** Rotate keys every `ck-2_prm_1` days (SSP-defined;
+do not invent). Why: long-lived keys raise breakage risk. Enable automatic rotation in
 KMS (AWS KMS, Azure Key Vault) and design code to be key-version-aware (encrypt with
 current, decrypt with any active version).
 
@@ -216,8 +216,8 @@ IAM so the app can *use* keys (encrypt/decrypt/sign) but not export them.
 **AS-9 — Content Security Policy.** Set minimally permissive CSP response headers. Why:
 CSP is the browser-side backstop against XSS when AS-3 sanitisation slips.
 
-- Set explicit fetch directives — `default-src`, `script-src`, `style-src`,
-  `connect-src`, `img-src`, `media-src`, `object-src` — starting from
+- Set explicit fetch directives (`default-src`, `script-src`, `style-src`,
+  `connect-src`, `img-src`, `media-src`, `object-src`), starting from
   `default-src 'self'; object-src 'none'` and loosening only with justification.
 - "Minimally permissive" rules out `script-src 'unsafe-inline'`/`'unsafe-eval'` and
   bare wildcards; use nonces or hashes for inline scripts. Reference: OWASP Secure
@@ -227,10 +227,10 @@ CSP is the browser-side backstop against XSS when AS-3 sanitisation slips.
 Why: shorter or missing HSTS leaves users open to protocol downgrade attacks.
 
 - `Strict-Transport-Security: max-age=31536000; includeSubDomains` (add `preload` when
-  the domain is ready). The ≥ 31536000 floor is in the control statement itself — flag
+  the domain is ready). The ≥ 31536000 floor is in the control statement; flag
   any lower value in review.
 - Set both headers at one layer (framework middleware such as helmet, or the CDN/reverse
-  proxy) and verify they actually reach the client on every response, including errors.
+  proxy) and verify they reach the client on every response, including errors.
 
 ## File uploads
 
@@ -251,7 +251,7 @@ to public users. Why: stack traces, debug info, and version strings hand attacke
 of what to exploit.
 
 - Production error responses: generic message + correlation ID; full detail goes to
-  server-side logs only (and sanitise logs of classified/sensitive data — LM-19).
+  server-side logs only (sanitise logs of classified/sensitive data per LM-19).
 - Disable framework debug modes in production (`DEBUG=False`, no dev error pages);
   strip `Server`/`X-Powered-By` headers; keep API error bodies free of SQL fragments,
   file paths, and dependency versions.

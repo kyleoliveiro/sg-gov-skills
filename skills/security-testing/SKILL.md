@@ -19,31 +19,31 @@ description: >-
 
 You are setting up or auditing a **security testing and vulnerability management
 programme** against the ICT&SS Policy Reform **Security Testing family (ST-1..ST-5)**. The
-family's scope is the *testing lifecycle around a running system*: scanning hosts for
+family covers the testing lifecycle around a running system: scanning hosts for
 vulnerabilities, continuously checking cloud configuration, giving the public a way to
 report what they find, commissioning penetration tests, and remediating what all of those
 surface within committed timeframes.
 
-The discipline everything hangs on: **this family runs on nine agency-defined
-parameters** — scan type and cadence (ST-1), the disclosure channel type (ST-3), the
+**This family depends on nine agency-defined parameters**: scan type and cadence (ST-1), the disclosure channel type (ST-3), the
 testing type and frequency (ST-4), and four severity-based remediation SLAs (ST-5). The
-catalog leaves every one of them blank. **Get the values from the project's System
+catalog leaves all of them blank. **Get the values from the project's System
 Security Plan; never invent them.** A finding of "scans are too infrequent" is only
 defensible against the SSP's number.
 
 ## What this family is *not* about
 
-ST is the *host, cloud, and programme* layer. Three things people wrongly park here:
+ST covers the host, cloud, and programme layer. Three things are often wrongly filed
+under it:
 
 - **CI code and dependency scanning is not ST-1.** SAST (SD-4), SCA/dependency scanning
   (SD-5), secret detection (SD-6), and pipeline DAST (SD-9) live in **Secure Development
-  (secure-pipeline)**. ST-1 is *host-level* vulnerability assessment — the VM, instance,
-  and network layer. A repo with Dependabot and CodeQL has zero ST-1 coverage; don't let
-  "we scan continuously" pass on that basis. The findings from those CI scanners *do* feed
-  the ST-5 remediation SLAs, though — one register, one clock.
+  (secure-pipeline)**. ST-1 is host-level vulnerability assessment of the VM, instance,
+  and network layer. A repo with Dependabot and CodeQL has no ST-1 coverage; don't accept
+  "we scan continuously" on that basis. Findings from those CI scanners do feed the ST-5
+  remediation SLAs, in the same register and on the same clock.
 - **Container image scanning is CS** (container-security), not ST-1.
-- **Fixing an individual vulnerability is another family's work** — a SQL injection fix is
-  AS-1 (secure-coding-as). ST-5 governs the *process*: triage, priority, the SLA clock,
+- **Fixing an individual vulnerability is another family's work**: a SQL injection fix is
+  AS-2 (secure-coding-as). ST-5 governs the process: triage, priority, the SLA clock,
   and who may sign a risk acceptance.
 
 ## Source and currency
@@ -68,7 +68,7 @@ the live page:
 ## Before you start: the SSP parameters
 
 Ask for these nine values from the System Security Plan before writing anything. If the
-SSP doesn't exist or leaves them blank, flag that as its own finding — the sibling skill
+SSP doesn't exist or leaves them blank, flag that as its own finding. The sibling skill
 **ssp-navigator** determines which level each ST control sits at for this system.
 
 | Control | Parameter | What the SSP defines |
@@ -100,62 +100,61 @@ register with its SLA clocks). Templates for every step are in
 
 **1a. Host vulnerability assessment scans (ST-1).** Run scans of the SSP-defined type
 (st-1_prm_1) for **eligible hosts** at least every **st-1_prm_2 days**. Prefer
-**authenticated** (agent-based) scans — unauthenticated network scans see only the
-surface. On cloud, the managed scanners fit naturally: **Amazon Inspector** or **Microsoft
-Defender for Cloud**; on-premises, subscribe to a Vulnerability Management System (VMS).
+**authenticated** (agent-based) scans; unauthenticated network scans see only what is
+exposed. On cloud, use the managed scanners: Amazon Inspector or Microsoft
+Defender for Cloud; on-premises, subscribe to a Vulnerability Management System (VMS).
 For SaaS components you can't scan yourself, obtain the provider's prior vulnerability
-scanning reports instead. Evidence is the scan schedule plus the latest report — a scanner
+scanning reports instead. Evidence is the scan schedule plus the latest report. A scanner
 that's installed but hasn't run within the cadence is a fail.
 
 **1b. Cloud security posture management (ST-2).** For cloud-hosted systems, enable CSPM
-performing **continuous configuration scans** on cloud assets — **AWS Security Hub, Azure
-Defender for Cloud, or Google Security Command Center**. This catches the
+performing **continuous configuration scans** on cloud assets (AWS Security Hub, Azure
+Defender for Cloud, or Google Security Command Center). This catches the
 misconfiguration class (open buckets, permissive security groups, unencrypted stores)
 that host scans don't. Its findings join the ST-5 register like any other source.
 
 ### Stage 2 — Public disclosure channel (ST-3)
 
 Establish the SSP-defined public reporting channel (st-3_prm_1) for vulnerabilities in
-**public-facing systems**. The catalog's recommended shapes: the **security.txt standard**
-(RFC 9116 — served at `/.well-known/security.txt` over HTTPS, with `Contact` and a
+**public-facing systems**. The catalog recommends either the **security.txt standard**
+(RFC 9116: served at `/.well-known/security.txt` over HTTPS, with `Contact` and a
 non-expired `Expires` no more than a year out) or a **vulnerability reporting link on all
 pages**, such as in the footer. A security.txt at the wrong path, or with an expired
-`Expires`, fails the RFC and defeats the channel — researchers' tooling looks in exactly
-one place.
+`Expires`, fails the RFC and defeats the channel, because researchers' tooling only looks
+at that path.
 
 ### Stage 3 — The security testing programme (ST-4)
 
-Conduct and **document** the SSP-defined testing type (st-4_prm_1 — typically a
-penetration test / VAPT) every **st-4_prm_2 days**, by **internal teams or independent
-external parties**. Refer to the **WOG Security Testing Guidelines** for scoping and
-methodology; a new internet-facing service should be tested **before launch**, not on the
-first anniversary. Systems seeking the **Government Bug Bounty Programme** need a passing
-**Agency Readiness Scorecard** rating first. "Documented" is load-bearing: scope, rules
-of engagement, findings, and the remediation retest are the audit evidence — an informal
-poke-around by the dev team leaves nothing an auditor can accept, and testers need
-independence from the code they're testing.
+Conduct and **document** the SSP-defined testing type (st-4_prm_1, typically a
+penetration test / VAPT) every **st-4_prm_2 days**, by internal teams or independent
+external parties. Refer to the **WOG Security Testing Guidelines** for scoping and
+methodology; a new internet-facing service should be tested **before launch**. Systems seeking the **Government Bug Bounty Programme** need a passing
+**Agency Readiness Scorecard** rating first. The documentation matters: scope, rules
+of engagement, findings, and the remediation retest are the audit evidence. An informal
+test by the dev team leaves nothing an auditor can accept, and testers need to be
+independent of the code they're testing.
 
 ### Stage 4 — Vulnerability management (ST-5)
 
-**Triage, prioritise, then remediate or risk-accept** every finding — from ST-1 scans,
-ST-2 CSPM, ST-4 tests, the ST-3 channel, *and* the CI scanners — within the SSP timeframe
+**Triage, prioritise, then remediate or risk-accept** every finding (from ST-1 scans,
+ST-2 CSPM, ST-4 tests, the ST-3 channel, and the CI scanners) within the SSP timeframe
 for its severity: Critical ≤ st-5_prm_1 days, High ≤ st-5_prm_2, Medium ≤ st-5_prm_3, Low
-≤ st-5_prm_4. Two rules with teeth:
+≤ st-5_prm_4. Two rules apply:
 
 - **Prioritise by exploitation, not just CVSS.** A vulnerability with known active
-  exploitation — check **CISA's Known Exploited Vulnerabilities Catalog** — jumps the
+  exploitation (check **CISA's Known Exploited Vulnerabilities Catalog**) jumps the
   queue regardless of its severity label.
-- **Risk acceptance requires the approving authority's consent, documented** — with the
-  rationale, compensating controls, and an expiry/review date. A dev lead waving a finding
-  through is not risk acceptance; it's an unmanaged vulnerability with a signature on it.
+- **Risk acceptance requires the approving authority's consent, documented**, with the
+  rationale, compensating controls, and an expiry/review date. A dev lead approving a finding
+  informally is not risk acceptance; the vulnerability is still unmanaged.
 
-Keep one register with the found-date and SLA due-date per finding so breaches are visible
-arithmetic, not archaeology.
+Keep one register with the found-date and SLA due-date per finding so SLA breaches are
+visible.
 
 ## Audit checklist
 
 Verify each row; record evidence. "Param" marks controls whose pass criteria come from the
-SSP — ask for the values rather than inventing them.
+SSP; ask for the values rather than inventing them.
 
 | ID | Check | Where | Param |
 |---|---|---|---|
@@ -165,8 +164,8 @@ SSP — ask for the values rather than inventing them.
 | ST-4 | Documented st-4_prm_1 every ≤ st-4_prm_2 days by internal teams or independent external parties; scope, RoE, findings, retest on record; pre-launch test for new public services | Test report + date | ✓ |
 | ST-5 | All finding sources in one register; triage + prioritisation (incl. KEV/active exploitation); remediation or documented approving-authority risk acceptance within the four severity SLAs | Register + acceptance records | ✓ |
 
-Report per control ID with pass / fail / not-applicable-per-SSP, the evidence found, and —
-for failures — the fix from `references/programme-templates.md`. Where a pass depends on an
+Report per control ID with pass / fail / not-applicable-per-SSP, the evidence found, and,
+for failures, the fix from `references/programme-templates.md`. Where a pass depends on an
 SSP parameter that isn't stated, ask for the value; don't guess a cadence or SLA.
 
 ## Related skills in this repo
@@ -176,14 +175,14 @@ SSP parameter that isn't stated, ask for the value; don't guess a cadence or SLA
   all five at Level 0 for high-risk CII). Use it before declaring any ST control out of
   scope.
 - **secure-pipeline** — SD/SC: SAST (SD-4), dependency scanning (SD-5), secret detection
-  (SD-6), and pipeline DAST (SD-9) live there, *not* under ST-1 — but their findings feed
+  (SD-6), and pipeline DAST (SD-9) live there, not under ST-1, but their findings feed
   the ST-5 register and SLAs.
 - **container-security** — CS: image scanning and registry hygiene for containerised
   workloads; pair it with ST-1 host scans rather than substituting one for the other.
-- **secure-coding-as** — AS/CK: where the actual fixes for application-layer findings land
+- **secure-coding-as** — AS/CK: where the fixes for application-layer findings land
   once ST-4 or the ST-3 channel surfaces them.
 - **logging-monitoring** — LM's runtime threat detection (LM-9) complements ST-2's
-  continuous configuration/posture scanning; the two are complementary, not substitutes.
+  continuous configuration/posture scanning; neither replaces the other.
 - **network-security** — the NS posture (segmentation, deny-by-default, edge filtering)
   is what ST-1 host scans, ST-2 CSPM, and a network VAPT exercise from the outside;
   their findings land in the ST-5 register with NS fixes.

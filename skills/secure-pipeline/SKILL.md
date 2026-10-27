@@ -16,9 +16,9 @@ description: >-
 
 You are configuring or auditing a repo + pipeline against 19 controls from the ICT&SS
 Policy Reform Cybersecurity Control Catalog: **SD-1..SD-10** (Secure Development) and
-**SC-1..SC-9** (Software Supply Chain). These are the controls a security audit will walk
-through for the delivery pipeline, and most are pure configuration — cheap to set up on
-day one, expensive to retrofit under audit pressure.
+**SC-1..SC-9** (Software Supply Chain). A security audit of the delivery pipeline checks
+these controls. Most are configuration, and are far easier to set up at project start
+than to retrofit during an audit.
 
 ## Source and currency
 
@@ -29,7 +29,7 @@ compliance-critical decision, verify against the live pages:
 - SD: https://info.standards.tech.gov.sg/control-catalog/cybersecurity/sd/
 - SC: https://info.standards.tech.gov.sg/control-catalog/cybersecurity/sc/
 
-Machine-readable OSCAL: https://github.com/GovtechSG/tech-standards — useful for
+Machine-readable OSCAL: https://github.com/GovtechSG/tech-standards is useful for
 tooling, but it **lags the site**; the site is authoritative.
 
 ## Reference files
@@ -44,8 +44,8 @@ tooling, but it **lags the site**; the site is authoritative.
 ## Before you start: find the SSP
 
 Every agency system has a **System Security Plan (SSP)** that selects which controls
-apply at which level and **sets the parameter values**. Three of these 19 controls carry
-agency-defined parameters — the catalog deliberately sets no values:
+apply at which level and **sets the parameter values**. Four of these 19 controls carry
+agency-defined parameters; the catalog sets no values:
 
 | Control | Parameter | What the SSP defines |
 |---|---|---|
@@ -55,48 +55,48 @@ agency-defined parameters — the catalog deliberately sets no values:
 | SD-9 | sd-9_prm_1 | Where dynamic analysis runs |
 
 **Ask for the project's SSP (or the agency ISO/CISO contact) and use its values. Never
-invent a frequency or SLA** — writing "7 days" into a pipeline when the SSP says 3 is a
+invent a frequency or SLA.** Writing "7 days" into a pipeline when the SSP says 3 is a
 finding. If no SSP exists yet, flag that first: PM-3/PM-4/PM-5 (SSP development,
 residual-risk approval, central submission) are Level 0 in every cybersecurity SSP. The
 sibling skill **ssp-navigator** determines which SSP applies and which level each SD/SC
-control sits at for this system — notably SD-8 (environment segregation) is promoted to
+control sits at for this system. Notably, SD-8 (environment segregation) is promoted to
 **Level 0 (mandatory, no deviation) in the medium-risk cloud SSP**.
 
 ## Procedure
 
-Work through the five lifecycle stages in order — each stage's controls assume the
-previous stage. For **setup**, apply each step. For **audit**, verify each step and
+Work through the five lifecycle stages in order; each stage's controls assume the
+previous stage is in place. For **setup**, apply each step. For **audit**, verify each step and
 record pass/fail with evidence (a settings screenshot, a config file path, a pipeline
 run URL). Platform-specific mechanics for every step are in
 `references/platform-recipes.md`.
 
 ### Stage 1 — Repository settings
 
-**1a. Central VCS (SC-1).** Code lives in the organisation's sanctioned Git platform —
-for whole-of-government teams usually SHIP-HATS (GovTech's GitLab-based CI/CD suite),
+**1a. Central VCS (SC-1).** Code lives in the organisation's sanctioned Git platform:
+for whole-of-government teams, usually SHIP-HATS (GovTech's GitLab-based CI/CD suite),
 otherwise an agency-managed GitHub org or GitLab instance. Personal accounts and
 unversioned file shares fail the control. Why: without central version control you lose
-code history, consistency, and the substrate every other control here attaches to.
+code history, consistency, and the base every other control here depends on.
 
 **1b. Push protection for secrets (SD-1).** Enable secret push protection (GitHub push
 protection / GitLab secret push protection; gitleaks pre-commit + CI as fallback) so
 secrets are rejected *at push*, before they enter history. Why: a secret in Git history
-is compromised even after deletion — prevention is the only cheap point.
+is compromised even after deletion, so blocking it at push is the cheapest fix.
 
 **1c. Protected default branch (SD-2).** No direct pushes, no force pushes, no branch
-deletion on the default branch — for everyone, including admins (empty bypass list, or
+deletion on the default branch, for everyone including admins (empty bypass list, or
 audited break-glass only). Why: force pushes destroy history; direct pushes bypass every
 CI gate and review requirement you set up below.
 
 **1d. Peer review before merge (SC-3).** Require ≥1 approval from a designated reviewer
 before merge; dismiss stale approvals on new commits; block self-approval. Use
 CODEOWNERS/approval rules to route sensitive paths (auth, crypto, IaC) to the right
-reviewers. Why: unreviewed merges are the main channel for both honest defects and
-malicious insertion.
+reviewers. Why: unreviewed merges are the main channel for both accidental defects and
+malicious code.
 
 **1e. Commit signing (SC-2).** Configure the repo to reject unsigned commits (GitHub
-ruleset "Require signed commits"; GitLab push rule "Reject unsigned commits" —
-Premium-gated, see recipes for the fallback). Onboard every developer with SSH or GPG
+ruleset "Require signed commits"; GitLab push rule "Reject unsigned commits", which
+needs Premium; see recipes for the fallback). Onboard every developer with SSH or GPG
 signing keys registered to their platform account before enforcing, or the team is
 blocked. Why: unsigned commits can impersonate any author; signing ties each change to
 a verified identity.
@@ -105,17 +105,16 @@ a verified identity.
 
 **2a. Pin everything (SC-4).** Direct *and transitive* dependencies pinned via a
 committed lockfile (`package-lock.json`, `Pipfile.lock`, `go.sum`, `Cargo.lock`, …), and
-enforce lockfile sync in CI. Version ranges in a manifest alone fail the control —
+enforce lockfile sync in CI. Version ranges in a manifest alone fail the control because
 transitive versions still float. Also pin container base images by digest and CI actions
-by commit SHA. Why: unpinned dependencies mean every build can silently pull different —
-possibly compromised — code (version drift, dependency-confusion, hijacked releases).
+by commit SHA. Why: unpinned dependencies mean every build can pull different,
+possibly compromised, code without anyone noticing (version drift, dependency-confusion, hijacked releases).
 
 If you cannot resolve an action's commit SHA or an image's digest right now (e.g. no
 network access), pin what you can, mark each unresolved pin as an explicit blocking TODO
 in the file, and report the control as **open — not satisfied**. Never let a runbook or
 audit response claim SC-4 compliance while `uses:` lines still carry mutable tags: the
-claim will fail its audit, and worse, it tells the team the job is finished when it
-isn't.
+claim will fail audit, and it tells the team the work is done when it isn't.
 
 **2b. Install only pinned versions at deploy (SC-6).** Every install step in CI and
 Dockerfiles uses the lockfile-strict command: `npm ci` not `npm install`,
@@ -127,9 +126,9 @@ what was reviewed and scanned; a resolving install can ship code nobody has seen
 **2c. Dependency scanning on a schedule (SD-5).** SCA scanning (Dependabot + dependency
 review, GitLab Dependency Scanning, or osv-scanner/trivy/grype on a scheduled job)
 running at least every **sd-5_prm_1 days per the SSP**, in the location the SSP names
-(sd-5_prm_2). Emit an SBOM (SPDX or CycloneDX — syft works) as scan evidence. Why: known
-CVEs in outdated libraries are the most common exploited weakness; scanning is only a
-control if it actually runs on the required cadence.
+(sd-5_prm_2). Emit an SBOM (SPDX or CycloneDX; syft works) as scan evidence. Why: known
+CVEs in outdated libraries are the most common exploited weakness; scanning only counts
+as a control if it runs on the required cadence.
 
 ### Stage 3 — CI gates
 
@@ -139,32 +138,32 @@ silently satisfy the gate. Why: the default branch is what ships; a merge that n
 tests puts regressions one deploy away from production.
 
 **3b. Static analysis (SD-4).** SAST (CodeQL, GitLab SAST, or semgrep) plus IaC scanning
-(trivy/checkov/KICS) in the location the SSP names (sd-4_prm_1 — typically the CI
+(trivy/checkov/KICS) in the location the SSP names (sd-4_prm_1, typically the CI
 pipeline per merge request). True-positive findings are **remediated or formally
-risk-accepted before production deploy** — keep an auditable triage trail (suppressions
+risk-accepted before production deploy**; keep an auditable triage trail (suppressions
 link to an issue with an approver). Why: static analysis catches vulnerability classes
 (injection, misconfiguration) before they exist in any running environment.
 
 **3c. Secret detection with an SLA (SD-6).** Full-history and ongoing secret scanning
-(distinct from SD-1's push-time block — this catches what slipped through or predates
+(distinct from SD-1's push-time block: this catches what slipped through or predates
 enablement) in the SSP-named location (sd-6_prm_1). True positives remediated within
 **sd-6_prm_2 days per the SSP**, and remediation always means: **revoke/rotate the
-credential, then purge it from Git history** — rewriting history without revoking fixes
-nothing. Why: exposed secrets are live credentials; the SLA bounds the exposure window.
+credential, then purge it from Git history**. Rewriting history without revoking does not
+close the exposure. Why: exposed secrets are live credentials; the SLA bounds the exposure window.
 
 **3d. Masked, protected CI secrets (SD-7).** CI secrets limited to protected
 pipelines/environments (so a branch pipeline or fork PR can't read deploy credentials)
 and masked in job logs (GitLab masked variables; GitHub Actions secrets +
 `::add-mask::` for derived values). Prefer OIDC federation to the cloud provider over
-long-lived credentials at all. Why: CI logs are broadly readable; an unmasked secret in
+long-lived credentials. Why: CI logs are broadly readable; an unmasked secret in
 a log is an unmonitored copy, and unprotected variables let anyone who can push a branch
 exfiltrate them.
 
 **3e. Dynamic analysis (SD-9).** DAST (GitLab DAST, OWASP ZAP baseline/full scan)
 against a deployed staging/test environment, in the SSP-named location (sd-9_prm_1);
 findings addressed or risk-accepted before production deploy. Active scans target
-non-production only. Why: runtime testing finds what static analysis structurally cannot
-— auth flaws, misconfigured endpoints, input-validation gaps in the composed system.
+non-production only. Why: runtime testing finds what static analysis cannot:
+auth flaws, misconfigured endpoints, input-validation gaps in the composed system.
 
 ### Stage 4 — Build and artifact integrity
 
@@ -172,8 +171,8 @@ non-production only. Why: runtime testing finds what static analysis structurall
 pipeline (never a laptop), with a record of how each artifact was built and deployed:
 GitHub artifact attestations / SLSA provenance, GitLab runner artifact metadata
 (`RUNNER_GENERATE_ARTIFACTS_METADATA`), or minimally commit SHA + pipeline URL bound to
-the artifact. Why: without a build record you cannot prove — to an auditor or during an
-incident — that what is running came from reviewed source.
+the artifact. Why: without a build record you cannot prove, to an auditor or during an
+incident, that what is running came from reviewed source.
 
 **4b. Sign artifacts during build (SC-7).** Sign code and container images with Cosign
 (keyless via the CI job's OIDC identity is the low-maintenance option) or AWS
@@ -182,32 +181,32 @@ swapped for a tampered one anywhere between registry and runtime with no detecti
 
 **4c. Verify signatures before deploy (SC-8).** A verification step gating deployment:
 a pipeline stage (`cosign verify` / `gh attestation verify` pinned to the exact expected
-identity — repo, workflow, issuer) and/or a Kubernetes admission controller (Sigstore
-policy-controller, Kyverno `verifyImages`). Why: signing without verification is
-theatre; verification is the enforcement point that unsigned or foreign artifacts never
-run.
+identity: repo, workflow, issuer) and/or a Kubernetes admission controller (Sigstore
+policy-controller, Kyverno `verifyImages`). Why: signing achieves nothing unless
+something verifies it; verification is what stops unsigned or foreign artifacts from
+running.
 
 ### Stage 5 — Deploy segregation and process
 
 **5a. Prod / non-prod segregation (SD-8).** Segregate across **all six planes** the
-control names — applications, services, data, secrets, roles, networks — ideally with
+control names: applications, services, data, secrets, roles, networks. Ideally use
 separate cloud tenant accounts per environment (on GCC: separate accounts). Check each
 plane explicitly: no production data in non-prod, separate secret stores, no standing
 developer write access to prod, no network path from non-prod into prod, CI deploy
 credentials scoped per environment (GitHub environments / GitLab protected environments
 + per-environment OIDC trust). Why: non-prod is the soft target; without segregation a
 compromised dev environment cascades straight into production. **Level 0 in the
-medium-risk cloud SSP** — no deviation possible there.
+medium-risk cloud SSP**, so no deviation is possible there.
 
-**5b. SSDLC framework (SD-10).** Document which framework governs the lifecycle — NIST
-SSDF (SP 800-218), OWASP SAMM, or Microsoft SDL — with roles and responsibilities per
+**5b. SSDLC framework (SD-10).** Document which framework governs the lifecycle (NIST
+SSDF (SP 800-218), OWASP SAMM, or Microsoft SDL), with roles and responsibilities per
 phase, and map its practices to concrete evidence (this pipeline's gates, threat
 modelling at design, VAPT per ST-4, patch cadence). The other 18 controls here are the
 build/deploy-phase evidence. Why: point controls without an owning framework decay;
 audits ask "who is accountable" as much as "is it configured".
 
 **5c. InnerSource (SC-9).** Default repos to internal visibility on the agency/WOG
-platform, with CONTRIBUTING.md and a maintainer list — after screening for confidential
+platform, with CONTRIBUTING.md and a maintainer list, after screening for confidential
 algorithms or embedded sensitive data (SD-1/SD-6 clean is a prerequisite). The Singapore
 Government Developer Portal's InnerSource guidelines are the named framework. Why:
 closed silos duplicate effort and hide bugs from the colleagues most likely to spot
@@ -241,7 +240,7 @@ Verify each row; record evidence (setting location, config path, pipeline run UR
 | SC-9 | Internal visibility + contribution docs, after sensitivity screening | Repo visibility + docs | |
 
 Report audit results per control ID with pass / fail / not-applicable-per-SSP, the
-evidence found, and — for failures — the fix from `references/platform-recipes.md`.
+evidence found, and, for failures, the fix from `references/platform-recipes.md`.
 
 ## Related skills in this repo
 

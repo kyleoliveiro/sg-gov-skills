@@ -17,41 +17,39 @@ description: >-
 
 # access-control: AC controls for SG government systems
 
-You are setting up or auditing **who and what can access a system, with which
-credentials, from which devices, and for how long** against the ICT&SS Policy Reform
-**Access Control family (AC-1..AC-16)** — the family that governs accounts, identity,
+You are setting up or auditing who and what can access a system, with which
+credentials, from which devices, and for how long, against the ICT&SS Policy Reform
+**Access Control family (AC-1..AC-16)**. The family governs accounts, identity,
 authentication, and privilege from creation to removal.
 
-Three facts anchor everything:
+Three points apply throughout:
 
-1. **Medium-Risk Cloud puts AC-2, AC-3, AC-5, AC-6 at Level 0** — MFA for privileged
+1. **Medium-Risk Cloud puts AC-2, AC-3, AC-5, AC-6 at Level 0**: MFA for privileged
    accounts, disabling inactive/expired accounts, hardened endpoints for remote admin
-   access, and changing default credentials are mandatory with no deviation path the
-   moment a system handles Confidential / Sensitive High data. **High-Risk Cloud CII
-   adds AC-1 (least privilege) to Level 0.** These are hygiene controls that lose their
-   deviation path exactly when data sensitivity rises.
+   access, and changing default credentials are mandatory with no deviation path once
+   a system handles Confidential / Sensitive High data. **High-Risk Cloud CII
+   adds AC-1 (least privilege) to Level 0.**
 2. **Identity is split by audience.** Public users needing high identity assurance use
    **Singpass/Corppass MFA** (AC-7); agency and internal users use **Government-managed
    SSO such as WOG AAD** (AC-7's recommendation, enforced through AC-12 SSO with MFA at
-   the IdP). Building a bespoke login for either audience is the finding, not an
-   implementation choice.
+   the IdP). Building a bespoke login for either audience is a finding.
 3. **Least privilege is grounded in the inventory.** AC-1's statement grants minimum
-   permissions *"based on the account inventory implemented"* — without the AC-14
+   permissions *"based on the account inventory implemented"*. Without the AC-14
    inventory of accounts and access rights, deny-by-default has nothing authoritative
-   to check grants against. Inventory first, then scope.
+   to check grants against, so build the inventory first.
 
 ## What this family is *not* about
 
 - **Application-layer auth mechanics are AS** (secure-coding-as): password policy
   (AS-5), salted hashing (AS-6), per-request authorisation checks in code (AS-7),
   secrets storage (AS-8), login rate limiting (AS-4), session timeouts (AS-11). AC owns
-  account and identity *governance* — a weak password hash is an AS-6 finding; an
+  account and identity governance: a weak password hash is an AS-6 finding; an
   account nobody disabled is AC-3.
 - **Logging account and access changes is LM** (logging-monitoring): LM-4/LM-7 capture
   account, access-rights, and authentication events; UEBA over account behaviour is
   LM-20. AC-16's compensating "audit logging and alerting" runs on LM machinery.
 - **Network position is NS.** Firewalls, segmentation, and subnet ACLs are Network
-  Security; AC-10 is precisely about *not* trusting network position — identity and
+  Security; AC-10 is about not trusting network position: identity and
   device posture replace VPN reachability.
 - **Singpass/Corppass integration is its own skill.** The login plumbing and TX-6
   Myinfo pre-fill live in **singpass** / **corppass**; **sg-service-shell** only owns the
@@ -82,9 +80,9 @@ against the live page:
 
 ## Before you start: the SSP parameters
 
-Get these values from the System Security Plan — if the SSP is missing or a value is
-blank, flag that as its own finding and ask; never invent a number (the sibling skill
-**ssp-navigator** determines levels):
+Get these values from the System Security Plan. If the SSP is missing or a value is
+blank, flag that as its own finding and ask; never invent a number. The sibling skill
+**ssp-navigator** determines levels.
 
 | Control | Parameter | What the SSP defines |
 |---|---|---|
@@ -113,13 +111,13 @@ every step are in `references/implementation-recipes.md`.
 
 ### Stage 1 — Know the accounts, then deny by default (AC-14, AC-1, AC-16)
 
-**1a. Inventory (AC-14).** Establish and maintain an inventory of all accounts —
-human, service, vendor — and their access rights. Regularly reviewed, automated where
-feasible. Orphaned accounts are unfindable without it.
+**1a. Inventory (AC-14).** Establish and maintain an inventory of all accounts
+(human, service, vendor) and their access rights. Regularly reviewed, automated where
+feasible. Without it, orphaned accounts can't be found.
 
 **1b. Least privilege (AC-1).** Deny by default; grant only the minimum permissions
 each account or process needs for its specific function, based on that inventory.
-Wildcard grants (`"Action": "*"` on `"Resource": "*"`) are the canonical failure. Use
+Wildcard grants (`"Action": "*"` on `"Resource": "*"`) are the typical failure. Use
 IAM Access Advisor / Azure AD Access Review to trim to actual usage; consider
 attribute-based access control for granularity.
 
@@ -133,12 +131,12 @@ alerting, and rate limits where perfect separation is infeasible.
 independent of the accessing device; prefer phishing-resistant factors, and consider
 step-up MFA for privileged actions via PIM.
 
-**2b. No default credentials (AC-6).** Change them **before first use** — admin
-consoles, COTS installs, appliances. Force password change on first login after
+**2b. No default credentials (AC-6).** Change them **before first use** on admin
+consoles, COTS installs, and appliances. Force password change on first login after
 creation or reset.
 
 **2c. Public users → Singpass/Corppass (AC-7).** High-assurance citizen/business
-transactions authenticate with Singpass/Corppass MFA — don't build a bespoke citizen
+transactions authenticate with Singpass/Corppass MFA; don't build a bespoke citizen
 login.
 
 **2d. Internal users → SSO (AC-12).** Government-managed SSO (WOG AAD-class) with MFA
@@ -148,8 +146,8 @@ at the IdP; internal apps federate rather than keeping local password tables.
 
 **3a. Kill dormant and expired accounts (AC-3 — Level 0 at Medium-Risk).** Disable or
 remove ac-3_prm_3 accounts within **ac-3_prm_1 days** of last authorised use or after
-**ac-3_prm_2 days** of inactivity — automated (AWS Config
-`iam-user-unused-credentials-check`, SCIM workflows), not remembered. Contractor
+**ac-3_prm_2 days** of inactivity. Automate this (AWS Config
+`iam-user-unused-credentials-check`, SCIM workflows) rather than relying on manual follow-up. Contractor
 accounts get expiry dates at creation.
 
 **3b. Review access (AC-4).** At **ac-4_prm_1** frequency; remove unnecessary rights
@@ -161,14 +159,14 @@ tests confirm provisioning happens only through the tool, deactivation on the fi
 of authorised use, and rights matching the assigned role.
 
 **3d. Rotate or retire static credentials (AC-13).** API keys, access keys, PATs
-rotated every **ac-13_prm_1 days** — or replaced with time-restricted credentials
+rotated every **ac-13_prm_1 days**, or replaced with time-restricted credentials
 (STS, OIDC federation) so there is nothing long-lived to steal.
 
 ### Stage 4 — Control the endpoint and the context (AC-5, AC-9, AC-10, AC-11)
 
 - **Hardened endpoints for remote privileged access (AC-5 — Level 0 at Medium-Risk)**:
   posture checked and access denied when hardening requirements fail. Personal laptops
-  administering production is the canonical failure.
+  administering production are the typical failure.
 - **Endpoint device management (AC-9)**: MDM enforcing disk encryption, configuration,
   updates, remote wipe.
 - **Identity- and device-based access (AC-10)**: SSE/IAP/Conditional-Access-class
@@ -179,7 +177,7 @@ rotated every **ac-13_prm_1 days** — or replaced with time-restricted credenti
 ## Audit checklist
 
 Verify each row; record evidence. "Param" marks controls whose pass criteria come from
-the SSP — ask for the values rather than inventing them.
+the SSP; ask for the values rather than inventing them.
 
 | ID | Check | Where | Param |
 |---|---|---|---|
@@ -201,10 +199,10 @@ the SSP — ask for the values rather than inventing them.
 | AC-16 | Separation of duties via RBAC/PIM/JIT or compensating controls (High-Risk CII) | Role design | |
 
 Report per control ID with pass / fail / not-applicable-per-SSP, the evidence found,
-and — for failures — the fix from `references/implementation-recipes.md`. Attribute
+and, for failures, the fix from `references/implementation-recipes.md`. Attribute
 password-hashing and session findings to AS, account-event logging gaps to LM, and
-network segmentation to NS, not AC; and treat "everyone uses the shared admin login"
-as the multi-control failure it is (AC-1, AC-2 accountability, AC-14).
+network segmentation to NS, not AC. Report a shared admin login used by everyone as a
+failure of AC-1, AC-2 (accountability), and AC-14.
 
 ## Related skills in this repo
 
@@ -214,7 +212,7 @@ as the multi-control failure it is (AC-1, AC-2 accountability, AC-14).
   governance.
 - **logging-monitoring** — LM-4/LM-7 capture the account and access-rights changes AC
   governs; LM-20 UEBA watches account behaviour.
-- **singpass** — the AC-7 public-user login itself: Singpass FAPI 2.0 flow, Myinfo,
+- **singpass** — the AC-7 public-user login: Singpass FAPI 2.0 flow, Myinfo,
   the UUID-first identity model (**corppass** for business users acting for an entity).
   These own the public-user login and TX-6 pre-fill integration.
 - **sg-service-shell** — the surrounding DSS page shell (where the Singpass/Corppass
