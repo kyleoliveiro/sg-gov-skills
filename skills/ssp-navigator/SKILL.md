@@ -24,16 +24,16 @@ An SSP is the implementable control set for one system. Agencies pick one of
 risk approved, and submit it to a whole-of-government repository. Getting the
 SSP selection right up front matters because it determines which controls are
 mandatory (Level 0), which are default hygiene (Level 1), and which are
-optional best practice (Level 2) — and because several Level 0 controls
-(data residency, central logging, domain registration) constrain architecture
-decisions that are expensive to reverse.
+optional best practice (Level 2). Several Level 0 controls (data residency,
+central logging, domain registration) also constrain architecture decisions
+that are expensive to reverse.
 
 ## Source and currency
 
 Content embedded from **info.standards.tech.gov.sg** as of **2026-07-16**
-(source pages last updated March–May 2026). The standards are actively
-iterating: when making compliance-critical decisions, verify against the
-live pages before relying on embedded figures.
+(source pages last updated March–May 2026). The standards change often;
+for compliance-critical decisions, verify against the live pages before
+relying on embedded figures.
 
 Source URLs:
 
@@ -47,16 +47,16 @@ Source URLs:
 - https://info.standards.tech.gov.sg/ssp/dss-high/
 - https://info.standards.tech.gov.sg/ssp/sandbox/
 
-Machine-readable OSCAL: https://github.com/GovtechSG/tech-standards —
-MIT-licensed OSCAL 1.1.2 JSON, but it **lags the website** (catalog version
+Machine-readable OSCAL: https://github.com/GovtechSG/tech-standards
+(MIT-licensed OSCAL 1.1.2 JSON). It **lags the website** (catalog version
 2025.05.13; no Gen-AI, DSS, high-risk, or sandbox profiles). The site is
 authoritative.
 
 ## Step 1 — Gather the classification inputs
 
 Ask for (or determine from project context) all six inputs before selecting
-anything. Partial answers produce wrong baselines — e.g. missing the GenAI
-usage means missing four mandatory controls.
+anything. Partial answers produce wrong baselines; for example, missing the
+GenAI usage means missing four mandatory controls.
 
 1. **Hosting model** — cloud (via a third-party Cloud Service Provider,
    including GCC 2.0) or on-premises?
@@ -68,7 +68,7 @@ usage means missing four mandatory controls.
 4. **Public-facing digital service?** — will members of the public or
    businesses use it? If yes: what is the expected annual traffic? The DSS
    threshold is **1 million visits per year, determined from WOGAA
-   statistics** — for a new service with no WOGAA history, confirm the
+   statistics**. For a new service with no WOGAA history, confirm the
    expected tier with the agency rather than guessing.
 5. **Generative AI usage** — does the system call GenAI model APIs
    (commercial or GCC 2.0) or self-host GenAI models?
@@ -95,7 +95,7 @@ stack on top. Work through in order:
 | Cloud, data up to Restricted / Sensitive Normal | **Low-Risk Cloud** |
 | On-premises, data up to Restricted / Sensitive Normal | **Low-Risk On-Premises** |
 
-Gaps to flag explicitly rather than paper over:
+Flag these gaps explicitly:
 
 - **On-premises + Confidential / Sensitive High, or on-premises CII**: no
   published template exists. Escalate to the agency CISO for a custom SSP;
@@ -104,14 +104,14 @@ Gaps to flag explicitly rather than paper over:
   Sandbox SSP (its ceiling is Restricted / Sensitive Normal).
 - **CII systems**: the CII Owner must **inform CSA (Cyber Security Agency of
   Singapore) before migrating to cloud and before creating a High-Risk Cloud
-  CII SSP** — this is a sequencing constraint, not paperwork after the fact.
+  CII SSP**. Notification has to come first; it cannot be done after the
+  fact.
 
 ### 2b. Generative AI overlay (stack if applicable)
 
 If the system uses GenAI models in any form, stack the **Generative AI SSP**
-(9 controls: GA-1–GA-8 + DP-8) on top of the base SSP. It is an overlay, not
-a standalone plan — hosting-environment security still comes from the base
-SSP. Its Level 0 controls bind data classification to model hosting:
+(9 controls: GA-1–GA-8 + DP-8) on top of the base SSP. It is an overlay;
+hosting-environment security still comes from the base SSP. Its Level 0 controls bind data classification to model hosting:
 
 - **GA-1**: overseas-hosted GenAI API services → data up to **Restricted /
   Sensitive Normal only**.
@@ -119,7 +119,7 @@ SSP. Its Level 0 controls bind data classification to model hosting:
   Sensitive High**.
 - **GA-3**: a **legally-binding provider commitment** to no logging, storage,
   retention, or training on prompts/outputs (prompt caching with TTL ≤ 24h
-  exempt). **GCC 2.0 GenAI API services satisfy GA-3** — prefer them to
+  exempt). **GCC 2.0 GenAI API services satisfy GA-3**; prefer them to
   avoid negotiating bespoke agreements.
 - **GA-4**: self-hosted models must run in environments cleared for the
   highest data classification they process.
@@ -134,11 +134,11 @@ If the system is a public-facing digital service, stack one DSS profile:
 - **DSS (Others)** — fewer than 1M visits/year per WOGAA.
 - **DSS (High Impact)** — at least 1M visits/year per WOGAA.
 
-Both profiles publish the same 92 controls; the difference is leveling — High
+Both profiles publish the same 92 controls; the difference is leveling. High
 Impact promotes 9 WCAG controls from Level 2 to Level 1.
 
 DSS covers usability, trust, transactions, and accessibility (its WP/WO/WU/WR
-families are WCAG 2.2 A/AA in all but name). Internal-only systems skip DSS.
+families are WCAG 2.2 A/AA recast as controls). Internal-only systems skip DSS.
 
 ### 2d. Result
 
@@ -164,23 +164,23 @@ obligations). Structure the report as:
    parameters (password minimum length, session timeout, log retention days,
    vulnerability remediation timeframes by severity, review cadences). The
    catalog sets **no values**; every parameter is a tailoring decision the
-   agency must make and record in its SSP. List the ones in scope so they
-   become explicit decisions, not defaults nobody chose.
+   agency must make and record in its SSP. List the ones in scope so the
+   agency sets each one explicitly.
 
 ### Level semantics and deviation rules
 
-- **Level 0 — cardinal and mandatory.** No deviation. These are the
-  requirements the Government treats as non-negotiable (data residency,
+- **Level 0 — cardinal and mandatory.** No deviation is permitted. These are
+  the requirements the Government treats as non-negotiable (data residency,
   central logging, SSP governance itself).
 - **Level 1 — basic hygiene**, implemented by default. Deviating from or not
   implementing a Level 1 control requires approval from the agency's
-  designated authority — IDSC / CIO / CISO (the approving authority is
-  itself an SSP parameter, PM-4) — documented in the agency's customised
-  SSP. The point of the paper trail: risk acceptance must be a named
-  decision, not an omission discovered at audit or VAPT.
+  designated authority (IDSC / CIO / CISO; the approving authority is
+  itself an SSP parameter, PM-4), documented in the agency's customised
+  SSP. This makes risk acceptance a recorded decision instead of an
+  omission found at audit or VAPT.
 - **Level 2 — best practices** to consider and adopt where the risk profile
   warrants. Skipping Level 2 needs no approval, but record the reasoning in
-  the SSP so future reviews see a decision rather than a gap.
+  the SSP so future reviews can see it was a decision.
 
 Hygiene-vs-guideline classification exists **only as profile membership** —
 catalog pages do not print levels. To know a control's level for a given
@@ -189,7 +189,7 @@ system, look at the selected SSP page, not the catalog.
 ### The universal Level 0 spine (cybersecurity SSPs)
 
 Low-Risk Cloud, Low-Risk On-Premises, Medium-Risk Cloud and High-Risk Cloud
-CII all share these seven Level 0 controls — treat them as the floor for any
+CII all share these seven Level 0 controls. Treat them as the floor for any
 production SG government system:
 
 | Control | Requirement |
@@ -203,7 +203,7 @@ production SG government system:
 | IS-14 | Register SMS sender IDs with the Singapore SMS Sender ID Registry |
 
 Exceptions: the **Sandbox** SSP mandates only PM-3, PM-4, PM-5 (everything
-else drops to Level 2 — that is its entire point). The **DSS** profiles have
+else drops to Level 2). The **DSS** profiles have
 their own three Level 0 controls: PR-2 (register the service and implement
 WOGAA), TL-3 (Official Government Banner on every .gov.sg page), TL-5
 (mobile app IP ownership; distribution only via Apple App Store, Google
@@ -211,7 +211,7 @@ Play, Huawei AppGallery).
 
 ## Step 4 — The SSP lifecycle workflow
 
-Selection is the start, not the end. Walk the team through:
+After selection, walk the team through:
 
 1. **Tailor** — customise the chosen template into a system-specific SSP (or
    adopt it as the default). Fill in every agency-defined parameter; stack
@@ -228,7 +228,7 @@ Selection is the start, not the end. Walk the team through:
    whole-of-government repository.
 6. **Operate and review** — keep the SSP current as the system, its data
    classification, or its traffic tier changes. Crossing 1M WOGAA visits or
-   raising the data classification changes which SSP applies — re-run this
+   raising the data classification changes which SSP applies; re-run this
    skill's decision procedure when system characteristics change.
 
 ## After the baseline is known
@@ -252,7 +252,7 @@ selected baseline pulls in:
   central-logging Level 0 control above, the five log sources, retention,
   GCSOC integration, security detection.
 - **security-testing** — the Security Testing family (ST): VAPT, vulnerability
-  scanning, security.txt disclosure, remediation SLAs — the pre-launch gate.
+  scanning, security.txt disclosure, remediation SLAs (the pre-launch gate).
 - **container-security** — when the workload is containerised (Container
   Security family CS: base-image hardening, image scanning, runtime policy).
 - **network-security** — the Network Security family (NS): segmentation,
