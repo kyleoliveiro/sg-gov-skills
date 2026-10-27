@@ -7,8 +7,7 @@ description: >-
   and witnessed destruction, data loss prevention, and classification disclosure in the
   UI. Use whenever handling government data classifications, pinning cloud regions or
   checking cross-region replication, configuring encryption (including the CK
-  key-management work behind it: algorithms, rotation, HSM; load sg-gov-secure-coding-as
-  alongside), decommissioning storage, setting up DLP, or when PDPA questions come up
+  key-management work behind it: algorithms, rotation, HSM; pair with sg-gov-secure-coding-as), decommissioning storage, setting up DLP, or when PDPA questions come up
   on an agency project. Triggers: "data residency", IM8 data protection requirements,
   DP controls, ap-southeast-1 pinning, encryption at rest / in transit or key
   management for government data, AWS Organizations / landing zone / GCC tenancy, media
