@@ -18,23 +18,22 @@ description: >-
 
 You are setting up or auditing **how a system captures, protects, and acts on its logs
 and telemetry** against the ICT&SS Policy Reform **Logging and Monitoring family
-(LM-1..LM-21)** — the largest cybersecurity family in the catalog. It covers what to log,
+(LM-1..LM-21)**, the largest cybersecurity family in the catalog. It covers what to log,
 where logs live, how long they survive, who watches them, and the operational monitoring
 (SLOs, golden signals, DORA, WOGAA) that keeps the service healthy.
 
-Two facts anchor everything:
+Two points matter most:
 
-1. **LM-12 (central security log management and monitoring) sits in the Level-0 spine of
-   every published SSP** — mandatory, no deviation path, cloud and on-prem alike. **GCC
+1. **LM-12 (central security log management and monitoring) is Level 0 in every
+   published SSP**: mandatory, no deviation path, cloud and on-prem alike. **GCC
    tenants already have CSP tenant security logs stored centrally and available for
-   forwarding to the Government Cyber Security Operations Centre (GCSOC)** — contact
-   GCSOC for subscription. A system whose logs never leave the team's own account fails
-   the one LM control that cannot be traded away.
-2. **Security log coverage is enumerable, not a vibe.** The catalog names the five
-   security log sources — **network flow logs, cloud management/audit logs, access logs,
+   forwarding to the Government Cyber Security Operations Centre (GCSOC)**. Contact
+   GCSOC to subscribe. A system whose logs never leave the team's own account fails
+   LM-12, the one LM control with no deviation path.
+2. **Security log coverage is a fixed list.** The catalog names the five
+   security log sources: **network flow logs, cloud management/audit logs, access logs,
    database logs, and host logs** (LM-3..LM-7, enumerated in LM-8's recommendation).
-   Audit against that list; "we have logging" without all five is a coverage gap, not a
-   pass.
+   Audit against that list; "we have logging" without all five is a coverage gap.
 
 ## What this family is *not* about
 
@@ -47,7 +46,7 @@ Two facts anchor everything:
   tampering, retention, and monitoring.
 - **User-facing error hygiene is AS** (secure-coding-as). Not leaking stack traces to
   end users is an application-security concern; **LM-19 is about sensitive data written
-  *into* the logs themselves** — sanitise before recording.
+  *into* the logs themselves**: sanitise before recording.
 - **WOGAA implementation detail is the service shell.** LM-18 mandates WOGAA in public
   facing digital services from the cybersecurity side; the DSS twin (PR-2) and the
   registration/tracking-code mechanics live in **sg-service-shell**.
@@ -73,11 +72,11 @@ against the live page:
   flow logs/CloudTrail/ALB logging, off-box shipping and tamper-resistant bucket
   policies, retention lifecycle, OCSF/OTel formatting, sanitisation patterns, GuardDuty,
   and the monitoring stack (SLOs, golden signals, DORA, defacement). Read it when
-  actually building.
+  building.
 
 ## Before you start: the SSP parameters
 
-Get these values from the System Security Plan — if the SSP is missing or a value is
+Get these values from the System Security Plan. If the SSP is missing or a value is
 blank, flag that as its own finding and ask; never invent a number (the sibling skill
 **ssp-navigator** determines levels):
 
@@ -113,8 +112,8 @@ Enable all five security log sources:
 ### Stage 2 — Make the logs trustworthy (LM-1, LM-2, LM-19, LM-15, LM-8)
 
 **2a. Off the box, immediately (LM-1).** Ship logs to a different system/component than
-the one that generated them, as soon as possible after the event — an app server keeping
-its only copy on local disk means a compromise erases the evidence. Store cloud audit
+the one that generated them, as soon as possible after the event. If an app server keeps its
+only copy on local disk, a compromise can erase the evidence. Store cloud audit
 logs in a separate system or account.
 
 **2b. Tamper-resistant (LM-2).** Least-privilege access to log storage; **as far as
@@ -122,12 +121,12 @@ possible, read-only**. Nobody on the delivery team needs delete rights on securi
 Logs sent to GCC Central Logs are tamper-resistant already.
 
 **2c. Sanitise before recording (LM-19).** Identify classified/sensitive data that could
-reach logs — NRIC-class PII, credentials, API keys, payment details — and mask or
+reach logs (NRIC-class PII, credentials, API keys, payment details) and mask or
 tokenise it *before* it is written or shared with any third party.
 
 **2d. Structured format (LM-15).** Security logs in OCSF/ECS-style schemas; operational
-logs in OpenTelemetry or structured JSON — consistent formats are what make central
-analysis and automated detection possible.
+logs in OpenTelemetry or structured JSON. Consistent formats make central analysis and
+automated detection possible.
 
 **2e. Retain long enough (LM-8).** Security logs (all five Stage-1 sources) kept at
 least **lm-8_prm_1 days**, with lifecycle automation (e.g. S3 Lifecycle). Non-security
@@ -137,11 +136,11 @@ logs: as long as needed for incident resolution and debugging.
 
 **3a. Central security log management (LM-12 — Level 0 everywhere).** Centralise with
 the service named in lm-12_prm_1. On GCC, tenant security logs are already central and
-forwardable to **GCSOC** — subscribe rather than build.
+forwardable to **GCSOC**; subscribe rather than build.
 
 **3b. Security monitoring with automated alerts (LM-9).** GuardDuty / Defender /
 equivalents, alerting to somewhere a human responds. **Error tracking (Sentry-class
-tools) and uptime checks are not security monitoring** — they watch bugs and
+tools) and uptime checks are not security monitoring**: they watch bugs and
 availability, not breaches.
 
 **3c. Deeper detection where warranted**: anomalous database activity monitoring
@@ -152,22 +151,22 @@ with a recovery plan.
 **3d. Keep detections current (LM-21).** Malware/IOC detections updated at least every
 **lm-21_prm_1 days**, with automation to monitor rollout and conformance.
 
-### Stage 4 — Watch the service, not just attackers (LM-10, LM-11, LM-16, LM-17, LM-18)
+### Stage 4 — Service health monitoring (LM-10, LM-11, LM-16, LM-17, LM-18)
 
-- **Resource usage (LM-10)**: alerts on abnormal usage — spikes, access at unexpected
+- **Resource usage (LM-10)**: alerts on abnormal usage such as spikes, access at unexpected
   hours, excessive charges.
-- **SLOs/SLIs (LM-11)** and the **4 Golden Signals — latency, traffic, errors,
-  saturation (LM-16)**: track, alert, and use trends to improve.
+- **SLOs/SLIs (LM-11)** and the **4 Golden Signals (latency, traffic, errors,
+  saturation; LM-16)**: track, alert, and use trends to improve.
 - **DORA metrics (LM-17)**: deployment frequency, lead time for changes, change failure
   rate, time to restore.
-- **WOGAA (LM-18)**: mandatory for public-facing digital services — register at
+- **WOGAA (LM-18)**: mandatory for public-facing digital services; register at
   https://wogaa.sg/ and implement per https://docs.wogaa.sg/ (mechanics in
   sg-service-shell).
 
 ## Audit checklist
 
 Verify each row; record evidence. "Param" marks controls whose pass criteria come from
-the SSP — ask for the values rather than inventing them.
+the SSP; ask for the values rather than inventing them.
 
 | ID | Check | Where | Param |
 |---|---|---|---|
@@ -194,9 +193,9 @@ the SSP — ask for the values rather than inventing them.
 | LM-21 | Detections updated ≤ every lm-21_prm_1 days, rollout automated | Update automation | ✓ |
 
 Report per control ID with pass / fail / not-applicable-per-SSP, the evidence found,
-and — for failures — the fix from `references/implementation-recipes.md`. Attribute log
+and, for failures, the fix from `references/implementation-recipes.md`. Attribute log
 store encryption/residency findings to DP and misconfiguration-posture findings to ST-2,
-not LM; and correct, don't accept, "we have Sentry so monitoring is covered" reasoning.
+not LM. Reject "we have Sentry so monitoring is covered" reasoning and say why.
 
 ## Related skills in this repo
 

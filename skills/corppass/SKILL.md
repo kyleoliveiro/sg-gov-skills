@@ -1,7 +1,7 @@
 ---
 name: corppass
 description: >-
-  Integrate Corppass — business-user login and Myinfo Business corporate data —
+  Integrate Corppass (business-user login and Myinfo Business corporate data)
   into a Singapore government digital service using the Corppass Authorization
   API (FAPI 2.0). Use this whenever a service lets companies or other entities
   transact with an agency: "log in with Corppass", business user login, UEN,
@@ -19,18 +19,18 @@ description: >-
 
 Corppass is the Singapore Government's corporate **authorisation** system. It is not a
 login credential anymore: **authentication is Singpass** (the user logs in with the
-Singpass app as a "Business User"); Corppass supplies the entity and role context —
-which company the user acts for, and what they are allowed to do. Get this mental model
-right first, because the two most expensive integration mistakes flow from it:
+Singpass app as a "Business User"); Corppass supplies the entity and role context:
+which company the user acts for, and what they are allowed to do. Get this model right
+first; the two most costly integration mistakes come from getting it wrong:
 
 1. Treating the ID token `sub` as the person. In FAPI 2.0 **`sub` is always the
    entity** (UEN, or Corppass Entity ID for non-UEN entities). The acting user lives in
    `act.sub` as a UUID.
 2. Treating "user can't log in" as a code bug. Most of the time the user authenticated
-   fine but their entity's **Corppass Admin never assigned them to your e-service** —
-   a provisioning problem no code change fixes.
+   fine but their entity's **Corppass Admin never assigned them to your e-service**.
+   That is a provisioning problem, and no code change fixes it.
 
-Two products ride on one API, onboarded on **different portals**:
+Two products use one API, onboarded on **different portals**:
 
 | Product | What it gives you | Onboard via |
 |---|---|---|
@@ -46,14 +46,14 @@ read the **corppass-legacy** skill.
 ## Source and currency
 
 Everything here is embedded from https://docs.corppass.gov.sg as of **2026-07-23**.
-The docs iterate; verify compliance-critical details against the live pages — append
+The docs iterate; verify compliance-critical details against the live pages. Append
 `.md` to any docs.corppass.gov.sg page URL for a markdown version, index at
 https://docs.corppass.gov.sg/llms.txt. Read the reference files for exact wire formats:
 
 - `references/fapi2-authorization-api.md` — endpoints, every PAR/token/userinfo
   parameter, ID token and userinfo claim structures, scopes, JWKS/client-assertion/
   DPoP/PKCE requirements, error tables, and a symptom→cause debugging map.
-- `references/onboarding-operations-mib.md` — CDP onboarding and its one-way doors,
+- `references/onboarding-operations-mib.md` — CDP onboarding and its irreversible settings,
   the Corppass admin/provisioning model, Myinfo Business compliance and UX rules,
   test personas, key rotation, TLS.
 
@@ -61,12 +61,12 @@ https://docs.corppass.gov.sg/llms.txt. Read the reference files for exact wire f
 
 Architecture first: FAPI 2.0 requires a **confidential client (backend-for-frontend)**.
 All keys, client assertions, DPoP proofs, and token exchanges live on the backend.
-Use a certified OIDC relying-party library (openid.net certified list) — Corppass is
-standards-compliant OIDC + FAPI 2.0, and a certified library gets PAR, PKCE, DPoP, and
-claim validation right for free.
+Use a certified OIDC relying-party library (openid.net certified list). Corppass is
+standards-compliant OIDC + FAPI 2.0, so a certified library handles PAR, PKCE, DPoP, and
+claim validation correctly.
 
 1. **Discovery.** `GET https://id.corppass.gov.sg/.well-known/openid-configuration`
-   (staging `stg-id.corppass.gov.sg`). Never hardcode endpoint paths — derive them from
+   (staging `stg-id.corppass.gov.sg`). Never hardcode endpoint paths; derive them from
    discovery. Cache ≥1 hour. Validate `iss` on callbacks against the discovery `issuer`.
 2. **Publish your client JWKS** (endpoint or CDP-hosted object) with **both** an EC
    signing key (`use: "sig"`, e.g. ES256/P-256) and an EC encryption key (`use: "enc"`,
@@ -79,25 +79,25 @@ claim validation right for free.
    client ID, `aud` = discovery issuer, unique `jti`, **`exp` − `iat` ≤ 2 minutes**),
    and a `DPoP` header signed with an **ephemeral EC key generated for this session**.
    Corppass Login apps must also send `authentication_context_type`
-   (`APP_AUTHENTICATION_DEFAULT`); Myinfo Business apps must **not** — the request is
-   rejected if they do. Response: a `request_uri` valid **60 seconds**.
+   (`APP_AUTHENTICATION_DEFAULT`); Myinfo Business apps must **not** send it (the request
+   is rejected if they do). Response: a `request_uri` valid **60 seconds**.
 4. **Redirect** the browser to the authorization endpoint with exactly `client_id` +
    `request_uri`. On callback, validate `state` (reject on mismatch — CSRF) and `iss`.
 5. **Token exchange** within **60 seconds** of the code being issued (single-use code):
    fresh client assertion, same DPoP key as PAR, `code_verifier`. You get a DPoP-bound
-   access token (**10 minutes**, `token_type: DPoP`, treat as an opaque string — never
-   parse it) and a JWE-encrypted ID token. **There are no refresh tokens** — expiry
-   means a fresh flow.
+   access token (**10 minutes**, `token_type: DPoP`; treat it as an opaque string and
+   never parse it) and a JWE-encrypted ID token. **There are no refresh tokens**; on
+   expiry, run a fresh flow.
 6. **Decrypt, verify, validate the ID token.** Decrypt the JWE with your `enc` private
    key (select by JWE header `kid`), verify the inner JWS against Corppass's JWKS,
    then validate `iss`, `aud`, `exp`, `nonce`, and `at_hash`.
 7. **Userinfo (roles and Myinfo Business data).** `GET /userinfo` with
-   `Authorization: DPoP <access_token>` (not `Bearer` — that gets a bare 401 with an
+   `Authorization: DPoP <access_token>` (not `Bearer`, which gets a bare 401 with an
    empty body) plus a DPoP proof that includes the `ath` claim. The response is again
-   JWE-wrapping-JWS. Note the userinfo `sub` is your own client ID — identity comes
-   from the ID token, not here.
+   JWE-wrapping-JWS. The userinfo `sub` is your own client ID; identity comes from
+   the ID token, not here.
 
-## The identity model — read the right claim
+## The identity model: which claim to read
 
 ```json
 "sub": "T09LL0001B",              // THE ENTITY (UEN; Corppass Entity ID for NON-UEN)
@@ -110,13 +110,13 @@ claim validation right for free.
 ```
 
 - Key your user records on **`act.sub` (the UUID)**, not NRIC. Corppass's own key
-  principles recommend UUID over NRIC/FIN — it is stable, and it keeps sensitive
+  principles recommend UUID over NRIC/FIN: it is stable, and it keeps sensitive
   identifiers out of your database (PDPC NRIC advisory guidelines apply if you don't).
 - NRIC/name arrive only if you request the `user.identity` / `user.name` scopes;
   entity name and UEN status need `entity.basic_profile.name` / `.uen_status`.
 - For **NON-UEN** (foreign) entities, `sub` is the Corppass Entity ID and
-  `sub_attributes.entity_reg_number` is the foreign registration number — two
-  different identifiers. Foreign users' names are typed in by their Corppass Admin,
+  `sub_attributes.entity_reg_number` is the foreign registration number. These are
+  two different identifiers. Foreign users' names are typed in by their Corppass Admin,
   not government-verified.
 - One user ↔ many entities: users authorised for several companies pick one at login.
   Scope every session and record to the (entity, user) pair, never the user alone.
@@ -130,26 +130,26 @@ Admin: `CPRole`, optional Sub-UEN (`CPEntID_SUB`), validity window
 Enforce the window and role server-side on every request, not just at login.
 
 - `ESrvc_Row_Count: 0` = **authenticated but not provisioned**. Show a message that
-  names the fix: "ask your company's Corppass Admin to assign you to [service name]"
-  — do not present it as a login failure.
+  names the fix: "ask your company's Corppass Admin to assign you to [service name]";
+  do not present it as a login failure.
 - `"ERROR_MISSING_VALUE"` inside a field = the admin skipped a mandatory
   Sub-UEN/parameter during assignment.
 - Third-party service providers (tax agents, corporate secretaries) acting for client
   entities come through `tp_auth_info` (scope `tpauthinfo`), one block per client
-  entity — only if your service enabled third-party functionality at onboarding.
+  entity, only if your service enabled third-party functionality at onboarding.
 - **Design roles/Sub-UEN/parameters carefully before publishing**: once a CDP service
   is published, entity types, statuses, Sub-UEN format, roles, and parameters are
-  one-way doors — roles can be added but never modified or removed, and new mandatory
+  fixed: roles can be added but never modified or removed, and new mandatory
   parameters cannot be added.
 
 ## Hard rules that break integrations
 
-- **60-second fuses**: PAR `request_uri` 60 s; authorization code 60 s, single-use;
+- **60-second limits**: PAR `request_uri` 60 s; authorization code 60 s, single-use;
   client assertion lifetime ≤2 min; DPoP `iat` recency-checked. Clock skew and slow
-  redirects are real failure modes.
+  redirects cause failures.
 - **Callback and JWKS URLs must not contain the words "singpass", "corppass", or
   "myinfo"** (anti-scam rule). `https://portal.agency.gov.sg/corppass/callback` will
-  be rejected — pick `/auth/callback`.
+  be rejected; use `/auth/callback`.
 - Redirect URIs: **https only**, exact match, no wildcards, no custom app schemes
   (use universal links for mobile).
 - TLS: your client must negotiate TLS 1.3 or one of four TLS 1.2 ECDHE-GCM suites
@@ -161,18 +161,18 @@ Enforce the window and role server-side on every request, not just at login.
 
 ## Myinfo Business compliance (what app review rejects)
 
-- Request only scopes you can justify — one business purpose per request; every scope
+- Request only scopes you can justify: one business purpose per request; every scope
   needs a written justification and a User Journey document at production onboarding
   (approval up to 2 weeks; config changes propagate in 5–10 minutes).
-- **All retrieved data must be displayed to the user before submission** — no silent
+- **All retrieved data must be displayed to the user before submission**; no silent
   backend-only retrieval. Government-originated fields are non-editable; purge data if
   the form is never submitted; never cache Myinfo Business data in sessions/cookies
-  for later repopulation — re-fetch every time.
+  for later repopulation; re-fetch every time.
 - Provide a manual-entry alternative (opt-outs, outages, and Singpass Foreign Account
-  holders — **SFA users cannot use Myinfo Business at all**).
+  holders; **SFA users cannot use Myinfo Business at all**).
 - Eligibility text, Singpass-branded button with approved labels only, and the
   prerequisite notice ("ensure you have a Corppass account and are assigned to
-  [E-Service Name]...") are prescribed — see the reference file.
+  [E-Service Name]...") are prescribed; see the reference file.
 - Myinfo Business is currently **free of charge**; Corppass Login pricing for agencies
   is on the WOG intranet (GSIB), not public.
 - Testing: Myinfo Business test personas (password `Userinfo@2024`) are for Myinfo
@@ -209,7 +209,7 @@ When reviewing an existing Corppass integration, walk this list:
   skill. This skill tells you to prefer the UUID; that one tells you what the law
   expects if you must hold NRIC or corporate personal data.
 - **The catalog controls that mandate all this** — AC-7 (Corppass for public users),
-  AC-12 (SSO), and friends live in the **access-control** skill; session hardening and
+  AC-12 (SSO), and related controls live in the **access-control** skill; session hardening and
   per-request authorization are **secure-coding-as**.
 - **The transaction around the login** — the **transactions-payments** skill owns the
   rest of the DSS TX family (multi-step flow, save draft, payment/refund UX, receipts,
