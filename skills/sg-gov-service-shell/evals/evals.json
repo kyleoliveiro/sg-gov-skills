@@ -1,0 +1,116 @@
+{
+  "skill_name": "sg-gov-service-shell",
+  "evals": [
+    {
+      "id": 0,
+      "name": "scaffold-portal-shell",
+      "prompt": "Create the base page template for our new agency service portal - it will be served at portal.example.gov.sg. Static HTML/CSS is fine (header, footer, page skeleton we can build on). It's a public-facing Singapore government service. Include any setup notes we need to take care of before launch.",
+      "expected_output": "A page template using the SGDS Masthead as the topmost element, agency logo top-left linked home, the official footer with all seven links in the exact order plus the Government of Singapore copyright line, responsive layout, and launch notes covering WOGAA (Level 0), .gov.sg domain registration via GovTech, and SSP parameters flagged as agency decisions - all traced to TL/BD/PR control IDs.",
+      "files": [],
+      "assertions": [
+        "Uses the SGDS Masthead component (sgds-masthead via @govtechsg/sgds-web-component) for the Official Government Banner rather than hand-rolling the banner markup",
+        "The masthead is the topmost element on the page - above the agency logo and navigation (TL-3)",
+        "Footer contains all seven official links in the exact order: Contact Us, Feedback, FAQ, Sitemap, Report Vulnerability, Privacy Statement, Terms of Use (TL-4)",
+        "Copyright line reads '(c) [year], Government of Singapore' - not an agency-branded all-rights-reserved line (TL-4)",
+        "Agency logo is at the top-left and hyperlinked to the service homepage (TL-2)",
+        "Setup notes cover WOGAA as Level 0: register the service before launch, install the tracking code on every page, and enable Sentiments (PR-2)",
+        "Template is responsive: proper viewport meta and no fixed-width layout (BD-1)",
+        "Notes that the .gov.sg domain is registered via GovTech as sole registrar through the WOG DNS portal (TL-1)",
+        "References DSS control IDs (TL-n / BD-n / PR-n) so the shell traces to the SSP",
+        "Where controls carry agency-defined parameters (page-load seconds PR-7, downtime-notice days PR-4, browser count PR-6), values are flagged as SSP tailoring decisions rather than invented"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "review-agency-homepage",
+      "prompt": "Here's the homepage of our agency's licence renewal service as it stands. Before launch, check it against the Singapore government requirements for public-facing services and give us a findings report (findings.md) - what fails, how serious each issue is, and how to fix it. Don't rewrite the page.",
+      "expected_output": "A findings report keyed to TL/BD/PR control IDs that catches the seeded shell violations, distinguishes Level 0 (no deviation) findings from Level 1, and prescribes the SGDS components and official processes as fixes.",
+      "files": [
+        "files/index.html"
+      ],
+      "assertions": [
+        "Report identifies at least 9 of the 12 seeded violations listed in seeded_violations",
+        "Findings cite DSS control IDs (TL-n / BD-n / PR-n)",
+        "Catches the banner problem in full: hand-rolled banner with the wrong text ('A Singapore Government Website', missing 'Agency'), positioned below the navigation instead of topmost - and prescribes the SGDS Masthead component as the fix (TL-3, Level 0)",
+        "Flags the direct APK download link as a TL-5 Level 0 violation - mobile apps may only be distributed via Apple App Store, Google Play, or Huawei AppGallery",
+        "Flags the non-.gov.sg domain (TL-1) and the footer failures (missing/mis-ordered official links, agency-branded copyright instead of 'Government of Singapore') citing TL-4 and the exact required link order",
+        "Flags the absence of WOGAA tracking as a Level 0 failure (PR-2)",
+        "Severity ratings distinguish Level 0 (mandatory, no deviation) findings from Level 1 findings",
+        "Every finding comes with a concrete, correct fix",
+        "Report does not invent violations that are not present in the file"
+      ],
+      "seeded_violations": [
+        "hand-rolled government banner with wrong text ('A Singapore Government Website' instead of 'A Singapore Government Agency Website'), not the SGDS Masthead (TL-3)",
+        "banner positioned below the navigation instead of as the topmost element (TL-3)",
+        "canonical URL is sg-licence-renewals.com, not a .gov.sg domain (TL-1)",
+        "agency logo floated to the top-right and not hyperlinked to the homepage (TL-2)",
+        "footer has only Privacy and Terms - missing Contact Us, Feedback, FAQ, Sitemap, Report Vulnerability, and out of the required order (TL-4)",
+        "copyright line '(c) 2026 LicenceCorp Solutions Pte. Ltd. All rights reserved.' instead of '(c) 2026, Government of Singapore' (TL-4)",
+        "direct APK download link - distribution outside the official app stores (TL-5, Level 0)",
+        "no WOGAA tracking code or Sentiments widget anywhere (PR-2, Level 0)",
+        "viewport meta fixed at width=1200 and fixed-width body - not responsive (BD-1)",
+        "multi-page site (5 nav sections) with no site search (BD-2)",
+        "form fields carry no mandatory/optional indication (BD-7)",
+        "maintenance notice is vague ('at some point next week') - no date, time, or duration (PR-4); and no contact channel anywhere on the page (BD-9)"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "audit-service-operations",
+      "prompt": "Audit the attached operating posture for our public Licensing Services portal against the DSS Performance and Reliability controls. Write an operational-readiness.md report with findings, control IDs, priorities, and concrete remediation actions. Do not invent policy numbers where our agency has not set them.",
+      "expected_output": "A PR-1..PR-7 operational-readiness report that recognises WOGAA as compliant, finds the seeded review, availability, downtime, broken-link, browser, and performance gaps, and treats all five numeric parameters as unresolved agency SSP tailoring decisions rather than guessing values.",
+      "files": [
+        "files/SERVICE-OPERATIONS.md"
+      ],
+      "assertions": [
+        "Finds the absence of a recurring relevance, usage, ownership, and retirement review, and recommends a documented review and shutdown process tied to the agency-defined PR-1 cadence",
+        "Recognises PR-2 as compliant because the service is registered in WOGAA, has tracking on every page, and has Sentiments enabled; does not report WOGAA as missing",
+        "Flags the unjustified weekday-only availability and unpublished operating hours under PR-3, recommending 24/7 availability or a justified limitation with clearly communicated hours",
+        "Flags same-day vague maintenance notices under PR-4 and requires notice using the agency-defined lead time plus date, time, duration, reason where applicable, and affected features where applicable",
+        "Flags reactive broken-link handling under PR-5 and recommends automated scanning of internal and external links, ownership/evidence, and remediation within the agency-defined period",
+        "Flags Chrome-only manual testing under PR-6 and recommends browser selection based on usage data and repeatable testing of the latest major versions across the agency-defined number of browsers",
+        "Flags subjective page-speed assessment under PR-7 and recommends an agency-approved load-time target plus regular measurement or monitoring, such as WOGAA/PageSpeed and a CI performance budget",
+        "Identifies all five unset parameters as agency SSP decisions: PR-1 review days, PR-4 notice days, PR-5 remediation days, PR-6 browser count, and PR-7 load-time seconds",
+        "Does not invent numeric values for any unset parameter and does not present recommendation examples as binding catalog requirements",
+        "Correctly distinguishes PR-2 as Level 0 from PR-1 and PR-3 through PR-7 as Level 1"
+      ],
+      "seeded_violations": [
+        "no recurring digital-service review, accountable owner, usage assessment, or retirement process (PR-1)",
+        "service is restricted to contact-centre hours without a technical or business justification, and operating hours are not communicated (PR-3)",
+        "scheduled downtime is announced only on the day and omits timing, duration, reason, and affected features (PR-4)",
+        "broken links depend on user reports and have no automated detection, owner, evidence, or remediation target (PR-5)",
+        "browser testing covers only the latest Chrome without analytics-informed browser selection or repeatable cross-browser coverage (PR-6)",
+        "page-load performance has no approved target, measurement, monitoring, alert, or CI budget (PR-7)",
+        "all five PR parameters are unset and require agency SSP tailoring rather than guessed values"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "review-content-and-mobile-posture",
+      "prompt": "Review the attached content, account, and mobile-app posture for our public Benefits Portal against the DSS Trust and Legitimacy and Baseline Design Practices controls. Produce findings.md with control IDs, levels, what is already compliant, and specific fixes. Distinguish requirements from Level 2 best practices.",
+      "expected_output": "A targeted TL/BD report covering consistent design, multilingual support, plain content, SEO, logged-in identity, and app-store developer naming. It should distinguish Level 1 findings from BD-3/4/5 Level 2 improvements and avoid falsely failing the compliant mobile ownership/distribution and service-shell items.",
+      "files": [
+        "files/CONTENT-MOBILE-POSTURE.md"
+      ],
+      "assertions": [
+        "Flags inconsistent cross-section UI and the absence of a shared design system or style guide under BD-6, with SGDS presented as a recommended option rather than the only permitted system",
+        "Treats multilingual support under BD-3 as a Level 2 improvement and recommends evidence-based language selection plus an easy-to-find language switcher, without inventing a mandatory list of languages",
+        "Flags unexplained jargon and abbreviations under BD-4 and recommends plain-language revision validated with representative users and/or readability assessment",
+        "Flags duplicate page titles and missing search metadata under BD-5, recognises that the production public service does not meet the restricted-audience or beta exception, and recommends informative unique metadata",
+        "Flags the absence of the signed-in person's name or identifier under BD-8 and recommends displaying it prominently after login",
+        "Flags the vendor-branded app-store developer account under TL-6 and requires the full agency name",
+        "Recognises TL-5 as compliant because the agency owns the app and distributes it only through the Apple App Store and Google Play; does not report a mobile ownership or distribution failure",
+        "Correctly labels TL-6, BD-6, and BD-8 as Level 1 while treating BD-3, BD-4, and BD-5 as Level 2",
+        "Does not invent failures for the explicitly compliant responsive layout, SearchSG, contact channel, official masthead/footer, or WOGAA implementation"
+      ],
+      "seeded_violations": [
+        "inconsistent UI across vendor-built sections with no shared design system or style guide (BD-6)",
+        "English-only service with no assessment of user language needs or language switching (BD-3, Level 2)",
+        "unexplained jargon and abbreviations with no user testing or readability assessment (BD-4, Level 2)",
+        "duplicate generic page titles and missing meta descriptions on a public production service (BD-5, Level 2)",
+        "logged-in header does not display the user's name or another account identifier (BD-8)",
+        "mobile app store developer account uses the vendor name rather than the full agency name (TL-6)"
+      ]
+    }
+  ]
+}

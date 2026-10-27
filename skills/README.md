@@ -1,6 +1,6 @@
 # Authoring skills
 
-One folder per skill. The folder name is the skill name: kebab-case, short, specific (`singpass-integration`, not `sg-auth-stuff`). The `skills` CLI discovers anything matching `skills/<name>/SKILL.md`, so any folder added here is published.
+One folder per skill. The folder name is the skill name: kebab-case, prefixed with `sg-gov-`, then short and specific (`sg-gov-singpass`, not `sg-gov-auth-stuff`). The prefix keeps the skills together and recognisable once installed alongside skills from other sources; `npm run skills:evals:validate` rejects a skill without it. The `skills` CLI discovers anything matching `skills/<name>/SKILL.md`, so any folder added here is published.
 
 ## Anatomy
 
@@ -18,7 +18,7 @@ skills/
 
 ```markdown
 ---
-name: <skill-name>
+name: sg-gov-<concern>
 description: <What it does and when to use it. Written for the agent deciding whether to load this skill — include trigger phrases and concrete situations.>
 ---
 
