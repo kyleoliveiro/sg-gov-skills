@@ -2,7 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 
-// Validates every published skill's eval datasets:
+// Validates every published skill's name and eval datasets:
+//  - the folder name and SKILL.md `name` both start with SKILL_PREFIX and match
 //  - evals.json: task-performance scenarios graded against assertions
 //  - trigger-evals.json: description-trigger queries consumed by run_eval
 // The skill list comes from the plugin groups in the marketplace manifest.
@@ -10,6 +11,7 @@ import process from "node:process";
 const MIN_TASK_EVALS = 2;
 const TRIGGER_COUNT = 20;
 const TRIGGER_POSITIVES = 10;
+const SKILL_PREFIX = "sg-gov-";
 
 const root = process.cwd();
 const manifestPath = path.join(root, ".claude-plugin", "marketplace.json");
@@ -61,6 +63,21 @@ for (const relativeSkillPath of skillPaths) {
   const skillName = path.basename(skillDir);
   const taskFile = path.join(skillDir, "evals", "evals.json");
   const triggerFile = path.join(skillDir, "evals", "trigger-evals.json");
+  const skillFile = path.join(skillDir, "SKILL.md");
+
+  if (!skillName.startsWith(SKILL_PREFIX)) {
+    fail(`${relativeSkillPath}: skill folder name must start with "${SKILL_PREFIX}"`);
+  }
+  if (!fs.existsSync(skillFile)) {
+    fail(`${path.relative(root, skillFile)}: missing`);
+  } else {
+    const frontmatterName = fs
+      .readFileSync(skillFile, "utf8")
+      .match(/^---\r?\n[\s\S]*?^name:\s*(\S+)\s*$/m)?.[1];
+    if (frontmatterName !== skillName) {
+      fail(`${path.relative(root, skillFile)}: name must be "${skillName}"`);
+    }
+  }
 
   if (!fs.existsSync(taskFile)) {
     fail(`${path.relative(root, taskFile)}: missing task eval set`);

@@ -1,7 +1,7 @@
 #!/bin/sh
 # Run description-trigger evals for a published skill.
 # Usage: npm run skills:eval -- <skill-name> [extra run_eval flags]
-# Example: npm run skills:eval -- singpass --runs-per-query 3
+# Example: npm run skills:eval -- sg-gov-singpass --runs-per-query 3
 set -eu
 
 if [ $# -lt 1 ]; then

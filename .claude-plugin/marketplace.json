@@ -10,16 +10,16 @@
       "source": "./",
       "description": "Implement controls from the Singapore Government Cybersecurity Control Catalog.",
       "skills": [
-        "./skills/secure-coding-as",
-        "./skills/secure-pipeline",
-        "./skills/container-security",
-        "./skills/gen-ai-security",
-        "./skills/security-testing",
-        "./skills/data-protection",
-        "./skills/logging-monitoring",
-        "./skills/access-control",
-        "./skills/network-security",
-        "./skills/resiliency-recovery"
+        "./skills/sg-gov-secure-coding-as",
+        "./skills/sg-gov-secure-pipeline",
+        "./skills/sg-gov-container-security",
+        "./skills/sg-gov-gen-ai-security",
+        "./skills/sg-gov-security-testing",
+        "./skills/sg-gov-data-protection",
+        "./skills/sg-gov-logging-monitoring",
+        "./skills/sg-gov-access-control",
+        "./skills/sg-gov-network-security",
+        "./skills/sg-gov-resiliency-recovery"
       ]
     },
     {
@@ -27,9 +27,9 @@
       "source": "./",
       "description": "Implement controls from the Singapore Government Digital Service Standards Control Catalog.",
       "skills": [
-        "./skills/dss-accessibility",
-        "./skills/sg-service-shell",
-        "./skills/transactions-payments"
+        "./skills/sg-gov-dss-accessibility",
+        "./skills/sg-gov-service-shell",
+        "./skills/sg-gov-transactions-payments"
       ]
     },
     {
@@ -37,18 +37,18 @@
       "source": "./",
       "description": "Integrate and migrate Singapore's Singpass, Myinfo, and Corppass national digital identity services.",
       "skills": [
-        "./skills/singpass",
-        "./skills/corppass",
-        "./skills/singpass-legacy",
-        "./skills/corppass-legacy"
+        "./skills/sg-gov-singpass",
+        "./skills/sg-gov-corppass",
+        "./skills/sg-gov-singpass-legacy",
+        "./skills/sg-gov-corppass-legacy"
       ]
     },
     {
-      "name": "security-system-plan",
+      "name": "system-security-plan",
       "source": "./",
       "description": "Navigate the System Security Plan profiles that compose controls from the Cybersecurity and Digital Service Standards catalogs.",
       "skills": [
-        "./skills/ssp-navigator"
+        "./skills/sg-gov-ssp-navigator"
       ]
     }
   ]

@@ -11,7 +11,7 @@ The skills cover the requirements specific to government delivery: the ICT&SS Po
 
 ## Working on skills
 
-- One skill per delivery concern; kebab-case folder names.
+- One skill per delivery concern; kebab-case folder names prefixed with `sg-gov-` (the `name` frontmatter matches the folder).
 - Use the skill-creator skill to scaffold and iterate; validate with `npm run skills:validate -- skills/<skill-name>`.
 - Task-performance scenarios live in `skills/<skill-name>/evals/evals.json`; description-trigger queries live separately in `skills/<skill-name>/evals/trigger-evals.json`.
 - Validate every skill's task and trigger datasets locally with `npm run skills:evals:validate` (each skill needs both files: at least two task scenarios, and 20 trigger queries split 10 positive / 10 negative).
